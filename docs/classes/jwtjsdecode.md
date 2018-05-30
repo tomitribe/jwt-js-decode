@@ -1,4 +1,4 @@
-[jwt-js-decode](../README.md) > ["jwt-js-decode"](../modules/_jwt_js_decode_.md) > [JwtJsDecode](../classes/_jwt_js_decode_.jwtjsdecode.md)
+[jwt-js-decode](../README.md) > [JwtJsDecode](../classes/jwtjsdecode.md)
 
 # Class: JwtJsDecode
 
@@ -10,19 +10,19 @@
 
 ### Methods
 
-* [b2bu](_jwt_js_decode_.jwtjsdecode.md#b2bu)
-* [b2s](_jwt_js_decode_.jwtjsdecode.md#b2s)
-* [bu2b](_jwt_js_decode_.jwtjsdecode.md#bu2b)
-* [bu2s](_jwt_js_decode_.jwtjsdecode.md#bu2s)
-* [isGzip](_jwt_js_decode_.jwtjsdecode.md#isgzip)
-* [jwtDecode](_jwt_js_decode_.jwtjsdecode.md#jwtdecode)
-* [jwtSplit](_jwt_js_decode_.jwtjsdecode.md#jwtsplit)
-* [s2b](_jwt_js_decode_.jwtjsdecode.md#s2b)
-* [s2bu](_jwt_js_decode_.jwtjsdecode.md#s2bu)
-* [s2zbu](_jwt_js_decode_.jwtjsdecode.md#s2zbu)
-* [unzip](_jwt_js_decode_.jwtjsdecode.md#unzip)
-* [zbu2s](_jwt_js_decode_.jwtjsdecode.md#zbu2s)
-* [zip](_jwt_js_decode_.jwtjsdecode.md#zip)
+* [b2bu](jwtjsdecode.md#b2bu)
+* [b2s](jwtjsdecode.md#b2s)
+* [bu2b](jwtjsdecode.md#bu2b)
+* [bu2s](jwtjsdecode.md#bu2s)
+* [isGzip](jwtjsdecode.md#isgzip)
+* [jwtDecode](jwtjsdecode.md#jwtdecode)
+* [jwtSplit](jwtjsdecode.md#jwtsplit)
+* [s2b](jwtjsdecode.md#s2b)
+* [s2bu](jwtjsdecode.md#s2bu)
+* [s2zbu](jwtjsdecode.md#s2zbu)
+* [unzip](jwtjsdecode.md#unzip)
+* [zbu2s](jwtjsdecode.md#zbu2s)
+* [zip](jwtjsdecode.md#zip)
 
 ---
 
@@ -34,7 +34,7 @@
 
 ▸ **b2bu**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:91*
+*Defined in jwt-js-decode.ts:94*
 
 Converts base64 string to base64url string
 
@@ -54,7 +54,7 @@ ___
 
 ▸ **b2s**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:143*
+*Defined in jwt-js-decode.ts:146*
 
 Converts string to base64 string
 
@@ -74,7 +74,7 @@ ___
 
 ▸ **bu2b**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:68*
+*Defined in jwt-js-decode.ts:71*
 
 Converts base64url string to base64 string
 
@@ -94,7 +94,7 @@ ___
 
 ▸ **bu2s**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:112*
+*Defined in jwt-js-decode.ts:115*
 
 Converts base64url string to string
 
@@ -112,9 +112,9 @@ ___
 
 ### `<Static>` isGzip
 
-▸ **isGzip**(header: *[JwtPart](../interfaces/_jwt_js_decode_.jwtpart.md)*): `boolean`
+▸ **isGzip**(header: *[JwtPart](../interfaces/jwtpart.md)*): `boolean`
 
-*Defined in jwt-js-decode.ts:223*
+*Defined in jwt-js-decode.ts:226*
 
 Check if header has zip property (and it is equal to 'GZIP', ignorecase)
 
@@ -122,7 +122,7 @@ Check if header has zip property (and it is equal to 'GZIP', ignorecase)
 
 | Param | Type | Description |
 | ------ | ------ | ------ |
-| header | [JwtPart](../interfaces/_jwt_js_decode_.jwtpart.md) |  object to check |
+| header | [JwtPart](../interfaces/jwtpart.md) |  object to check |
 
 **Returns:** `boolean`
 does it have gzip in zip property
@@ -132,9 +132,9 @@ ___
 
 ### `<Static>` jwtDecode
 
-▸ **jwtDecode**(str: *`string`*): [JwtDecode](_jwt_js_decode_.jwtdecode.md)
+▸ **jwtDecode**(str: *`string`*): [JwtDecode](jwtdecode.md)
 
-*Defined in jwt-js-decode.ts:234*
+*Defined in jwt-js-decode.ts:237*
 
 Decode jwtToken header and payload
 
@@ -144,7 +144,7 @@ Decode jwtToken header and payload
 | ------ | ------ | ------ |
 | str | `string` |  data string to decode |
 
-**Returns:** [JwtDecode](_jwt_js_decode_.jwtdecode.md)
+**Returns:** [JwtDecode](jwtdecode.md)
 object with decoded header and body, and signature untouched
 
 ___
@@ -152,9 +152,9 @@ ___
 
 ### `<Static>` jwtSplit
 
-▸ **jwtSplit**(str: *`string`*): [JwtSplit](_jwt_js_decode_.jwtsplit.md)
+▸ **jwtSplit**(str: *`string`*): [JwtSplit](jwtsplit.md)
 
-*Defined in jwt-js-decode.ts:212*
+*Defined in jwt-js-decode.ts:215*
 
 Split jwtToken into object {header, payload, signature}
 
@@ -164,7 +164,7 @@ Split jwtToken into object {header, payload, signature}
 | ------ | ------ | ------ |
 | str | `string` |  data string to split |
 
-**Returns:** [JwtSplit](_jwt_js_decode_.jwtsplit.md)
+**Returns:** [JwtSplit](jwtsplit.md)
 jwt split object of three strings
 
 ___
@@ -174,7 +174,7 @@ ___
 
 ▸ **s2b**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:132*
+*Defined in jwt-js-decode.ts:135*
 
 Converts base64 string to string
 
@@ -193,7 +193,7 @@ ___
 
 ▸ **s2bu**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:123*
+*Defined in jwt-js-decode.ts:126*
 
 Converts string to base64url string
 
@@ -213,7 +213,7 @@ ___
 
 ▸ **s2zbu**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:190*
+*Defined in jwt-js-decode.ts:193*
 
 Gzip and encode data string to base64url string
 
@@ -233,7 +233,7 @@ ___
 
 ▸ **unzip**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:172*
+*Defined in jwt-js-decode.ts:175*
 
 Converts from gzip data string to string
 
@@ -253,7 +253,7 @@ ___
 
 ▸ **zbu2s**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:201*
+*Defined in jwt-js-decode.ts:204*
 
 Decode from base64url and unzip data string
 
@@ -273,7 +273,7 @@ ___
 
 ▸ **zip**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:154*
+*Defined in jwt-js-decode.ts:157*
 
 Converts string to gzip data string
 

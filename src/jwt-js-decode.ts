@@ -1,5 +1,10 @@
 import pako from "pako";
 
+/**
+ * Pako 1.0.6 has 'from' property which is not included in current version of typeDef @types/pako@1.0.0
+ *
+ * @hidden
+ */
 declare namespace Pako {
     export interface DeflateOptions {
         raw?: boolean;

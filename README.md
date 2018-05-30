@@ -1,3 +1,3 @@
 # jwt-js-decode
 
-* ["Docs"](docs/README.md)
+* [Docs](docs/README.md)

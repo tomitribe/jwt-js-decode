@@ -2,14 +2,19 @@
 jwt-js-decode
 =============
 
-*   ["Docs"](docs/README.md)
+*   [Docs](docs/README.md)
 
 ## Index
 
-### External modules
+### Classes
 
-* ["index"](modules/_index_.md)
-* ["jwt-js-decode"](modules/_jwt_js_decode_.md)
+* [JwtDecode](classes/jwtdecode.md)
+* [JwtJsDecode](classes/jwtjsdecode.md)
+* [JwtSplit](classes/jwtsplit.md)
+
+### Interfaces
+
+* [JwtPart](interfaces/jwtpart.md)
 
 ---
 
