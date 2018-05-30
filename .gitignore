@@ -1,0 +1,24 @@
+# Log ignored files
+#*.log
+npm-debug.log
+debug.log
+
+# IDE ignored files
+.idea
+.project
+.svn
+*.iml
+
+# system ignored files
+.DS_Store
+Thumbs.db
+
+# npm ignored files
+.nvm-version
+node_modules
+
+# project ignored files
+dist/
+.rpt2_cache/
+coverage/
+docs/

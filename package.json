@@ -1,0 +1,95 @@
+{
+  "name": "jwt-js-decode",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "main": "dist/jwt-js-decode.umd.js",
+  "module": "dist/jwt-js-decode.esm.js",
+  "browser": "dist/jwt-js-decode.min.js",
+  "common": "dist/jwt-js-decode.cjs.js",
+  "es6": "dist/jwt-js-decode.es6.js",
+  "packed": "dist/jwt-js-decode.pkg.min.js",
+  "typings": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "license": "Apache License 2.0",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tomitribe/jwt-js-decode.git"
+  },
+  "scripts": {
+    "prebuild": "rimraf dist && rimraf docs && rimraf compiled",
+    "build": "rollup -c",
+    "postbuild": "typedoc --out docs --target es6 --theme minimal --mode file src",
+    "dev": "rollup -c -w",
+    "precommit": "lint-staged",
+    "pretest": "npm run build && rimraf coverage",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
+    "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'"
+  },
+  "lint-staged": {
+    "*.{json,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.js": [
+      "prettier --parser flow --write",
+      "git add"
+    ],
+    "*.ts": [
+      "prettier --parser typescript --write",
+      "git add"
+    ]
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/"
+    ],
+    "collectCoverage": false
+  },
+  "dependencies": {
+    "pako": "1.0.6"
+  },
+  "devDependencies": {
+    "@types/jest": "^22.0.0",
+    "@types/node": "^10.0.3",
+    "@types/pako": "^1.0.0",
+    "jest": "^22.0.2",
+    "lint-staged": "^7.0.4",
+    "lodash.camelcase": "^4.3.0",
+    "prettier": "^1.12.1",
+    "rimraf": "^2.6.2",
+    "rollup": "^0.59.0",
+    "rollup-plugin-commonjs": "^9.1.0",
+    "rollup-plugin-json": "^3.0.0",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-sourcemaps": "^0.4.2",
+    "rollup-plugin-typescript2": "^0.14.0",
+    "rollup-plugin-uglify": "^3.0.0",
+    "ts-jest": "^22.0.0",
+    "ts-node": "^6.0.0",
+    "tslint": "^5.8.0",
+    "tslint-config-prettier": "^1.1.0",
+    "tslint-config-standard": "^7.0.0",
+    "typedoc": "^0.11.0",
+    "typescript": "^2.8.3"
+  }
+}
