@@ -18,7 +18,7 @@ Thumbs.db
 node_modules
 
 # project ignored files
-dist/
+#dist/
 .rpt2_cache/
 coverage/
-docs/
+#docs/
