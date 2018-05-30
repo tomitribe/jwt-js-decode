@@ -1,5 +1,10 @@
 import pako from 'pako';
 
+/**
+ * Class for creating a JwtSplit object with three parts of JWT Token as strings
+ *
+ * @class  JwtSplit
+ */
 class JwtSplit {
     constructor(str) {
         if (typeof str !== "string") {
@@ -15,6 +20,11 @@ class JwtSplit {
         this.signature = signature;
     }
 }
+/**
+ * Class for creating a JwtDecode object with three parts of JWT Token, header and payload decoded and parsed, signature in initial form
+ *
+ * @class  JwtDecode
+ */
 class JwtDecode {
     constructor(str) {
         if (typeof str !== "string") {
@@ -91,6 +101,8 @@ class JwtJsDecode {
      * Converts base64 string to string
      *
      * @param {string} str - data string to convert
+     *
+     * @returns {string} base64 string
      */
     static s2b(str) {
         return btoa(str);

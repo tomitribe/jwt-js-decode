@@ -19,9 +19,34 @@ declare namespace Pako {
     }
 }
 
+/**
+ * Class for creating a JwtSplit object with three parts of JWT Token as strings
+ *
+ * @class  JwtSplit
+ */
 export class JwtSplit {
+    /**
+     * Header (first) part of JWT Token
+     *
+     * @name  header
+     * @type {string}
+     */
     header: string;
+
+    /**
+     * Payload (second) part of JWT Token
+     *
+     * @name  payload
+     * @type {string}
+     */
     payload: string;
+
+    /**
+     * Signature (third) part of JWT Token
+     *
+     * @name  signature
+     * @type {string}
+     */
     signature: string;
 
     constructor(str: string) {
@@ -41,14 +66,40 @@ export class JwtSplit {
     }
 }
 
+/** JwtPart interface basically object type definition used as a placeholder */
 export interface JwtPart {
     [key: string]: any
 }
 
+/**
+ * Class for creating a JwtDecode object with three parts of JWT Token, header and payload decoded and parsed, signature in initial form
+ *
+ * @class  JwtDecode
+ */
 export class JwtDecode {
-    header: JwtPart;
-    payload: JwtPart;
-    signature: string;
+    /**
+     * Header (first) part of JWT Token
+     *
+     * @name  header
+     * @type {JwtPart}
+     */
+    public header: JwtPart;
+
+    /**
+     * Payload (second) part of JWT Token
+     *
+     * @name  payload
+     * @type {JwtPart}
+     */
+    public payload: JwtPart;
+
+    /**
+     * Signature (third) part of JWT Token
+     *
+     * @name  signature
+     * @type {string}
+     */
+    public signature: string;
 
     constructor(str: string) {
         if (typeof str !== "string") {
@@ -133,6 +184,8 @@ export class JwtJsDecode {
      * Converts base64 string to string
      *
      * @param {string} str - data string to convert
+     *
+     * @returns {string} base64 string
      */
     static s2b(str: string): string {
         return btoa(str);

@@ -2,6 +2,9 @@
 
 # Class: JwtDecode
 
+Class for creating a JwtDecode object with three parts of JWT Token, header and payload decoded and parsed, signature in initial form
+*__class__*: JwtDecode
+
 ## Hierarchy
 
 **JwtDecode**
@@ -28,7 +31,7 @@
 
 ⊕ **new JwtDecode**(str: *`string`*): [JwtDecode](jwtdecode.md)
 
-*Defined in jwt-js-decode.ts:49*
+*Defined in jwt-js-decode.ts:102*
 
 **Parameters:**
 
@@ -48,7 +51,12 @@ ___
 
 **● header**: *[JwtPart](../interfaces/jwtpart.md)*
 
-*Defined in jwt-js-decode.ts:47*
+*Defined in jwt-js-decode.ts:86*
+
+Header (first) part of JWT Token
+*__name__*: header
+
+*__type__*: {JwtPart}
 
 ___
 <a id="payload"></a>
@@ -57,7 +65,12 @@ ___
 
 **● payload**: *[JwtPart](../interfaces/jwtpart.md)*
 
-*Defined in jwt-js-decode.ts:48*
+*Defined in jwt-js-decode.ts:94*
+
+Payload (second) part of JWT Token
+*__name__*: payload
+
+*__type__*: {JwtPart}
 
 ___
 <a id="signature"></a>
@@ -66,7 +79,12 @@ ___
 
 **● signature**: *`string`*
 
-*Defined in jwt-js-decode.ts:49*
+*Defined in jwt-js-decode.ts:102*
+
+Signature (third) part of JWT Token
+*__name__*: signature
+
+*__type__*: {string}
 
 ___
 

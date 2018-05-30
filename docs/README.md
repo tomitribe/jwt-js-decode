@@ -2,7 +2,8 @@
 jwt-js-decode
 =============
 
-*   [Docs](docs/README.md)
+*   [Home](/)
+*   [Docs](/docs/)
 
 ## Index
 

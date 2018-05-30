@@ -1,5 +1,10 @@
 import pako from 'pako';
 
+/**
+ * Class for creating a JwtSplit object with three parts of JWT Token as strings
+ *
+ * @class  JwtSplit
+ */
 var JwtSplit = /** @class */ (function () {
     function JwtSplit(str) {
         if (typeof str !== "string") {
@@ -16,6 +21,11 @@ var JwtSplit = /** @class */ (function () {
     }
     return JwtSplit;
 }());
+/**
+ * Class for creating a JwtDecode object with three parts of JWT Token, header and payload decoded and parsed, signature in initial form
+ *
+ * @class  JwtDecode
+ */
 var JwtDecode = /** @class */ (function () {
     function JwtDecode(str) {
         if (typeof str !== "string") {
@@ -95,6 +105,8 @@ var JwtJsDecode = /** @class */ (function () {
      * Converts base64 string to string
      *
      * @param {string} str - data string to convert
+     *
+     * @returns {string} base64 string
      */
     JwtJsDecode.s2b = function (str) {
         return btoa(str);

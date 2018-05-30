@@ -34,7 +34,7 @@
 
 ▸ **b2bu**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:94*
+*Defined in jwt-js-decode.ts:147*
 
 Converts base64 string to base64url string
 
@@ -54,7 +54,7 @@ ___
 
 ▸ **b2s**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:146*
+*Defined in jwt-js-decode.ts:201*
 
 Converts string to base64 string
 
@@ -74,7 +74,7 @@ ___
 
 ▸ **bu2b**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:71*
+*Defined in jwt-js-decode.ts:124*
 
 Converts base64url string to base64 string
 
@@ -94,7 +94,7 @@ ___
 
 ▸ **bu2s**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:115*
+*Defined in jwt-js-decode.ts:168*
 
 Converts base64url string to string
 
@@ -114,7 +114,7 @@ ___
 
 ▸ **isGzip**(header: *[JwtPart](../interfaces/jwtpart.md)*): `boolean`
 
-*Defined in jwt-js-decode.ts:226*
+*Defined in jwt-js-decode.ts:281*
 
 Check if header has zip property (and it is equal to 'GZIP', ignorecase)
 
@@ -134,7 +134,7 @@ ___
 
 ▸ **jwtDecode**(str: *`string`*): [JwtDecode](jwtdecode.md)
 
-*Defined in jwt-js-decode.ts:237*
+*Defined in jwt-js-decode.ts:292*
 
 Decode jwtToken header and payload
 
@@ -154,7 +154,7 @@ ___
 
 ▸ **jwtSplit**(str: *`string`*): [JwtSplit](jwtsplit.md)
 
-*Defined in jwt-js-decode.ts:215*
+*Defined in jwt-js-decode.ts:270*
 
 Split jwtToken into object {header, payload, signature}
 
@@ -174,7 +174,7 @@ ___
 
 ▸ **s2b**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:135*
+*Defined in jwt-js-decode.ts:190*
 
 Converts base64 string to string
 
@@ -185,6 +185,7 @@ Converts base64 string to string
 | str | `string` |  data string to convert |
 
 **Returns:** `string`
+base64 string
 
 ___
 <a id="s2bu"></a>
@@ -193,7 +194,7 @@ ___
 
 ▸ **s2bu**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:126*
+*Defined in jwt-js-decode.ts:179*
 
 Converts string to base64url string
 
@@ -213,7 +214,7 @@ ___
 
 ▸ **s2zbu**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:193*
+*Defined in jwt-js-decode.ts:248*
 
 Gzip and encode data string to base64url string
 
@@ -233,7 +234,7 @@ ___
 
 ▸ **unzip**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:175*
+*Defined in jwt-js-decode.ts:230*
 
 Converts from gzip data string to string
 
@@ -253,7 +254,7 @@ ___
 
 ▸ **zbu2s**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:204*
+*Defined in jwt-js-decode.ts:259*
 
 Decode from base64url and unzip data string
 
@@ -273,7 +274,7 @@ ___
 
 ▸ **zip**(str: *`string`*): `string`
 
-*Defined in jwt-js-decode.ts:157*
+*Defined in jwt-js-decode.ts:212*
 
 Converts string to gzip data string
 
