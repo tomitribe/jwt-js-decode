@@ -1,119 +1,42 @@
-import pako from "pako";
-
-/**
- * Pako 1.0.6 has 'from' property which is not included in current version of typeDef @types/pako@1.0.0
- *
- * @hidden
- */
-declare namespace Pako {
-    export interface DeflateOptions {
-        raw?: boolean;
-        from?: string;
-        to?: string;
-    }
-
-    export interface InflateOptions {
-        raw?: boolean;
-        from?: string;
-        to?: string;
-    }
-}
+import pako from 'pako';
 
 /**
  * Class for creating a JwtSplit object with three parts of JWT Token as strings
  *
  * @class  JwtSplit
  */
-export class JwtSplit {
-    /**
-     * Header (first) part of JWT Token
-     *
-     * @name  header
-     * @type {string}
-     */
-    header: string;
-
-    /**
-     * Payload (second) part of JWT Token
-     *
-     * @name  payload
-     * @type {string}
-     */
-    payload: string;
-
-    /**
-     * Signature (third) part of JWT Token
-     *
-     * @name  signature
-     * @type {string}
-     */
-    signature: string;
-
-    constructor(str: string) {
+class JwtSplit {
+    constructor(str) {
         if (typeof str !== "string") {
             throw new Error("Illegal parameter specified!");
         }
-
         const jwtArr = str.split('.');
         if (jwtArr.length !== 3) {
             throw new Error("Illegal jwt string!");
         }
-
         const [header, payload, signature] = jwtArr;
         this.header = header;
         this.payload = payload;
         this.signature = signature;
     }
 }
-
-/** JwtPart interface basically object type definition used as a placeholder */
-export interface JwtPart {
-    [key: string]: any
-}
-
 /**
  * Class for creating a JwtDecode object with three parts of JWT Token, header and payload decoded and parsed, signature in initial form
  *
  * @class  JwtDecode
  */
-export class JwtDecode {
-    /**
-     * Header (first) part of JWT Token
-     *
-     * @name  header
-     * @type {JwtPart}
-     */
-    public header: JwtPart;
-
-    /**
-     * Payload (second) part of JWT Token
-     *
-     * @name  payload
-     * @type {JwtPart}
-     */
-    public payload: JwtPart;
-
-    /**
-     * Signature (third) part of JWT Token
-     *
-     * @name  signature
-     * @type {string}
-     */
-    public signature: string;
-
-    constructor(str: string) {
+class JwtDecode {
+    constructor(str) {
         if (typeof str !== "string") {
             throw new Error("Illegal parameter specified!");
         }
-        const jwtSplit: JwtSplit = JwtJsDecode.jwtSplit(str);
-
+        const jwtSplit = JwtJsDecode.jwtSplit(str);
         this.header = JSON.parse(JwtJsDecode.bu2s(jwtSplit.header));
         this.payload = JwtJsDecode.isGzip(this.header) ? JSON.parse(JwtJsDecode.zbu2s(jwtSplit.payload)) : JSON.parse(JwtJsDecode.bu2s(jwtSplit.payload));
         this.signature = jwtSplit.signature;
     }
 }
-
-export class JwtJsDecode {
+class JwtJsDecode {
     /**
      * Converts base64url string to base64 string
      *
@@ -121,14 +44,13 @@ export class JwtJsDecode {
      *
      * @returns {string} base64 string
      */
-    static bu2b(str: string): string {
+    static bu2b(str) {
         if (typeof str !== "string") {
             throw new Error("Illegal parameter specified!");
         }
         if (str.length % 4 === 1) {
             throw new Error("Illegal base64url string!");
         }
-
         for (; (str.length % 4 !== 0);) {
             str += "=";
         }
@@ -136,7 +58,6 @@ export class JwtJsDecode {
             .replace(/\-/g, "+")
             .replace(/_/g, "/");
     }
-
     /**
      * Converts base64 string to base64url string
      *
@@ -144,20 +65,18 @@ export class JwtJsDecode {
      *
      * @returns {string} base64url string
      */
-    static b2bu(str: string): string {
+    static b2bu(str) {
         if (typeof str !== "string") {
             throw new Error("Illegal parameter specified!");
         }
         if (str.length % 4 !== 0) {
             throw new Error("Illegal base64 string!");
         }
-
         return str
             .replace(/\+/g, "-")
             .replace(/\//g, "_")
             .replace(/=/g, "");
     }
-
     /**
      * Converts base64url string to string
      *
@@ -165,10 +84,9 @@ export class JwtJsDecode {
      *
      * @returns {string} decoded data string
      */
-    static bu2s(str: string): string {
+    static bu2s(str) {
         return this.b2s(this.bu2b(str));
     }
-
     /**
      * Converts string to base64url string
      *
@@ -176,10 +94,9 @@ export class JwtJsDecode {
      *
      * @returns {string} base64url string
      */
-    static s2bu(str: string): string {
+    static s2bu(str) {
         return this.b2bu(this.s2b(str));
     }
-
     /**
      * Converts base64 string to string
      *
@@ -187,10 +104,9 @@ export class JwtJsDecode {
      *
      * @returns {string} base64 string
      */
-    static s2b(str: string): string {
+    static s2b(str) {
         return btoa(str);
     }
-
     /**
      * Converts string to base64 string
      *
@@ -198,10 +114,9 @@ export class JwtJsDecode {
      *
      * @returns {string} decoded data string
      */
-    static b2s(str: string): string {
+    static b2s(str) {
         return atob(str);
     }
-
     /**
      * Converts string to gzip data string
      *
@@ -209,7 +124,7 @@ export class JwtJsDecode {
      *
      * @returns {string} gzip data string
      */
-    static zip(str: string) {
+    static zip(str) {
         if (typeof str !== "string") {
             throw new Error("Illegal parameter specified!");
         }
@@ -217,9 +132,8 @@ export class JwtJsDecode {
             raw: false,
             from: "string",
             to: "string"
-        } as Pako.DeflateOptions & { to: "string" });
+        });
     }
-
     /**
      * Converts from gzip data string to string
      *
@@ -227,7 +141,7 @@ export class JwtJsDecode {
      *
      * @returns {string} decoded data string
      */
-    static unzip(str: string) {
+    static unzip(str) {
         if (typeof str !== "string") {
             throw new Error("Illegal parameter specified!");
         }
@@ -235,9 +149,8 @@ export class JwtJsDecode {
             raw: false,
             from: 'string',
             to: 'string'
-        } as Pako.InflateOptions & { to: "string" });
+        });
     }
-
     /**
      * Gzip and encode data string to base64url string
      *
@@ -245,10 +158,9 @@ export class JwtJsDecode {
      *
      * @returns {string} base64url string
      */
-    static s2zbu(str: string) {
+    static s2zbu(str) {
         return this.s2bu(this.zip(str));
     }
-
     /**
      * Decode from base64url and unzip data string
      *
@@ -256,10 +168,9 @@ export class JwtJsDecode {
      *
      * @returns {string} decoded data string
      */
-    static zbu2s(str: string) {
+    static zbu2s(str) {
         return this.unzip(this.bu2s(str));
     }
-
     /**
      * Split jwtToken into object {header, payload, signature}
      *
@@ -267,10 +178,9 @@ export class JwtJsDecode {
      *
      * @returns {JwtSplit} jwt split object of three strings
      */
-    static jwtSplit(str: string): JwtSplit {
+    static jwtSplit(str) {
         return new JwtSplit(str);
     }
-
     /**
      * Check if header has zip property (and it is equal to 'GZIP', ignorecase)
      *
@@ -278,10 +188,9 @@ export class JwtJsDecode {
      *
      * @returns {boolean} does it have gzip in zip property
      */
-    static isGzip(header: JwtPart): boolean {
-        return typeof header === 'object' && typeof header.zip === 'string' && header.zip.toUpperCase() === 'GZIP'
+    static isGzip(header) {
+        return typeof header === 'object' && typeof header.zip === 'string' && header.zip.toUpperCase() === 'GZIP';
     }
-
     /**
      * Decode jwtToken header and payload
      *
@@ -289,9 +198,11 @@ export class JwtJsDecode {
      *
      * @returns {JwtDecode} object with decoded header and body, and signature untouched
      */
-    static jwtDecode(str: string): JwtDecode {
+    static jwtDecode(str) {
         return new JwtDecode(str);
     }
 }
 
 export default JwtJsDecode;
+export { JwtJsDecode, JwtDecode, JwtSplit };
+//# sourceMappingURL=jwt-js-decode.es6.js.map
