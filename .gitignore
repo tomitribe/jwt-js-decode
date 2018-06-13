@@ -22,3 +22,4 @@ node_modules
 .rpt2_cache/
 coverage/
 #docs/
+.webcrypto/

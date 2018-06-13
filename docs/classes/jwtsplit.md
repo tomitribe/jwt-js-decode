@@ -21,6 +21,10 @@ Class for creating a JwtSplit object with three parts of JWT Token as strings
 * [payload](jwtsplit.md#payload)
 * [signature](jwtsplit.md#signature)
 
+### Methods
+
+* [toString](jwtsplit.md#tostring)
+
 ---
 
 ## Constructors
@@ -31,7 +35,7 @@ Class for creating a JwtSplit object with three parts of JWT Token as strings
 
 ⊕ **new JwtSplit**(str: *`string`*): [JwtSplit](jwtsplit.md)
 
-*Defined in jwt-js-decode.ts:50*
+*Defined in jwt-js-decode.ts:64*
 
 **Parameters:**
 
@@ -51,7 +55,7 @@ ___
 
 **● header**: *`string`*
 
-*Defined in jwt-js-decode.ts:34*
+*Defined in jwt-js-decode.ts:48*
 
 Header (first) part of JWT Token
 *__name__*: header
@@ -65,7 +69,7 @@ ___
 
 **● payload**: *`string`*
 
-*Defined in jwt-js-decode.ts:42*
+*Defined in jwt-js-decode.ts:56*
 
 Payload (second) part of JWT Token
 *__name__*: payload
@@ -79,12 +83,26 @@ ___
 
 **● signature**: *`string`*
 
-*Defined in jwt-js-decode.ts:50*
+*Defined in jwt-js-decode.ts:64*
 
 Signature (third) part of JWT Token
 *__name__*: signature
 
 *__type__*: {string}
+
+___
+
+## Methods
+
+<a id="tostring"></a>
+
+###  toString
+
+▸ **toString**(): `string`
+
+*Defined in jwt-js-decode.ts:82*
+
+**Returns:** `string`
 
 ___
 

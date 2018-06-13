@@ -19,7 +19,7 @@ const baseConfig = {
         json(),
         typescript({useTsconfigDeclarationDir: true}),
         commonjs(),
-        resolve(),
+        resolve({isBrowser: true}),
         sourceMaps()
     ]
 };
@@ -28,9 +28,10 @@ const es6Config = Object.assign({}, baseConfig, {
     output: {
         file: pkg.es6,
         format: 'es',
-        sourcemap: true
+        sourcemap: true,
+        global: ['crypto']
     },
-    external: ['pako'],
+    external: ['pako', 'crypto'],
     plugins: [
         json(),
         typescript({
@@ -50,13 +51,13 @@ const es6Config = Object.assign({}, baseConfig, {
 
 // separate lib with external `pako` lib as a base
 const libConfig = Object.assign({}, baseConfig, {
-    external: ['pako'],
+    external: ['pako', 'crypto'],
     output: [
         {
             file: pkg.module,
             format: 'es',
             sourcemap: true,
-            globals: ['pako']
+            globals: ['pako', 'crypto']
         },
         {
             file: pkg.main,
@@ -64,7 +65,7 @@ const libConfig = Object.assign({}, baseConfig, {
             format: 'umd',
             sourcemap: true,
             exports: 'named',
-            globals: ['pako']
+            globals: ['pako', 'crypto']
         },
         {
             file: pkg.common,
@@ -72,31 +73,35 @@ const libConfig = Object.assign({}, baseConfig, {
             format: 'cjs',
             sourcemap: true,
             exports: 'named',
-            globals: ['pako']
+            globals: ['pako', 'crypto']
         }
     ]
 });
 
 const browserConfig = Object.assign({}, baseConfig, {
+    external: ['crypto'],
     output: {
         file: pkg.browser,
         name: camelCase(libraryName),
         format: 'umd',
         exports: 'named',
-        sourcemap: false
+        sourcemap: false,
+        globals:['crypto']
     },
-    plugins: [json(), typescript(), commonjs(), resolve(), uglify()]
+    plugins: [json(), typescript({useTsconfigDeclarationDir: true}), commonjs(), resolve(), uglify()]
 });
 
 const packedConfig = Object.assign({}, baseConfig, {
+    external: ['crypto'],
     output: {
         file: pkg.packed,
         name: camelCase(libraryName),
         format: 'iife',
         exports: 'named',
-        sourcemap: false
+        sourcemap: false,
+        globals:['crypto']
     },
-    plugins: [json(), typescript(), commonjs(), resolve(), uglify()]
+    plugins: [json(), typescript({useTsconfigDeclarationDir: true}), commonjs(), resolve(), uglify()]
 });
 
 export default [es6Config, libConfig, browserConfig, packedConfig];

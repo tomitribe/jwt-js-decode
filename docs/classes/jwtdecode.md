@@ -21,6 +21,10 @@ Class for creating a JwtDecode object with three parts of JWT Token, header and 
 * [payload](jwtdecode.md#payload)
 * [signature](jwtdecode.md#signature)
 
+### Methods
+
+* [toString](jwtdecode.md#tostring)
+
 ---
 
 ## Constructors
@@ -31,7 +35,7 @@ Class for creating a JwtDecode object with three parts of JWT Token, header and 
 
 ⊕ **new JwtDecode**(str: *`string`*): [JwtDecode](jwtdecode.md)
 
-*Defined in jwt-js-decode.ts:102*
+*Defined in jwt-js-decode.ts:120*
 
 **Parameters:**
 
@@ -51,7 +55,7 @@ ___
 
 **● header**: *[JwtPart](../interfaces/jwtpart.md)*
 
-*Defined in jwt-js-decode.ts:86*
+*Defined in jwt-js-decode.ts:104*
 
 Header (first) part of JWT Token
 *__name__*: header
@@ -65,7 +69,7 @@ ___
 
 **● payload**: *[JwtPart](../interfaces/jwtpart.md)*
 
-*Defined in jwt-js-decode.ts:94*
+*Defined in jwt-js-decode.ts:112*
 
 Payload (second) part of JWT Token
 *__name__*: payload
@@ -77,14 +81,28 @@ ___
 
 ###  signature
 
-**● signature**: *`string`*
+**● signature**: *`string`* = ""
 
-*Defined in jwt-js-decode.ts:102*
+*Defined in jwt-js-decode.ts:120*
 
 Signature (third) part of JWT Token
 *__name__*: signature
 
 *__type__*: {string}
+
+___
+
+## Methods
+
+<a id="tostring"></a>
+
+###  toString
+
+▸ **toString**(): `string`
+
+*Defined in jwt-js-decode.ts:134*
+
+**Returns:** `string`
 
 ___
 
