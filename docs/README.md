@@ -4,6 +4,15 @@ jwt-js-decode
 
 JavaScript library that decodes JSON Web Tokens (JWT) jwt-js-decode the easy way
 
+Use cases
+---------
+
+Works in:
+
+*   all modern browsers that support WebCrypto API
+*   Node.js using 'crypto' (default node-js lib)
+*   any other js env using 'crypto-browserify' (with require replacement to 'crypto'')
+
 Getting Started
 ---------------
 
@@ -17,6 +26,47 @@ Or via [`npm`](https://www.npmjs.com/package/jwt-js-decode):
 
 ```bash
 npm i -S jwt-js-decode
+```
+
+### Require lib
+
+```javascript
+import jwtJsDecode from 'jwt-js-decode';
+```
+
+or
+
+```javascript
+const jwtJsDecode = require('jwt-js-decode');
+```
+
+or
+
+```html
+<script src="https://unpkg.com/jwt-js-decode@1.1.6"></script>
+```
+
+Other links you can find on [`yarn`](https://yarnpkg.com/en/package/jwt-js-decode)
+
+### Usage
+
+```javascript
+// just decode 'token' into {header: Object, payload: Object, signature: String}
+    let jwt = jwtJsDecode.jwtDecode('token');
+    console.log(jwt.payload);
+
+    // or verify 'token' with provided secret and decode it
+    jwtJsDecode.jwtVerify('token', 'secret').then(res => {
+        if (res === true) {
+            const jwt = jwtJsDecode.jwtDecode('token');
+            console.log(jwt.payload);
+        }
+    });
+
+    // advanced resignJwt token with newSecret secret should be same type as jwt.header.alg
+    jwtJsDecode.resignJwt('token', 'newSecret').then(newToken =>  {
+        console.log(newToken);
+    });
 ```
 
 TOC:
@@ -39,7 +89,6 @@ TOC:
 
 * [ILLEGAL_ARGUMENT](#illegal_argument)
 * [UNSUPPORTED_ALGORITHM](#unsupported_algorithm)
-* [crypto](#crypto)
 * [webCrypto](#webcrypto)
 * [webCryptoSubtle](#webcryptosubtle)
 
@@ -94,15 +143,6 @@ ___
 **● UNSUPPORTED_ALGORITHM**: *"Unsupported algorithm name specified! Supported algorithms: &quot;HS256&quot;, &quot;HS384&quot;, &quot;HS512&quot;, &quot;RS256&quot;, &quot;RS384&quot;, &quot;RS512&quot; and &quot;none&quot;."* = "Unsupported algorithm name specified! Supported algorithms: "HS256", "HS384", "HS512", "RS256", "RS384", "RS512" and "none"."
 
 *Defined in jwt-js-decode.ts:13*
-
-___
-<a id="crypto"></a>
-
-### `<Const>` crypto
-
-**● crypto**: *`any`* =  require("crypto")
-
-*Defined in jwt-js-decode.ts:2*
 
 ___
 <a id="webcrypto"></a>

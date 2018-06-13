@@ -1,4 +1,5 @@
 import pako from 'pako';
+import crypto from 'crypto';
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -24,7 +25,6 @@ function __awaiter(thisArg, _arguments, P, generator) {
     });
 }
 
-const crypto = require("crypto");
 /*
 browserify
 import { createHmac, createSign, createVerify } from "crypto-browserify";

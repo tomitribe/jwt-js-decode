@@ -34,7 +34,7 @@ const jwtJsDecode = require('jwt-js-decode');
 ```
 or
 ```html
-<script src="https://unpkg.com/jwt-js-decode@1.1.0"></script>
+<script src="https://unpkg.com/jwt-js-decode@1.1.6"></script>
 ```
 Other links you can find on [`yarn`](https://yarnpkg.com/en/package/jwt-js-decode)
 

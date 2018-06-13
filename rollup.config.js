@@ -4,6 +4,7 @@ import sourceMaps from 'rollup-plugin-sourcemaps';
 import typescript from 'rollup-plugin-typescript2';
 import json from 'rollup-plugin-json';
 import {uglify} from 'rollup-plugin-uglify';
+import uglifyEs from 'rollup-plugin-uglify-es';
 import camelCase from 'lodash.camelcase';
 
 import pkg from './package.json';
@@ -78,6 +79,14 @@ const libConfig = Object.assign({}, baseConfig, {
     ]
 });
 
+const libConfigMin  = Object.assign({}, baseConfig, {
+        external: ['pako', 'crypto'],
+        output: [].concat(libConfig.output, [es6Config.output]).map(function (item) {
+           return Object.assign({}, item, {file: item.file.replace(/\.js$/,".min.js"), sourcemap: false});
+        }),
+        plugins: [json(), typescript({useTsconfigDeclarationDir: true}), commonjs(), resolve(), uglifyEs()]
+    });
+
 const browserConfig = Object.assign({}, baseConfig, {
     external: ['crypto'],
     output: {
@@ -86,9 +95,9 @@ const browserConfig = Object.assign({}, baseConfig, {
         format: 'umd',
         exports: 'named',
         sourcemap: false,
-        globals:['crypto']
+        globals: ['crypto']
     },
-    plugins: [json(), typescript({useTsconfigDeclarationDir: true}), commonjs(), resolve(), uglify()]
+    plugins: [json(), typescript({useTsconfigDeclarationDir: true}), resolve({browser: true}), commonjs(), uglify()]
 });
 
 const packedConfig = Object.assign({}, baseConfig, {
@@ -99,9 +108,9 @@ const packedConfig = Object.assign({}, baseConfig, {
         format: 'iife',
         exports: 'named',
         sourcemap: false,
-        globals:['crypto']
+        globals: ['crypto']
     },
     plugins: [json(), typescript({useTsconfigDeclarationDir: true}), commonjs(), resolve(), uglify()]
 });
 
-export default [es6Config, libConfig, browserConfig, packedConfig];
+export default [es6Config, libConfig, libConfigMin, browserConfig, packedConfig];

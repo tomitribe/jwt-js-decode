@@ -1,5 +1,5 @@
 import pako from "pako";
-const crypto = require("crypto");
+import crypto from "crypto";
 /*
 browserify
 import { createHmac, createSign, createVerify } from "crypto-browserify";

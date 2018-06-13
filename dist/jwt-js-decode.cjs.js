@@ -5,6 +5,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var pako = _interopDefault(require('pako'));
+var crypto = _interopDefault(require('crypto'));
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -58,7 +59,6 @@ function __generator(thisArg, body) {
     }
 }
 
-var crypto = require("crypto");
 /*
 browserify
 import { createHmac, createSign, createVerify } from "crypto-browserify";

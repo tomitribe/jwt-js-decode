@@ -1,10 +1,11 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('pako')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'pako'], factory) :
-    (factory((global.jwtJsDecode = {}),null));
-}(this, (function (exports,pako) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('pako'), require('crypto')) :
+    typeof define === 'function' && define.amd ? define(['exports', 'pako', 'crypto'], factory) :
+    (factory((global.jwtJsDecode = {}),null,null));
+}(this, (function (exports,pako,crypto) { 'use strict';
 
     pako = pako && pako.hasOwnProperty('default') ? pako['default'] : pako;
+    crypto = crypto && crypto.hasOwnProperty('default') ? crypto['default'] : crypto;
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation. All rights reserved.
@@ -58,7 +59,6 @@
         }
     }
 
-    var crypto = require("crypto");
     /*
     browserify
     import { createHmac, createSign, createVerify } from "crypto-browserify";

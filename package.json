@@ -1,6 +1,6 @@
 {
   "name": "jwt-js-decode",
-  "version": "1.1.0",
+  "version": "1.1.6",
   "description": "",
   "keywords": [],
   "main": "dist/jwt-js-decode.umd.js",
@@ -95,6 +95,7 @@
     "rollup-plugin-sourcemaps": "^0.4.2",
     "rollup-plugin-typescript2": "^0.15.0",
     "rollup-plugin-uglify": "^4.0.0",
+    "rollup-plugin-uglify-es": "0.0.1",
     "subtle": "git+https://github.com/Dexmaster/subtle.git#97bb1842778155a9485df8c0eda84cdfa645468a",
     "ts-jest": "^22.4.6",
     "ts-node": "^6.1.1",
