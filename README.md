@@ -34,7 +34,7 @@ const jwtJsDecode = require('jwt-js-decode');
 ```
 or
 ```html
-<script src="https://unpkg.com/jwt-js-decode@1.1.6"></script>
+<script src="https://unpkg.com/jwt-js-decode@1.1.7"></script>
 ```
 Other links you can find on [`yarn`](https://yarnpkg.com/en/package/jwt-js-decode)
 
@@ -58,6 +58,15 @@ Other links you can find on [`yarn`](https://yarnpkg.com/en/package/jwt-js-decod
         console.log(newToken);
     });
 ```
+
+## Sandboxes
+
+Runkit (node.js sandbox)
+['https://npm.runkit.com/jwt-js-decode'](https://npm.runkit.com/jwt-js-decode)
+
+Plunkr (browser sandbox)
+['https://plnkr.co/edit/zCNpiTXBbPKNxNVnHhkU'](https://plnkr.co/edit/zCNpiTXBbPKNxNVnHhkU)
+
 
 TOC:
 

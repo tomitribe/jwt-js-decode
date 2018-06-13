@@ -163,7 +163,7 @@ export function b2s(str: string): string {
         if(typeof window === 'object' && typeof window.atob === 'function') {
             return window.atob(str);
         } else if(typeof Buffer !== 'undefined') {
-            return new Buffer(str, 'base64').toString('binary')
+            return Buffer.from(str, 'base64').toString('binary')
         } else throw new Error(ILLEGAL_ARGUMENT);
     } catch(e) {
         throw new Error(e);
@@ -265,7 +265,7 @@ export function s2b(str: string): string {
         if(typeof window === 'object' && typeof window.atob === 'function') {
             return window.btoa(str);
         } else if(typeof Buffer !== 'undefined') {
-            return new Buffer(str).toString('base64');
+            return Buffer.from(str).toString('base64');
         } else throw new Error(ILLEGAL_ARGUMENT);
     } catch(e) {
         throw new Error(e);
@@ -458,9 +458,58 @@ export function algHSverify(bits: number) {
     }
 }
 
-/*export function algRSsign(bits: number) {
+export function RS2AB(secret: string) : ArrayBuffer | Uint8Array  {
+    if (typeof secret !== 'string') {
+        throw new Error(ILLEGAL_ARGUMENT);
+    }
+    const lines = secret.split('\n'),
+        ignoreLines = [
+        '-BEGIN RSA PRIVATE KEY-',
+        '-BEGIN RSA PUBLIC KEY-',
+        '-BEGIN PUBLIC KEY-',
+        '-END PUBLIC KEY-',
+        '-END RSA PRIVATE KEY-',
+        '-END RSA PUBLIC KEY-'
+    ], result = lines.map(line => line.trim()).filter(line =>
+        line.length &&
+        !ignoreLines.some(ign => line.toUpperCase().indexOf(ign) > -1)
+    ).join('');
+    if(result.length) {
+        return s2AB(result);
+    } else {
+        throw new Error(ILLEGAL_ARGUMENT);
+    }
+}
+/*
+export async function createSign(name: string, secret: string): Promise<any> {
+    if (webCryptoSubtle) {
+        const keyData = RS2AB(secret);
+        return await webCryptoSubtle.importKey(
+            'raw',
+            keyData,
+            { name: 'HMAC', hash: { name: name } },
+            true,
+            ['sign']
+        ).then(key => {
+            return {
+                _key: key,
+                update: async function (thing): Promise<ArrayBuffer> {
+                    return await webCryptoSubtle.sign(
+                        'HMAC',
+                        key,
+                        s2AB(thing)
+                    )
+                }
+            }
+        })
+    } else {
+        return !!crypto && crypto.createSign ? Promise.resolve(crypto.createSign(name)) : Promise.reject(webCrypto);
+    }
+}
+
+export async function algRSsign(bits: number) {
     return function sign(thing: string, privateKey: string): string {
-        const rsaSign = crypto.createSign('RSA-SHA' + bits);
+        const rsaSign = await createSign('RSA-SHA' + bits);
         return b2bu(rsaSign.update(thing).sign(privateKey, 'base64'));
     }
 }
@@ -472,7 +521,8 @@ export function algRSverify(bits: number) {
         rsaVerify.update(thing);
         return rsaVerify.verify(publicKey, signature, 'base64');
     }
-}*/
+}
+*/
 
 /**
  * Universal algorithm verifier
@@ -546,11 +596,11 @@ export async function jwtSign(jwtStr: string, secret: string): Promise<string> {
     return await algSign(header.alg, thing, secret);
 }
 
-export async function resignJwt(jwtStr: string, secret: string): Promise<string> {
-    const jwt = jwtSplit(jwtStr),
-        header = s2J(bu2s(jwt.header)),
-        thing = jwt.header + '.' + jwt.payload;
-    return thing + '.' + await algSign(header.alg, thing, secret);
+export async function resignJwt(jwtStr: string, secret: string, alg?: string): Promise<string> {
+    const jwt = jwtDecode(jwtStr);
+    if(!!alg) jwt.header.alg = alg;
+    jwt.signature = await jwtSign(jwt.toString(), secret);
+    return jwt.toString();
 }
 
 /**

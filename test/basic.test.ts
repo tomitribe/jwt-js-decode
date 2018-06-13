@@ -1,5 +1,9 @@
 jest.unmock('crypto');
 
+declare const
+    jwtStrNormal_HS256, jwtStrGzip_HS256,
+    jwtStrNormal_HS512, jwtStrGzip_HS512,
+    jwtSecret_HS;
 /**
  * jwtSplit tests
  */
@@ -33,7 +37,7 @@ describe("jwtSplit tests", function(){
 describe("jwtDecode tests", function(){
     const jwtJsDecode = require('../src/jwt-js-decode');
     it("it works when provided with a proper jwt String (normal)", async function(){
-        const jwtObj = jwtJsDecode.jwtDecode(jwtStrNormal);
+        const jwtObj = jwtJsDecode.jwtDecode(jwtStrNormal_HS256);
         expect(jwtObj).toEqual(expect.objectContaining({
             header: expect.any(Object),
             payload: expect.any(Object),
@@ -42,7 +46,7 @@ describe("jwtDecode tests", function(){
     });
 
     it("it works when provided with a proper jwt String (gzip)", async function(){
-        const jwtObj = await jwtJsDecode.jwtDecode(jwtStrGzip);
+        const jwtObj = await jwtJsDecode.jwtDecode(jwtStrGzip_HS256);
         expect(jwtObj).toEqual(expect.objectContaining({
             header: expect.any(Object),
             payload: expect.any(Object),
@@ -71,7 +75,7 @@ describe("jwtDecode tests", function(){
 describe("isGzip tests", function(){
     const jwtJsDecode = require('../src/jwt-js-decode');
     it("isGzip returns true when header has property `zip` with value \"GZIP\" ", async function(){
-        expect(jwtJsDecode.isGzip(jwtJsDecode.jwtDecode(jwtStrGzip).header)).toEqual(true);
+        expect(jwtJsDecode.isGzip(jwtJsDecode.jwtDecode(jwtStrGzip_HS256).header)).toEqual(true);
     });
 
     it("isGzip returns true when header has property `zip` with case insensitive value \"GZip\"", async function(){
@@ -94,28 +98,36 @@ describe("jwtSign tests (Node.js version)", function(){
         expect(jwtJsDecode.cryptoType()).toEqual('crypto-node');
     });
 
-    it("it works when jwtSign equals original signature (jwtStrNormal)", async function(){
-        await jwtJsDecode.jwtSign(jwtStrNormal, jwtSecret).then(res => expect(res).toEqual(jwtJsDecode.jwtSplit(jwtStrNormal).signature));
+    it("it works when jwtSign equals original signature (jwtStrNormal_HS256)", async function(){
+        await jwtJsDecode.jwtSign(jwtStrNormal_HS256, jwtSecret_HS).then(res => expect(res).toEqual(jwtJsDecode.jwtSplit(jwtStrNormal_HS256).signature));
     });
 
-    it("it works when jwtSign equals original signature (jwtStrGzip)", async function(){
-        await jwtJsDecode.jwtSign(jwtStrGzip, jwtSecret).then(res => expect(res).toEqual(jwtJsDecode.jwtSplit(jwtStrGzip).signature));
+    it("it works when jwtSign equals original signature (jwtStrGzip_HS256)", async function(){
+        await jwtJsDecode.jwtSign(jwtStrGzip_HS256, jwtSecret_HS).then(res => expect(res).toEqual(jwtJsDecode.jwtSplit(jwtStrGzip_HS256).signature));
     });
 
-    it("it works when resignJwt with same key equals initial jwt string (jwtStrNormal)", async function(){
-        await jwtJsDecode.resignJwt(jwtStrNormal, jwtSecret).then(res => expect(res).toEqual(jwtStrNormal));
+    it("it works when resignJwt with same key equals initial jwt string (jwtStrNormal_HS256)", async function(){
+        await jwtJsDecode.resignJwt(jwtStrNormal_HS256, jwtSecret_HS).then(res => expect(res).toEqual(jwtStrNormal_HS256));
     });
 
-    it("it works when resignJwt with same key equals initial jwt string (jwtStrGzip)", async function(){
-        await jwtJsDecode.resignJwt(jwtStrGzip, jwtSecret).then(res => expect(res).toEqual(jwtStrGzip));
+    it("it works when resignJwt with same key equals initial jwt string (jwtStrGzip_HS256)", async function(){
+        await jwtJsDecode.resignJwt(jwtStrGzip_HS256, jwtSecret_HS).then(res => expect(res).toEqual(jwtStrGzip_HS256));
     });
 
-    it("it works when resignJwt with wrong key is not equal to initial jwt string (jwtStrNormal)", async function(){
-        await jwtJsDecode.resignJwt(jwtStrNormal, "wrong" + jwtSecret).then(res => expect(res).not.toEqual(jwtStrNormal));
+    it("it works when resignJwt with wrong key is not equal to initial jwt string (jwtStrNormal_HS256)", async function(){
+        await jwtJsDecode.resignJwt(jwtStrNormal_HS256, "wrong" + jwtSecret_HS).then(res => expect(res).not.toEqual(jwtStrNormal_HS256));
     });
 
-    it("it works when resignJwt with wrong key is not equal to initial jwt string (jwtStrGzip)", async function(){
-        await jwtJsDecode.resignJwt(jwtStrGzip, "wrong" + jwtSecret).then(res => expect(res).not.toEqual(jwtStrGzip));
+    it("it works when resignJwt with wrong key is not equal to initial jwt string (jwtStrGzip_HS256)", async function(){
+        await jwtJsDecode.resignJwt(jwtStrGzip_HS256, "wrong" + jwtSecret_HS).then(res => expect(res).not.toEqual(jwtStrGzip_HS256));
+    });
+
+    it("it works when resignJwt jwtStrNormal_HS256 string with alg `HS512` equal to jwtStrNormal_HS512", async function(){
+        await jwtJsDecode.resignJwt(jwtStrNormal_HS256, jwtSecret_HS, 'HS512').then(res => expect(res).toEqual(jwtStrNormal_HS512));
+    });
+
+    it("it works when resignJwt jwtStrGzip_HS256 string with alg `HS512` equal to jwtStrGzip_HS512", async function(){
+        await jwtJsDecode.resignJwt(jwtStrGzip_HS256, jwtSecret_HS, 'HS512').then(res => expect(res).toEqual(jwtStrGzip_HS512));
     });
     //rewiremock.disable();
 });
@@ -127,20 +139,20 @@ describe("jwtVerify tests (Node.js version)", function(){
         expect(jwtJsDecode.cryptoType()).toEqual('crypto-node');
     });
 
-    it("it works when provided with a proper jwt String and jwt Secret key (jwtStrNormal)", async function(){
-        await jwtJsDecode.jwtVerify(jwtStrNormal, jwtSecret).then(res => expect(res).toEqual(true))
+    it("it works when provided with a proper jwt String and jwt Secret key (jwtStrNormal_HS256)", async function(){
+        await jwtJsDecode.jwtVerify(jwtStrNormal_HS256, jwtSecret_HS).then(res => expect(res).toEqual(true))
     });
 
-    it("it works when provided with a proper jwt String and jwt Secret key (jwtStrGzip)", async function(){
-        await jwtJsDecode.jwtVerify(jwtStrGzip, jwtSecret).then(res => expect(res).toEqual(true))
+    it("it works when provided with a proper jwt String and jwt Secret key (jwtStrGzip_HS256)", async function(){
+        await jwtJsDecode.jwtVerify(jwtStrGzip_HS256, jwtSecret_HS).then(res => expect(res).toEqual(true))
     });
 
-    it("it fails when provided with a proper jwt String and wrong jwt Secret key (jwtStrNormal)", async function(){
-        await jwtJsDecode.jwtVerify(jwtStrNormal, "wrong" + jwtSecret).then(res => expect(res).toEqual(false));
+    it("it fails when provided with a proper jwt String and wrong jwt Secret key (jwtStrNormal_HS256)", async function(){
+        await jwtJsDecode.jwtVerify(jwtStrNormal_HS256, "wrong" + jwtSecret_HS).then(res => expect(res).toEqual(false));
     });
 
-    it("it fails when provided with a proper jwt String and wrong jwt Secret key (jwtStrGzip)", async function(){
-        await jwtJsDecode.jwtVerify(jwtStrGzip, "wrong" + jwtSecret).then(res => expect(res).toEqual(false));
+    it("it fails when provided with a proper jwt String and wrong jwt Secret key (jwtStrGzip_HS256)", async function(){
+        await jwtJsDecode.jwtVerify(jwtStrGzip_HS256, "wrong" + jwtSecret_HS).then(res => expect(res).toEqual(false));
     });
 
     //rewiremock.disable();

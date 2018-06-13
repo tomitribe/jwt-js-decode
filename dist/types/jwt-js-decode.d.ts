@@ -194,6 +194,7 @@ export declare function algHSsign(bits: number): (thing: string, secret: string)
  *
  */
 export declare function algHSverify(bits: number): (thing: string, signature: string, secret: string) => Promise<boolean>;
+export declare function RS2AB(secret: string): ArrayBuffer | Uint8Array;
 /**
  * Universal algorithm verifier
  *
@@ -206,7 +207,7 @@ export declare function algVerify(algorithm: string, thing: string, signature: s
 export declare function algSign(algorithm: string, thing: string, secret: string): Promise<string>;
 export declare function jwtVerify(jwtStr: string, secret: string): Promise<boolean>;
 export declare function jwtSign(jwtStr: string, secret: string): Promise<string>;
-export declare function resignJwt(jwtStr: string, secret: string): Promise<string>;
+export declare function resignJwt(jwtStr: string, secret: string, alg?: string): Promise<string>;
 /**
  * Used for testing only
  *

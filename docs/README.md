@@ -43,7 +43,7 @@ const jwtJsDecode = require('jwt-js-decode');
 or
 
 ```html
-<script src="https://unpkg.com/jwt-js-decode@1.1.6"></script>
+<script src="https://unpkg.com/jwt-js-decode@1.1.7"></script>
 ```
 
 Other links you can find on [`yarn`](https://yarnpkg.com/en/package/jwt-js-decode)
@@ -68,6 +68,13 @@ Other links you can find on [`yarn`](https://yarnpkg.com/en/package/jwt-js-decod
         console.log(newToken);
     });
 ```
+
+Sandboxes
+---------
+
+Runkit (node.js sandbox) ['https://npm.runkit.com/jwt-js-decode'](https://npm.runkit.com/jwt-js-decode)
+
+Plunkr (browser sandbox) ['https://plnkr.co/edit/zCNpiTXBbPKNxNVnHhkU'](https://plnkr.co/edit/zCNpiTXBbPKNxNVnHhkU)
 
 TOC:
 
@@ -95,6 +102,7 @@ TOC:
 ### Functions
 
 * [AB2s](#ab2s)
+* [RS2AB](#rs2ab)
 * [algHSsign](#alghssign)
 * [algHSverify](#alghsverify)
 * [algSign](#algsign)
@@ -188,6 +196,23 @@ Converts ArrayBuffer to string
 data string
 
 ___
+<a id="rs2ab"></a>
+
+###  RS2AB
+
+▸ **RS2AB**(secret: *`string`*):  `ArrayBuffer` &#124; `Uint8Array`
+
+*Defined in jwt-js-decode.ts:461*
+
+**Parameters:**
+
+| Param | Type |
+| ------ | ------ |
+| secret | `string` |
+
+**Returns:**  `ArrayBuffer` &#124; `Uint8Array`
+
+___
 <a id="alghssign"></a>
 
 ###  algHSsign
@@ -232,7 +257,7 @@ ___
 
 ▸ **algSign**(algorithm: *`string`*, thing: *`string`*, secret: *`string`*): `Promise`<`string`>
 
-*Defined in jwt-js-decode.ts:510*
+*Defined in jwt-js-decode.ts:560*
 
 Universal algorithm signer
 
@@ -253,7 +278,7 @@ ___
 
 ▸ **algVerify**(algorithm: *`string`*, thing: *`string`*, signature: *`string`*, secret: *`string`*): `Promise`<`boolean`>
 
-*Defined in jwt-js-decode.ts:481*
+*Defined in jwt-js-decode.ts:531*
 
 Universal algorithm verifier
 
@@ -415,7 +440,7 @@ ___
 
 ▸ **jwtSign**(jwtStr: *`string`*, secret: *`string`*): `Promise`<`string`>
 
-*Defined in jwt-js-decode.ts:542*
+*Defined in jwt-js-decode.ts:592*
 
 **Parameters:**
 
@@ -453,7 +478,7 @@ ___
 
 ▸ **jwtVerify**(jwtStr: *`string`*, secret: *`string`*): `Promise`<`boolean`>
 
-*Defined in jwt-js-decode.ts:535*
+*Defined in jwt-js-decode.ts:585*
 
 **Parameters:**
 
@@ -469,9 +494,9 @@ ___
 
 ###  resignJwt
 
-▸ **resignJwt**(jwtStr: *`string`*, secret: *`string`*): `Promise`<`string`>
+▸ **resignJwt**(jwtStr: *`string`*, secret: *`string`*, alg?: * `undefined` &#124; `string`*): `Promise`<`string`>
 
-*Defined in jwt-js-decode.ts:549*
+*Defined in jwt-js-decode.ts:599*
 
 **Parameters:**
 
@@ -479,6 +504,7 @@ ___
 | ------ | ------ |
 | jwtStr | `string` |
 | secret | `string` |
+| `Optional` alg |  `undefined` &#124; `string`|
 
 **Returns:** `Promise`<`string`>
 
@@ -653,7 +679,7 @@ ___
 
 **jwsJsDecode**: *`object`*
 
-*Defined in jwt-js-decode.ts:565*
+*Defined in jwt-js-decode.ts:615*
 
 <a id="jwsjsdecode.jwtdecode"></a>
 
@@ -661,7 +687,7 @@ ___
 
 **● JwtDecode**: *[JwtDecode](classes/jwtdecode.md)*
 
-*Defined in jwt-js-decode.ts:566*
+*Defined in jwt-js-decode.ts:616*
 
 ___
 <a id="jwsjsdecode.jwtsplit"></a>
@@ -670,7 +696,7 @@ ___
 
 **● JwtSplit**: *[JwtSplit](classes/jwtsplit.md)*
 
-*Defined in jwt-js-decode.ts:567*
+*Defined in jwt-js-decode.ts:617*
 
 ___
 <a id="jwsjsdecode.alghssign"></a>
@@ -679,7 +705,7 @@ ___
 
 **● algHSsign**: *[algHSsign](#alghssign)*
 
-*Defined in jwt-js-decode.ts:581*
+*Defined in jwt-js-decode.ts:631*
 
 ___
 <a id="jwsjsdecode.alghsverify"></a>
@@ -688,7 +714,7 @@ ___
 
 **● algHSverify**: *[algHSverify](#alghsverify)*
 
-*Defined in jwt-js-decode.ts:582*
+*Defined in jwt-js-decode.ts:632*
 
 ___
 <a id="jwsjsdecode.algsign"></a>
@@ -697,7 +723,7 @@ ___
 
 **● algSign**: *[algSign](#algsign)*
 
-*Defined in jwt-js-decode.ts:586*
+*Defined in jwt-js-decode.ts:636*
 
 ___
 <a id="jwsjsdecode.algverify"></a>
@@ -706,7 +732,7 @@ ___
 
 **● algVerify**: *[algVerify](#algverify)*
 
-*Defined in jwt-js-decode.ts:585*
+*Defined in jwt-js-decode.ts:635*
 
 ___
 <a id="jwsjsdecode.b2bu"></a>
@@ -715,7 +741,7 @@ ___
 
 **● b2bu**: *[b2bu](#b2bu)*
 
-*Defined in jwt-js-decode.ts:568*
+*Defined in jwt-js-decode.ts:618*
 
 ___
 <a id="jwsjsdecode.b2s"></a>
@@ -724,7 +750,7 @@ ___
 
 **● b2s**: *[b2s](#b2s)*
 
-*Defined in jwt-js-decode.ts:569*
+*Defined in jwt-js-decode.ts:619*
 
 ___
 <a id="jwsjsdecode.bu2b"></a>
@@ -733,7 +759,7 @@ ___
 
 **● bu2b**: *[bu2b](#bu2b)*
 
-*Defined in jwt-js-decode.ts:570*
+*Defined in jwt-js-decode.ts:620*
 
 ___
 <a id="jwsjsdecode.bu2s"></a>
@@ -742,7 +768,7 @@ ___
 
 **● bu2s**: *[bu2s](#bu2s)*
 
-*Defined in jwt-js-decode.ts:571*
+*Defined in jwt-js-decode.ts:621*
 
 ___
 <a id="jwsjsdecode.cryptotype"></a>
@@ -751,7 +777,7 @@ ___
 
 **● cryptoType**: *`cryptoType`*
 
-*Defined in jwt-js-decode.ts:590*
+*Defined in jwt-js-decode.ts:640*
 
 ___
 <a id="jwsjsdecode.isgzip"></a>
@@ -760,7 +786,7 @@ ___
 
 **● isGzip**: *[isGzip](#isgzip)*
 
-*Defined in jwt-js-decode.ts:572*
+*Defined in jwt-js-decode.ts:622*
 
 ___
 <a id="jwsjsdecode.jwtdecode-1"></a>
@@ -769,7 +795,7 @@ ___
 
 **● jwtDecode**: *[jwtDecode](#jwtdecode)*
 
-*Defined in jwt-js-decode.ts:573*
+*Defined in jwt-js-decode.ts:623*
 
 ___
 <a id="jwsjsdecode.jwtsign"></a>
@@ -778,7 +804,7 @@ ___
 
 **● jwtSign**: *[jwtSign](#jwtsign)*
 
-*Defined in jwt-js-decode.ts:588*
+*Defined in jwt-js-decode.ts:638*
 
 ___
 <a id="jwsjsdecode.jwtsplit-1"></a>
@@ -787,7 +813,7 @@ ___
 
 **● jwtSplit**: *[jwtSplit](#jwtsplit)*
 
-*Defined in jwt-js-decode.ts:574*
+*Defined in jwt-js-decode.ts:624*
 
 ___
 <a id="jwsjsdecode.jwtverify"></a>
@@ -796,7 +822,7 @@ ___
 
 **● jwtVerify**: *[jwtVerify](#jwtverify)*
 
-*Defined in jwt-js-decode.ts:587*
+*Defined in jwt-js-decode.ts:637*
 
 ___
 <a id="jwsjsdecode.resignjwt"></a>
@@ -805,7 +831,7 @@ ___
 
 **● resignJwt**: *[resignJwt](#resignjwt)*
 
-*Defined in jwt-js-decode.ts:589*
+*Defined in jwt-js-decode.ts:639*
 
 ___
 <a id="jwsjsdecode.s2b"></a>
@@ -814,7 +840,7 @@ ___
 
 **● s2b**: *[s2b](#s2b)*
 
-*Defined in jwt-js-decode.ts:575*
+*Defined in jwt-js-decode.ts:625*
 
 ___
 <a id="jwsjsdecode.s2bu"></a>
@@ -823,7 +849,7 @@ ___
 
 **● s2bu**: *[s2bu](#s2bu)*
 
-*Defined in jwt-js-decode.ts:576*
+*Defined in jwt-js-decode.ts:626*
 
 ___
 <a id="jwsjsdecode.s2zbu"></a>
@@ -832,7 +858,7 @@ ___
 
 **● s2zbu**: *[s2zbu](#s2zbu)*
 
-*Defined in jwt-js-decode.ts:577*
+*Defined in jwt-js-decode.ts:627*
 
 ___
 <a id="jwsjsdecode.unzip"></a>
@@ -841,7 +867,7 @@ ___
 
 **● unzip**: *[unzip](#unzip)*
 
-*Defined in jwt-js-decode.ts:578*
+*Defined in jwt-js-decode.ts:628*
 
 ___
 <a id="jwsjsdecode.zbu2s"></a>
@@ -850,7 +876,7 @@ ___
 
 **● zbu2s**: *[zbu2s](#zbu2s)*
 
-*Defined in jwt-js-decode.ts:579*
+*Defined in jwt-js-decode.ts:629*
 
 ___
 <a id="jwsjsdecode.zip"></a>
@@ -859,7 +885,7 @@ ___
 
 **● zip**: *[zip](#zip)*
 
-*Defined in jwt-js-decode.ts:580*
+*Defined in jwt-js-decode.ts:630*
 
 ___
 

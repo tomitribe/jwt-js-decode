@@ -165,7 +165,7 @@ function b2s(str) {
             return window.atob(str);
         }
         else if (typeof Buffer !== 'undefined') {
-            return new Buffer(str, 'base64').toString('binary');
+            return Buffer.from(str, 'base64').toString('binary');
         }
         else
             throw new Error(ILLEGAL_ARGUMENT);
@@ -262,7 +262,7 @@ function s2b(str) {
             return window.btoa(str);
         }
         else if (typeof Buffer !== 'undefined') {
-            return new Buffer(str).toString('base64');
+            return Buffer.from(str).toString('base64');
         }
         else
             throw new Error(ILLEGAL_ARGUMENT);
@@ -481,9 +481,58 @@ function algHSverify(bits) {
         });
     };
 }
-/*export function algRSsign(bits: number) {
+function RS2AB(secret) {
+    if (typeof secret !== 'string') {
+        throw new Error(ILLEGAL_ARGUMENT);
+    }
+    var lines = secret.split('\n'), ignoreLines = [
+        '-BEGIN RSA PRIVATE KEY-',
+        '-BEGIN RSA PUBLIC KEY-',
+        '-BEGIN PUBLIC KEY-',
+        '-END PUBLIC KEY-',
+        '-END RSA PRIVATE KEY-',
+        '-END RSA PUBLIC KEY-'
+    ], result = lines.map(function (line) { return line.trim(); }).filter(function (line) {
+        return line.length &&
+            !ignoreLines.some(function (ign) { return line.toUpperCase().indexOf(ign) > -1; });
+    }).join('');
+    if (result.length) {
+        return s2AB(result);
+    }
+    else {
+        throw new Error(ILLEGAL_ARGUMENT);
+    }
+}
+/*
+export async function createSign(name: string, secret: string): Promise<any> {
+    if (webCryptoSubtle) {
+        const keyData = RS2AB(secret);
+        return await webCryptoSubtle.importKey(
+            'raw',
+            keyData,
+            { name: 'HMAC', hash: { name: name } },
+            true,
+            ['sign']
+        ).then(key => {
+            return {
+                _key: key,
+                update: async function (thing): Promise<ArrayBuffer> {
+                    return await webCryptoSubtle.sign(
+                        'HMAC',
+                        key,
+                        s2AB(thing)
+                    )
+                }
+            }
+        })
+    } else {
+        return !!crypto && crypto.createSign ? Promise.resolve(crypto.createSign(name)) : Promise.reject(webCrypto);
+    }
+}
+
+export async function algRSsign(bits: number) {
     return function sign(thing: string, privateKey: string): string {
-        const rsaSign = crypto.createSign('RSA-SHA' + bits);
+        const rsaSign = await createSign('RSA-SHA' + bits);
         return b2bu(rsaSign.update(thing).sign(privateKey, 'base64'));
     }
 }
@@ -495,7 +544,8 @@ export function algRSverify(bits: number) {
         rsaVerify.update(thing);
         return rsaVerify.verify(publicKey, signature, 'base64');
     }
-}*/
+}
+*/
 /**
  * Universal algorithm verifier
  *
@@ -588,16 +638,20 @@ function jwtSign(jwtStr, secret) {
         });
     });
 }
-function resignJwt(jwtStr, secret) {
+function resignJwt(jwtStr, secret, alg) {
     return __awaiter(this, void 0, void 0, function () {
-        var jwt, header, thing, _a;
+        var jwt, _a;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    jwt = jwtSplit(jwtStr), header = s2J(bu2s(jwt.header)), thing = jwt.header + '.' + jwt.payload;
-                    _a = thing + '.';
-                    return [4 /*yield*/, algSign(header.alg, thing, secret)];
-                case 1: return [2 /*return*/, _a + (_b.sent())];
+                    jwt = jwtDecode(jwtStr);
+                    if (!!alg)
+                        jwt.header.alg = alg;
+                    _a = jwt;
+                    return [4 /*yield*/, jwtSign(jwt.toString(), secret)];
+                case 1:
+                    _a.signature = _b.sent();
+                    return [2 /*return*/, jwt.toString()];
             }
         });
     });
@@ -634,6 +688,7 @@ exports.zip = zip;
 exports.createHmac = createHmac;
 exports.algHSsign = algHSsign;
 exports.algHSverify = algHSverify;
+exports.RS2AB = RS2AB;
 exports.algVerify = algVerify;
 exports.algSign = algSign;
 exports.jwtVerify = jwtVerify;
