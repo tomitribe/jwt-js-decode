@@ -455,9 +455,12 @@ var ASN1 = /** @class */ (function () {
     ASN1.prototype.toHexString = function (root) {
         return this.stream.hexDump(this.posStart(), this.posEnd(), true);
     };
+    ASN1.prototype.getHex = function () {
+        return this.stream.hexDump(this.posContent(), this.posEnd(), true);
+    };
     ASN1.prototype.getAB = function (clean) {
         if (clean === void 0) { clean = true; }
-        return clean ? cleanZeros(hex2AB(this.toHexString())) : hex2AB(this.toHexString());
+        return clean ? cleanZeros(hex2AB(this.getHex())) : hex2AB(this.getHex());
     };
     ASN1.decodeLength = function (stream) {
         var buf = stream.get();
@@ -1096,7 +1099,7 @@ export function asn12jwk(asn1: any, type: string, extra?: any): any {
 */
 /* Issue3: Works, but ASN1 adds 14kb of code to this lib
 ASN1.prototype.getAB = function() {
-    return cleanZeros(hex2AB(this.toHexString()));
+    return cleanZeros(hex2AB(this.getHex()));
 };
 
 export function pem2asn1(buff: ArrayBuffer | Uint8Array): any {
@@ -1111,7 +1114,7 @@ export function pem2asn1(buff: ArrayBuffer | Uint8Array): any {
     if (asn1.sub.length === 9) {
         // Parse the private key.
         res['modulus'] = asn1.sub[1].getAB(); // ArrayBuffer
-        res['publicExponent'] = parseInt(asn1.sub[2].toHexString(), 16); // int
+        res['publicExponent'] = parseInt(asn1.sub[2].getHex(), 16); // int
         res['privateExponent'] = asn1.sub[3].getAB(); // ArrayBuffer
         res['prime1'] = asn1.sub[4].getAB(); // ArrayBuffer
         res['prime2'] = asn1.sub[5].getAB(); // ArrayBuffer
@@ -1124,7 +1127,7 @@ export function pem2asn1(buff: ArrayBuffer | Uint8Array): any {
         asn1 = asn1.sub[1].sub[0];
 
         res['modulus'] = asn1.sub[0].getAB(); // ArrayBuffer
-        res['publicExponent'] = parseInt(asn1.sub[1].toHexString(), 16); // int
+        res['publicExponent'] = parseInt(asn1.sub[1].getHex(), 16); // int
     }
     return res;
 }
@@ -1153,7 +1156,7 @@ function pem2asn1(buff) {
     if (asn1.sub.length === 9) {
         // Parse the private key.
         res['modulus'] = asn1.sub[1].getAB(); // ArrayBuffer
-        res['publicExponent'] = parseInt(asn1.sub[2].toHexString(), 16); // int
+        res['publicExponent'] = parseInt(asn1.sub[2].getHex(), 16); // int
         res['privateExponent'] = asn1.sub[3].getAB(); // ArrayBuffer
         res['prime1'] = asn1.sub[4].getAB(); // ArrayBuffer
         res['prime2'] = asn1.sub[5].getAB(); // ArrayBuffer
@@ -1165,7 +1168,7 @@ function pem2asn1(buff) {
         // Parse the public key.
         asn1 = asn1.sub[1].sub[0];
         res['modulus'] = asn1.sub[0].getAB(); // ArrayBuffer
-        res['publicExponent'] = parseInt(asn1.sub[1].toHexString(), 16); // int
+        res['publicExponent'] = parseInt(asn1.sub[1].getHex(), 16); // int
     }
     res['bits'] = (res['modulus'].length - 1) * 8 + Math.ceil(Math.log(res['modulus'][0] + 1) / Math.log(2));
     if (!res['bits']) {

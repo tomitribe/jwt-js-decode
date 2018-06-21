@@ -380,9 +380,12 @@ export class ASN1 {
         return this.stream.hexDump(this.posStart(), this.posEnd(), true);
     };
 
-    
+    getHex() {
+        return this.stream.hexDump(this.posContent(), this.posEnd(), true);
+    };
+
     getAB(clean = true) {
-        return clean ? cleanZeros(hex2AB(this.toHexString())) : hex2AB(this.toHexString());
+        return clean ? cleanZeros(hex2AB(this.getHex())) : hex2AB(this.getHex());
     };
 
     static decodeLength(stream) {
