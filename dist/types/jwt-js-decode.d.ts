@@ -1,7 +1,6 @@
+import { AB2hex, cleanZeros, hex2AB, num2hex } from "./util";
 export declare const webCrypto: boolean | Crypto;
 export declare const webCryptoSubtle: boolean | SubtleCrypto;
-export declare const UNSUPPORTED_ALGORITHM = "Unsupported algorithm name specified! Supported algorithms: \"HS256\", \"HS384\", \"HS512\", \"RS256\", \"RS384\", \"RS512\" and \"none\".";
-export declare const ILLEGAL_ARGUMENT = "Illegal argument specified!";
 /**
  * Class for creating a JwtSplit object with three parts of JWT Token as strings
  *
@@ -67,13 +66,29 @@ export declare class JwtDecode {
     toString(): string;
 }
 /**
- * Converts string to base64 string
+ * Try running function and replace it's response as Promise.resolve/reject
+ *
+ * @param {function} fn - fn to call in for response
+ *
+ * @returns {Promise<any>} resulting Promise
+ */
+export declare function tryPromise(fn: any): Promise<any>;
+/**
+ * Converts string to JSON object
  *
  * @param {string} str - data string to convert
  *
- * @returns {string} decoded data string
+ * @returns {object} resulting object
  */
 export declare function s2J(str: string): any;
+/**
+ * Converts JSON object to string
+ *
+ * @param {object} obj - JSON object to convert
+ *
+ * @returns {string} resulting string
+ */
+export declare function J2s(obj: any): string;
 /**
  * Converts string to base64 string
  *
@@ -131,6 +146,7 @@ export declare function jwtDecode(str: string): JwtDecode;
  * @returns {JwtSplit} jwt split object of three strings
  */
 export declare function jwtSplit(str: string): JwtSplit;
+export declare const splitJwt: typeof jwtSplit;
 /**
  * Converts base64 string to string
  *
@@ -180,6 +196,22 @@ export declare function zbu2s(str: string): string;
  */
 export declare function zip(str: string): string;
 /**
+ * Converts string to ArrayBuffer
+ *
+ * @param {string} str - data string to convert
+ *
+ * @returns {ArrayBuffer | Uint8Array} charCode ArrayBuffer
+ */
+export declare function s2AB(str: string): ArrayBuffer | Uint8Array;
+/**
+ * Converts ArrayBuffer to string
+ *
+ * @param {ArrayBuffer | Uint8Array} buff - charCode ArrayBuffer to convert
+ *
+ * @returns {string} data string
+ */
+export declare function AB2s(buff: ArrayBuffer | Uint8Array): string;
+/**
  * Async function inspired by createHmac in crypto (used WebCrypto Api supported by most browsers)
  *
  */
@@ -194,7 +226,24 @@ export declare function algHSsign(bits: number): (thing: string, secret: string)
  *
  */
 export declare function algHSverify(bits: number): (thing: string, signature: string, secret: string) => Promise<boolean>;
-export declare function RS2AB(secret: string): ArrayBuffer | Uint8Array;
+export interface PEM {
+    body: ArrayBuffer | Uint8Array;
+    type: 'private' | 'public';
+}
+export declare function s2pem(secret: string): PEM;
+export declare class Asn1Tag {
+    tagClass: number;
+    tagConstructed: boolean;
+    tagNumber: number;
+    constructor(stream: any);
+}
+export declare function pem2asn1(buff: ArrayBuffer | Uint8Array): any;
+export declare function asn12jwk(asn1: any, type?: string, extra?: any): any;
+export declare function pem2jwk(secret: string, type?: "public" | "private", extra?: any): Promise<any>;
+export declare function createSign(name: string): any;
+export declare function algRSsign(bits: number): (thing: string, privateKey: string) => Promise<string>;
+export declare function createVerify(name: string): any;
+export declare function algRSverify(bits: number): (thing: string, signature: string, publicKey: string) => Promise<boolean>;
 /**
  * Universal algorithm verifier
  *
@@ -206,8 +255,11 @@ export declare function algVerify(algorithm: string, thing: string, signature: s
  */
 export declare function algSign(algorithm: string, thing: string, secret: string): Promise<string>;
 export declare function jwtVerify(jwtStr: string, secret: string): Promise<boolean>;
+export declare const verifyJwt: typeof jwtVerify;
 export declare function jwtSign(jwtStr: string, secret: string): Promise<string>;
-export declare function resignJwt(jwtStr: string, secret: string, alg?: string): Promise<string>;
+export declare const signJwt: typeof jwtSign;
+export declare function jwtResign(jwtStr: string, secret: string, alg?: string): Promise<string>;
+export declare const resignJwt: typeof jwtResign;
 /**
  * Used for testing only
  *
@@ -215,28 +267,49 @@ export declare function resignJwt(jwtStr: string, secret: string, alg?: string):
  */
 export declare function cryptoType(): string;
 declare const jwsJsDecode: {
-    JwtDecode: typeof JwtDecode;
-    JwtSplit: typeof JwtSplit;
+    ILLEGAL_ARGUMENT: string;
+    UNSUPPORTED_ALGORITHM: string;
+    resignJwt: typeof jwtResign;
+    signJwt: typeof jwtSign;
+    splitJwt: typeof jwtSplit;
+    verifyJwt: typeof jwtVerify;
+    AB2hex: typeof AB2hex;
+    AB2s: typeof AB2s;
+    J2s: typeof J2s;
+    algHSsign: typeof algHSsign;
+    algHSverify: typeof algHSverify;
+    algRSsign: typeof algRSsign;
+    algRSverify: typeof algRSverify;
+    algSign: typeof algSign;
+    algVerify: typeof algVerify;
+    asn12jwk: typeof asn12jwk;
     b2bu: typeof b2bu;
     b2s: typeof b2s;
     bu2b: typeof bu2b;
     bu2s: typeof bu2s;
+    cleanZeros: typeof cleanZeros;
+    createHmac: typeof createHmac;
+    createSign: typeof createSign;
+    createVerify: typeof createVerify;
+    hex2AB: typeof hex2AB;
     isGzip: typeof isGzip;
     jwtDecode: typeof jwtDecode;
+    jwtResign: typeof jwtResign;
+    jwtSign: typeof jwtSign;
     jwtSplit: typeof jwtSplit;
+    jwtVerify: typeof jwtVerify;
+    num2hex: typeof num2hex;
+    pem2asn1: typeof pem2asn1;
+    pem2jwk: typeof pem2jwk;
+    s2AB: typeof s2AB;
+    s2J: typeof s2J;
     s2b: typeof s2b;
     s2bu: typeof s2bu;
+    s2pem: typeof s2pem;
     s2zbu: typeof s2zbu;
+    tryPromise: typeof tryPromise;
     unzip: typeof unzip;
     zbu2s: typeof zbu2s;
     zip: typeof zip;
-    algHSsign: typeof algHSsign;
-    algHSverify: typeof algHSverify;
-    algVerify: typeof algVerify;
-    algSign: typeof algSign;
-    jwtVerify: typeof jwtVerify;
-    jwtSign: typeof jwtSign;
-    resignJwt: typeof resignJwt;
-    cryptoType: typeof cryptoType;
 };
 export default jwsJsDecode;

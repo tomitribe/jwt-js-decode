@@ -1,18 +1,24 @@
 import pako from "pako";
 import crypto from "crypto";
+/* Issue3: Works, but ASN1 adds 14kb of code to this lib
+import ASN1 from "asn1js";
+*/
+// Simplified/improved version of
+// "asn1js": "git+https://github.com/lapo-luchini/asn1js.git",
+import { ASN1 } from "./asn1";
+import { AB2hex, cleanZeros, hex2AB, ILLEGAL_ARGUMENT, num2hex, UNSUPPORTED_ALGORITHM } from "./util";
 /*
-browserify
+//crypto-browserify:
 import { createHmac, createSign, createVerify } from "crypto-browserify";
+//or browserify hmac/sign
+import { createHmac } from "create-hmac";
+import { createSign, createVerify } from "browserify-sign";
 
-node.js
+//node.js
 import { createHmac, createSign, createVerify } from "crypto";
 */
 export const webCrypto = typeof window === "object" && (window.crypto || window['msCrypto']);
-export const webCryptoSubtle = webCrypto && (webCrypto.subtle ||  webCrypto['webkitSubtle'] || webCrypto['Subtle']);
-
-export const UNSUPPORTED_ALGORITHM = 'Unsupported algorithm name specified! Supported algorithms: "HS256", "HS384", "HS512", "RS256", "RS384", "RS512" and "none".';
-export const ILLEGAL_ARGUMENT = 'Illegal argument specified!';
-
+export const webCryptoSubtle = webCrypto && (webCrypto.subtle || webCrypto['webkitSubtle'] || webCrypto['Subtle']);
 
 /**
  * Pako 1.0.6 has 'from' property which is not included in current version of typeDef @types/pako@1.0.0
@@ -132,24 +138,54 @@ export class JwtDecode {
     }
 
     public toString(): string {
-        return s2bu(JSON.stringify(this.header)) + '.' + (isGzip(this.header) ? s2zbu(JSON.stringify(this.payload)) : s2bu(JSON.stringify(this.payload))) + '.' + this.signature
-    }
-}
-/**
- * Converts string to base64 string
- *
- * @param {string} str - data string to convert
- *
- * @returns {string} decoded data string
- */
-export function s2J(str: string): any {
-    try{
-        return JSON.parse(str);
-    } catch(e) {
-        throw new Error(ILLEGAL_ARGUMENT);
+        return s2bu(J2s(this.header)) + '.' + (isGzip(this.header) ? s2zbu(J2s(this.payload)) : s2bu(J2s(this.payload))) + '.' + this.signature
     }
 }
 
+/**
+ * Try running function and replace it's response as Promise.resolve/reject
+ *
+ * @param {function} fn - fn to call in for response
+ *
+ * @returns {Promise<any>} resulting Promise
+ */
+export function tryPromise(fn) {
+    try {
+        return Promise.resolve(fn());
+    } catch (e) {
+        return Promise.reject(e);
+    }
+}
+
+/**
+ * Converts string to JSON object
+ *
+ * @param {string} str - data string to convert
+ *
+ * @returns {object} resulting object
+ */
+export function s2J(str: string): any {
+    try {
+        return JSON.parse(str);
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+/**
+ * Converts JSON object to string
+ *
+ * @param {object} obj - JSON object to convert
+ *
+ * @returns {string} resulting string
+ */
+export function J2s(obj: any): string {
+    try {
+        return JSON.stringify(obj);
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
 
 /**
  * Converts string to base64 string
@@ -159,13 +195,13 @@ export function s2J(str: string): any {
  * @returns {string} decoded data string
  */
 export function b2s(str: string): string {
-    try{
-        if(typeof window === 'object' && typeof window.atob === 'function') {
+    try {
+        if (typeof window === 'object' && typeof window.atob === 'function') {
             return window.atob(str);
-        } else if(typeof Buffer !== 'undefined') {
+        } else if (typeof Buffer !== 'undefined') {
             return Buffer.from(str, 'base64').toString('binary')
         } else throw new Error(ILLEGAL_ARGUMENT);
-    } catch(e) {
+    } catch (e) {
         throw new Error(e);
     }
 }
@@ -253,6 +289,8 @@ export function jwtSplit(str: string): JwtSplit {
     return new JwtSplit(str);
 }
 
+export const splitJwt = jwtSplit;
+
 /**
  * Converts base64 string to string
  *
@@ -261,13 +299,13 @@ export function jwtSplit(str: string): JwtSplit {
  * @returns {string} base64 string
  */
 export function s2b(str: string): string {
-    try{
-        if(typeof window === 'object' && typeof window.atob === 'function') {
+    try {
+        if (typeof window === 'object' && typeof window.atob === 'function') {
             return window.btoa(str);
-        } else if(typeof Buffer !== 'undefined') {
+        } else if (typeof Buffer !== 'undefined') {
             return Buffer.from(str).toString('base64');
         } else throw new Error(ILLEGAL_ARGUMENT);
-    } catch(e) {
+    } catch (e) {
         throw new Error(e);
     }
 }
@@ -350,7 +388,7 @@ export function zip(str: string): string {
  *
  * @returns {ArrayBuffer | Uint8Array} charCode ArrayBuffer
  */
-function s2AB(str: string): ArrayBuffer | Uint8Array {
+export function s2AB(str: string): ArrayBuffer | Uint8Array {
     const buff = new Uint8Array(str.length);
     for (let i = 0; i < str.length; i++) buff[i] = str.charCodeAt(i);
     return buff;
@@ -363,40 +401,10 @@ function s2AB(str: string): ArrayBuffer | Uint8Array {
  *
  * @returns {string} data string
  */
-function AB2s(buff: ArrayBuffer | Uint8Array): string {
+export function AB2s(buff: ArrayBuffer | Uint8Array): string {
     if (buff instanceof ArrayBuffer) buff = new Uint8Array(buff);
     return String.fromCharCode.apply(String, buff);
 }
-
-/*
-export function algHSsign(bits: number) {
-    return function sign(thing: string, secret: string): string {
-        const hmac = createHmac('sha' + bits, secret);
-        return b2bu(hmac.update(thing).digest('base64'));
-    }
-}
-
-export function algHSverify(bits: number) {
-    return function verify(thing: string, signature: string, secret: string): boolean {
-        return signature === algHSsign(bits)(thing, secret);
-    }
-}
-
-export function algRSsign(bits: number) {
-    return function sign(thing: string, privateKey: string): string {
-        const rsaSign = createSign('RSA-SHA' + bits);
-        return b2bu(rsaSign.update(thing).sign(privateKey, 'base64'));
-    }
-}
-
-export function algRSverify(bits: number) {
-    return function verify(thing: string, signature: string, publicKey: string): boolean {
-        signature = bu2b(signature);
-        const rsaVerify = createVerify('RSA-SHA' + bits);
-        rsaVerify.update(thing);
-        return rsaVerify.verify(publicKey, signature, 'base64');
-    }
-}*/
 
 /**
  * Async function inspired by createHmac in crypto (used WebCrypto Api supported by most browsers)
@@ -414,7 +422,6 @@ export async function createHmac(name: string, secret: string): Promise<any> {
             ['sign']
         ).then(key => {
             return {
-                _key: key,
                 update: async function (thing): Promise<ArrayBuffer> {
                     return await webCryptoSubtle.sign(
                         'HMAC',
@@ -458,71 +465,402 @@ export function algHSverify(bits: number) {
     }
 }
 
-export function RS2AB(secret: string) : ArrayBuffer | Uint8Array  {
+export interface PEM {
+    body: ArrayBuffer | Uint8Array,
+    type: 'private' | 'public'
+}
+
+export function s2pem(secret: string): PEM {
     if (typeof secret !== 'string') {
         throw new Error(ILLEGAL_ARGUMENT);
     }
+    let type = 'public';
+
+    function ignore(line: string): boolean {
+        if (ignoreLinesPriv.some(ign => line.toUpperCase().indexOf(ign) > -1)) {
+            type = 'private';
+            return false;
+        }
+        return !ignoreLinesPub.some(ign => line.toUpperCase().indexOf(ign) > -1);
+    }
+
     const lines = secret.split('\n'),
-        ignoreLines = [
-        '-BEGIN RSA PRIVATE KEY-',
-        '-BEGIN RSA PUBLIC KEY-',
-        '-BEGIN PUBLIC KEY-',
-        '-END PUBLIC KEY-',
-        '-END RSA PRIVATE KEY-',
-        '-END RSA PUBLIC KEY-'
-    ], result = lines.map(line => line.trim()).filter(line =>
-        line.length &&
-        !ignoreLines.some(ign => line.toUpperCase().indexOf(ign) > -1)
-    ).join('');
-    if(result.length) {
-        return s2AB(result);
+        ignoreLinesPriv = [
+            '-BEGIN RSA PRIVATE KEY-',
+            '-END RSA PRIVATE KEY-'],
+        ignoreLinesPub = [
+            '-BEGIN RSA PUBLIC KEY-',
+            '-BEGIN PUBLIC KEY-',
+            '-END PUBLIC KEY-',
+            '-END RSA PUBLIC KEY-'
+        ], body = lines.map(line => line.trim()).filter(line =>
+        line.length && ignore(line)).join('');
+    if (body.length) {
+        return { body: s2AB(b2s(body)), type: <'private' | 'public'>type };
     } else {
         throw new Error(ILLEGAL_ARGUMENT);
     }
 }
-/*
-export async function createSign(name: string, secret: string): Promise<any> {
-    if (webCryptoSubtle) {
-        const keyData = RS2AB(secret);
-        return await webCryptoSubtle.importKey(
-            'raw',
-            keyData,
-            { name: 'HMAC', hash: { name: name } },
-            true,
-            ['sign']
-        ).then(key => {
-            return {
-                _key: key,
-                update: async function (thing): Promise<ArrayBuffer> {
-                    return await webCryptoSubtle.sign(
-                        'HMAC',
-                        key,
-                        s2AB(thing)
-                    )
-                }
+
+/* Issue2: not universal does not work with structured PEM keys
+export function pem2asn1(buff: ArrayBuffer | Uint8Array, type: 'private' | 'public'): any {
+    if (!buff || !type) throw new Error(ILLEGAL_ARGUMENT);
+    if (buff instanceof ArrayBuffer) buff = new Uint8Array(buff);
+    let data = new DataView(buff.buffer);
+
+    let res = {};
+    let offset = {
+        private: buff[1] & 0x80 ? buff[1] - 0x80 + 5 : 7,
+        public: buff[1] & 0x80 ? buff[1] - 0x80 + 2 : 2,
+    }[type.toLowerCase()];
+
+    function read() {
+        if ((offset + 1) < buff.byteLength) {
+            let s = data.getUint8(offset + 1);
+            if (s & 0x80) {
+                let n = s - 0x80;
+                s = data[[
+                    'getUint8', 'getInt16'
+                ][n - 1]](offset + 2, false);
+                offset += n;
             }
-        })
-    } else {
-        return !!crypto && crypto.createSign ? Promise.resolve(crypto.createSign(name)) : Promise.reject(webCrypto);
+            offset += 2;
+            let b = (<Uint8Array>buff).slice(offset, offset + s);
+            offset += s;
+            return cleanZeros(b);
+        }
+        return new Uint8Array();
+    }
+
+    res['modulus'] = read();
+    res['bits'] = (res['modulus'].length - 1) * 8 + Math.ceil(
+        Math.log(res['modulus'][0] + 1) / Math.log(2)
+    );
+    if (!res['bits']) {
+        throw new Error(ILLEGAL_ARGUMENT);
+    }
+    res['publicExponent'] = parseInt(AB2hex(read()), 16);
+    if (type === 'private') {
+        res['privateExponent'] = read();
+        res['prime1'] = read();
+        res['prime2'] = read();
+        res['exponent1'] = read();
+        res['exponent2'] = read();
+        res['coefficient'] = read();
+    }
+    return res;
+}
+
+export function asn12jwk(asn1: any, type: string, extra?: any): any {
+    const pemTypes = ['public', 'private'];
+    if (!asn1) throw new Error(ILLEGAL_ARGUMENT);
+
+    type = ((typeof type === 'string') && type.toLowerCase())
+        || pemTypes[!!asn1.privateExponent ? 1 : 0];
+    if ((type === 'private' && !asn1.privateExponent)
+        || pemTypes.indexOf(type) < 0) {
+        throw new Error(ILLEGAL_ARGUMENT);
+    }
+    let v = asn1.publicExponent;
+    const expSize = Math.ceil(Math.log(v) / Math.log(256));
+    const exp = new Uint8Array(expSize).map(function (el) {
+        el = v % 256;
+        v = Math.floor(v / 256);
+        return el
+    }).reverse();
+
+    let jwk = Object.assign({ kty: 'RSA' }, extra, {
+        n: s2bu(AB2s(asn1.modulus)),
+        e: s2bu(AB2s(exp)),
+    });
+
+    if (type === 'private') {
+        Object.assign(jwk, {
+            d: s2bu(AB2s(asn1.privateExponent)),
+            p: s2bu(AB2s(asn1.prime1)),
+            q: s2bu(AB2s(asn1.prime2)),
+            dp: s2bu(AB2s(asn1.exponent1)),
+            dq: s2bu(AB2s(asn1.exponent2)),
+            qi: s2bu(AB2s(asn1.coefficient))
+        });
+    }
+    return jwk;
+}
+*/
+
+/* Issue3: Works, but ASN1 adds 14kb of code to this lib
+ASN1.prototype.getAB = function() {
+    return cleanZeros(hex2AB(this.toHexString()));
+};
+
+export function pem2asn1(buff: ArrayBuffer | Uint8Array): any {
+    if (!buff) throw new Error(ILLEGAL_ARGUMENT);
+    if (buff instanceof ArrayBuffer) buff = new Uint8Array(buff);
+    let asn1 = ASN1.decode(buff), res = {};
+
+    // add different PEM key structures and use sub.structure for ordering
+    if (asn1.sub.length === 3) {
+        asn1 = asn1.sub[2].sub[0];
+    }
+    if (asn1.sub.length === 9) {
+        // Parse the private key.
+        res['modulus'] = asn1.sub[1].getAB(); // ArrayBuffer
+        res['publicExponent'] = parseInt(asn1.sub[2].toHexString(), 16); // int
+        res['privateExponent'] = asn1.sub[3].getAB(); // ArrayBuffer
+        res['prime1'] = asn1.sub[4].getAB(); // ArrayBuffer
+        res['prime2'] = asn1.sub[5].getAB(); // ArrayBuffer
+        res['exponent1'] = asn1.sub[6].getAB(); // ArrayBuffer
+        res['exponent2'] = asn1.sub[7].getAB(); // ArrayBuffer
+        res['coefficient'] = asn1.sub[8].getAB(); // ArrayBuffer
+
+    } else if (asn1.sub.length === 2) {
+        // Parse the public key.
+        asn1 = asn1.sub[1].sub[0];
+
+        res['modulus'] = asn1.sub[0].getAB(); // ArrayBuffer
+        res['publicExponent'] = parseInt(asn1.sub[1].toHexString(), 16); // int
+    }
+    return res;
+}
+*/
+export class Asn1Tag {
+    tagClass: number = 0;
+    tagConstructed: boolean = false;
+    tagNumber: number = 0;
+
+    constructor(stream) {
+        const buf = stream.read();
+        this.tagClass = buf >> 6;
+        this.tagConstructed = ((buf & 0x20) !== 0);
+        this.tagNumber = buf & 0x1F;
     }
 }
 
-export async function algRSsign(bits: number) {
-    return function sign(thing: string, privateKey: string): string {
-        const rsaSign = await createSign('RSA-SHA' + bits);
-        return b2bu(rsaSign.update(thing).sign(privateKey, 'base64'));
+export function pem2asn1(buff: ArrayBuffer | Uint8Array): any {
+    if (!buff) throw new Error(ILLEGAL_ARGUMENT);
+
+    if (buff instanceof ArrayBuffer) buff = new Uint8Array(buff);
+    let asn1 = ASN1.decode(buff), res = {};
+
+    if (asn1.sub.length === 3) {
+        asn1 = asn1.sub[2].sub[0];
+    }
+    if (asn1.sub.length === 9) {
+        // Parse the private key.
+        res['modulus'] = asn1.sub[1].getAB(); // ArrayBuffer
+        res['publicExponent'] = parseInt(asn1.sub[2].toHexString(), 16); // int
+        res['privateExponent'] = asn1.sub[3].getAB(); // ArrayBuffer
+        res['prime1'] = asn1.sub[4].getAB(); // ArrayBuffer
+        res['prime2'] = asn1.sub[5].getAB(); // ArrayBuffer
+        res['exponent1'] = asn1.sub[6].getAB(); // ArrayBuffer
+        res['exponent2'] = asn1.sub[7].getAB(); // ArrayBuffer
+        res['coefficient'] = asn1.sub[8].getAB(); // ArrayBuffer
+    } else if (asn1.sub.length === 2) {
+        // Parse the public key.
+        asn1 = asn1.sub[1].sub[0];
+
+        res['modulus'] = asn1.sub[0].getAB(); // ArrayBuffer
+        res['publicExponent'] = parseInt(asn1.sub[1].toHexString(), 16); // int
+    }
+
+    res['bits'] = (res['modulus'].length - 1) * 8 + Math.ceil(
+        Math.log(res['modulus'][0] + 1) / Math.log(2)
+    );
+
+    if (!res['bits']) {
+        throw new Error(ILLEGAL_ARGUMENT);
+    }
+
+    return res;
+}
+
+export function asn12jwk(asn1: any, type?: string, extra?: any): any {
+    const pemTypes = ['public', 'private'];
+    if (!asn1) throw new Error(ILLEGAL_ARGUMENT);
+
+    type = ((typeof type === 'string') && type.toLowerCase())
+        || pemTypes[!!asn1.privateExponent ? 1 : 0];
+
+    if (type === 'private' && !asn1.privateExponent) {
+        throw new Error(ILLEGAL_ARGUMENT);
+    }
+    let v = asn1.publicExponent;
+    const expSize = Math.ceil(Math.log(v) / Math.log(256));
+    const exp = new Uint8Array(expSize).map(function (el) {
+        el = v % 256;
+        v = Math.floor(v / 256);
+        return el
+    }).reverse();
+
+    let jwk = Object.assign({ kty: 'RSA' }, extra, {
+        n: s2bu(AB2s(asn1.modulus)),
+        e: s2bu(AB2s(exp)),
+    });
+
+    if (type === 'private') {
+        Object.assign(jwk, {
+            d: s2bu(AB2s(asn1.privateExponent)),
+            p: s2bu(AB2s(asn1.prime1)),
+            q: s2bu(AB2s(asn1.prime2)),
+            dp: s2bu(AB2s(asn1.exponent1)),
+            dq: s2bu(AB2s(asn1.exponent2)),
+            qi: s2bu(AB2s(asn1.coefficient))
+        });
+    }
+    return jwk;
+}
+
+export function pem2jwk(secret: string, type?: "public" | "private", extra?): Promise<any> {
+    return tryPromise(() => {
+        const pem = s2pem(secret);
+        return asn12jwk(pem2asn1(pem.body), type, extra)
+    })
+}
+
+/* Issue1: does not work with all versions of PEM keys...
+export function parsePem(secret: string, concType?: "public" | "private", extra?): Promise<PEM> {
+    return tryPromise(() => {
+            const pem = s2pem(secret);
+            if (!concType) concType = pem.type;
+            if (concType !== pem.type) throw new Error(ILLEGAL_ARGUMENT);
+            return pem
+        })
+}
+*/
+
+export function createSign(name: string): any {
+    if (webCryptoSubtle) {
+        return {
+            update: function (thing: string): any {
+                return {
+                    sign: async function (secret: string, encoding: string): Promise<any> {
+                        return await pem2jwk(secret, 'private', {
+                            key_ops: ['sign'],
+                            alg: name.replace('SHA-', 'RS')
+                        }).then(async keyData => {
+                            return await webCryptoSubtle.importKey(
+                                'jwk',
+                                keyData,
+                                { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } },
+                                true,
+                                ['sign']
+                            ).then(async key => {
+                                return await webCryptoSubtle.sign(
+                                    { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } },
+                                    key,
+                                    s2AB(thing)
+                                ).then(AB2s).then(s2b)
+                            })
+                        });
+
+                        /* Issue1: does not work with all versions of PEM keys...
+                        return await parsePem(secret, 'private').then(async pem => {
+                            return await webCryptoSubtle.importKey(
+                                'pkcs8',
+                                pem.body,
+                                { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } },
+                                true,
+                                ['sign']
+                            ).then(async key => {
+                                return await webCryptoSubtle.sign(
+                                    'RSASSA-PKCS1-v1_5',
+                                    key,
+                                    s2AB(thing)
+                                ).then(AB2s).then(s2b)
+                            })
+                        })
+                        */
+                    }
+                }
+            }
+        }
+    } else {
+        if (!!crypto && crypto.createSign) {
+            return crypto.createSign(name.replace('SHA-', 'RSA-SHA'))
+        } else {
+            throw new Error(ILLEGAL_ARGUMENT);
+        }
+    }
+}
+
+export function algRSsign(bits: number) {
+    return async function sign(thing: string, privateKey: string): Promise<string> {
+        try {
+            const res = await createSign('SHA-' + bits);
+            return b2bu(await res.update(thing).sign(privateKey, 'base64'));
+        } catch (e) {
+            return Promise.reject(new Error(e.message));
+        }
+    }
+}
+
+export function createVerify(name: string): any {
+    if (webCryptoSubtle) {
+        return {
+            update: function (thing: string): any {
+                return {
+                    verify: async function (secret: string, signature: string, encoding: string): Promise<boolean> {
+                        return await pem2jwk(secret, 'public', {
+                            key_ops: ['verify'],
+                            alg: name.replace('SHA-', 'RS')
+                        }).then(async ({ kty, n, e }) => {
+                            return await webCryptoSubtle.importKey(
+                                'jwk',
+                                { kty, n, e },
+                                { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } },
+                                false,
+                                ['verify']
+                            ).then(async key => {
+                                return await webCryptoSubtle.verify(
+                                    'RSASSA-PKCS1-v1_5',
+                                    key,
+                                    s2AB(bu2s(signature)),
+                                    s2AB(thing)
+                                )
+                            })
+                        });
+                        /* Issue1: does not work with all versions of PEM keys...
+                        return await parsePem(secret, 'public').then(async pem => {
+                            return await webCryptoSubtle.importKey(
+                                'spki',
+                                pem.body,
+                                { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } },
+                                true,
+                                ['verify']
+                            ).then(async key => {
+                                return await webCryptoSubtle.verify(
+                                    'RSASSA-PKCS1-v1_5',
+                                    key,
+                                    s2AB(bu2s(signature)),
+                                    s2AB(thing)
+                                )
+                            })
+                        })*/
+
+                    }
+                }
+            }
+        }
+    } else {
+        if (!!crypto && crypto.createVerify) {
+            return crypto.createVerify(name.replace('SHA-', 'RSA-SHA'))
+        } else {
+            throw new Error(ILLEGAL_ARGUMENT);
+        }
     }
 }
 
 export function algRSverify(bits: number) {
-    return function verify(thing: string, signature: string, publicKey: string): boolean {
-        signature = bu2b(signature);
-        const rsaVerify = crypto.createVerify('RSA-SHA' + bits);
-        rsaVerify.update(thing);
-        return rsaVerify.verify(publicKey, signature, 'base64');
+    return async function verify(thing: string, signature: string, publicKey: string): Promise<boolean> {
+        try {
+            signature = bu2b(signature);
+            const rsaVerify = await createVerify('SHA-' + bits);
+            return await rsaVerify.update(thing).verify(publicKey, signature, 'base64');
+        } catch (e) {
+            return Promise.reject(new Error(e.message));
+        }
     }
 }
-*/
 
 /**
  * Universal algorithm verifier
@@ -544,8 +882,8 @@ export async function algVerify(algorithm: string, thing: string, signature: str
     }
 
     switch (type) {
-        //case 'rs':
-            //return await algRSverify(bits)(thing, signature, secret);
+        case 'rs':
+            return await algRSverify(bits)(thing, signature, secret);
         case 'hs':
             return await algHSverify(bits)(thing, signature, secret);
         default:
@@ -573,8 +911,8 @@ export async function algSign(algorithm: string, thing: string, secret: string):
     }
 
     switch (type) {
-        //case 'rs':
-            //return await algRSsign(bits)(thing, secret);
+        case 'rs':
+            return await algRSsign(bits)(thing, secret);
         case 'hs':
             return await algHSsign(bits)(thing, secret);
         default:
@@ -586,22 +924,28 @@ export async function jwtVerify(jwtStr: string, secret: string): Promise<boolean
     const jwt = jwtSplit(jwtStr),
         header = s2J(bu2s(jwt.header)),
         thing = jwt.header + '.' + jwt.payload;
-    return await algVerify(header.alg, thing, jwt.signature, secret);
+    return tryPromise(() => algVerify(header.alg, thing, jwt.signature, secret));
 }
 
-export async function jwtSign(jwtStr: string, secret: string): Promise<string> {
+export const verifyJwt = jwtVerify;
+
+export function jwtSign(jwtStr: string, secret: string): Promise<string> {
     const jwt = jwtSplit(jwtStr),
         header = s2J(bu2s(jwt.header)),
         thing = jwt.header + '.' + jwt.payload;
-    return await algSign(header.alg, thing, secret);
+    return tryPromise(async () => await algSign(header.alg, thing, secret));
 }
 
-export async function resignJwt(jwtStr: string, secret: string, alg?: string): Promise<string> {
+export const signJwt = jwtSign;
+
+export async function jwtResign(jwtStr: string, secret: string, alg?: string): Promise<string> {
     const jwt = jwtDecode(jwtStr);
-    if(!!alg) jwt.header.alg = alg;
+    if (!!alg) jwt.header.alg = alg;
     jwt.signature = await jwtSign(jwt.toString(), secret);
     return jwt.toString();
 }
+
+export const resignJwt = jwtResign;
 
 /**
  * Used for testing only
@@ -613,31 +957,50 @@ export function cryptoType(): string {
 }
 
 const jwsJsDecode = {
-    JwtDecode,
-    JwtSplit,
+    ILLEGAL_ARGUMENT,
+    UNSUPPORTED_ALGORITHM,
+    resignJwt,
+    signJwt,
+    splitJwt,
+    verifyJwt,
+    AB2hex,
+    AB2s,
+    J2s,
+    algHSsign,
+    algHSverify,
+    algRSsign,
+    algRSverify,
+    algSign,
+    algVerify,
+    asn12jwk,
     b2bu,
     b2s,
     bu2b,
     bu2s,
+    cleanZeros,
+    createHmac,
+    createSign,
+    createVerify,
+    hex2AB,
     isGzip,
     jwtDecode,
+    jwtResign,
+    jwtSign,
     jwtSplit,
+    jwtVerify,
+    num2hex,
+    pem2asn1,
+    pem2jwk,
+    s2AB,
+    s2J,
     s2b,
     s2bu,
+    s2pem,
     s2zbu,
+    tryPromise,
     unzip,
     zbu2s,
     zip,
-    algHSsign,
-    algHSverify,
-    //algRSsign,
-    //algRSverify,
-    algVerify,
-    algSign,
-    jwtVerify,
-    jwtSign,
-    resignJwt,
-    cryptoType
 };
 
 export default jwsJsDecode;

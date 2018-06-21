@@ -34,7 +34,7 @@ const jwtJsDecode = require('jwt-js-decode');
 ```
 or
 ```html
-<script src="https://unpkg.com/jwt-js-decode@1.1.7"></script>
+<script src="https://unpkg.com/jwt-js-decode@1.2.0"></script>
 ```
 Other links you can find on [`yarn`](https://yarnpkg.com/en/package/jwt-js-decode)
 
@@ -61,12 +61,28 @@ Other links you can find on [`yarn`](https://yarnpkg.com/en/package/jwt-js-decod
 
 ## Sandboxes
 
-Runkit (node.js sandbox)
-['https://npm.runkit.com/jwt-js-decode'](https://npm.runkit.com/jwt-js-decode)
+Runkit (node.js sandbox 1.2.5)
+[https://npm.runkit.com/jwt-js-decode](https://npm.runkit.com/jwt-js-decode)
 
-Plunkr (browser sandbox)
-['https://plnkr.co/edit/zCNpiTXBbPKNxNVnHhkU'](https://plnkr.co/edit/zCNpiTXBbPKNxNVnHhkU)
+Plunkr (browser sandbox 1.2.5 + CodeMirror)
+[https://plnkr.co/edit/WaawWXswkexfXaFfRDjQ](https://plnkr.co/edit/WaawWXswkexfXaFfRDjQ)
 
+Plunkr (browser sandbox 1.1.7)
+[https://plnkr.co/edit/zCNpiTXBbPKNxNVnHhkU](https://plnkr.co/edit/zCNpiTXBbPKNxNVnHhkU)
+
+## Development
+
+For testing functionality jest testing is used, npm `test` script will rebuild dist and docs folder.
+
+After changes in jwt-js-decode source and just for the first run use:
+```bash
+npm test
+```
+
+For sequential runs and just new test you can run:
+```bash
+npm run jest
+```
 
 TOC:
 
