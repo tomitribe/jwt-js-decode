@@ -1,6 +1,6 @@
 {
   "name": "jwt-js-decode",
-  "version": "1.3.6",
+  "version": "1.3.7",
   "description": "",
   "keywords": [],
   "main": "dist/jwt-js-decode.umd.js",

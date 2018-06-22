@@ -496,7 +496,7 @@ export function s2pem(secret: string): PEM {
         ], body = lines.map(line => line.trim()).filter(line =>
         line.length && ignore(line)).join('');
     if (body.length) {
-        return { body: s2AB(b2s(body)), type: <'private' | 'public'>type };
+        return { body: s2AB(b2s(bu2b(body))), type: <'private' | 'public'>type };
     } else {
         throw new Error(ILLEGAL_ARGUMENT);
     }

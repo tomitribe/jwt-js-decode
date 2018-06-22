@@ -72,14 +72,22 @@ Other links you can find on [`yarn`](https://yarnpkg.com/en/package/jwt-js-decod
 Sandboxes
 ---------
 
-Runkit (node.js sandbox 1.2.5) [https://npm.runkit.com/jwt-js-decode](https://npm.runkit.com/jwt-js-decode)
+Runkit (node.js sandbox 1.3.7) [https://npm.runkit.com/jwt-js-decode](https://npm.runkit.com/jwt-js-decode)
 
-Plunkr (browser sandbox 1.2.5 + CodeMirror) [https://plnkr.co/edit/WaawWXswkexfXaFfRDjQ](https://plnkr.co/edit/WaawWXswkexfXaFfRDjQ)
+Plunkr (browser sandbox 1.3.7 + CodeMirror) [https://plnkr.co/edit/WaawWXswkexfXaFfRDjQ](https://plnkr.co/edit/WaawWXswkexfXaFfRDjQ)
 
 Plunkr (browser sandbox 1.1.7) [https://plnkr.co/edit/zCNpiTXBbPKNxNVnHhkU](https://plnkr.co/edit/zCNpiTXBbPKNxNVnHhkU)
 
 Development
 -----------
+
+First you'll need to clone this repository to folder you will test it in.
+
+Then insall all dependencies.
+
+```bash
+npm i
+```
 
 For testing functionality jest testing is used, npm `test` script will rebuild dist and docs folder.
 

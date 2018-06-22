@@ -1012,7 +1012,7 @@
             return line.length && ignore(line);
         }).join('');
         if (body.length) {
-            return { body: s2AB(b2s(body)), type: type };
+            return { body: s2AB(b2s(bu2b(body))), type: type };
         }
         else {
             throw new Error(ILLEGAL_ARGUMENT);
