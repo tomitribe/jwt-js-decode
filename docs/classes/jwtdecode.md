@@ -1,13 +1,16 @@
-[jwt-js-decode](../README.md) > [JwtDecode](../classes/jwtdecode.md)
+**[jwt-js-decode](../README.md)**
+
+[Globals](../globals.md) › [JwtDecode](jwtdecode.md)
 
 # Class: JwtDecode
 
 Class for creating a JwtDecode object with three parts of JWT Token, header and payload decoded and parsed, signature in initial form
-*__class__*: JwtDecode
+
+**`class`** JwtDecode
 
 ## Hierarchy
 
-**JwtDecode**
+* **JwtDecode**
 
 ## Index
 
@@ -25,84 +28,70 @@ Class for creating a JwtDecode object with three parts of JWT Token, header and 
 
 * [toString](jwtdecode.md#tostring)
 
----
-
 ## Constructors
-
-<a id="constructor"></a>
 
 ###  constructor
 
-⊕ **new JwtDecode**(str: *`string`*): [JwtDecode](jwtdecode.md)
+\+ **new JwtDecode**(`str`: string): *[JwtDecode](jwtdecode.md)*
 
-*Defined in jwt-js-decode.ts:126*
+Defined in jwt-js-decode.ts:126
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| str | `string` |
+Name | Type |
+------ | ------ |
+`str` | string |
 
-**Returns:** [JwtDecode](jwtdecode.md)
-
-___
+**Returns:** *[JwtDecode](jwtdecode.md)*
 
 ## Properties
 
-<a id="header"></a>
-
 ###  header
 
-**● header**: *[JwtPart](../interfaces/jwtpart.md)*
+• **header**: *[JwtPart](../interfaces/jwtpart.md)*
 
-*Defined in jwt-js-decode.ts:110*
+Defined in jwt-js-decode.ts:110
 
 Header (first) part of JWT Token
-*__name__*: header
 
-*__type__*: {JwtPart}
+**`name`** header
+
+**`type`** {JwtPart}
 
 ___
-<a id="payload"></a>
 
 ###  payload
 
-**● payload**: *[JwtPart](../interfaces/jwtpart.md)*
+• **payload**: *[JwtPart](../interfaces/jwtpart.md)*
 
-*Defined in jwt-js-decode.ts:118*
+Defined in jwt-js-decode.ts:118
 
 Payload (second) part of JWT Token
-*__name__*: payload
 
-*__type__*: {JwtPart}
+**`name`** payload
+
+**`type`** {JwtPart}
 
 ___
-<a id="signature"></a>
 
 ###  signature
 
-**● signature**: *`string`* = ""
+• **signature**: *string* = ""
 
-*Defined in jwt-js-decode.ts:126*
+Defined in jwt-js-decode.ts:126
 
 Signature (third) part of JWT Token
-*__name__*: signature
 
-*__type__*: {string}
+**`name`** signature
 
-___
+**`type`** {string}
 
 ## Methods
 
-<a id="tostring"></a>
-
 ###  toString
 
-▸ **toString**(): `string`
+▸ **toString**(): *string*
 
-*Defined in jwt-js-decode.ts:140*
+Defined in jwt-js-decode.ts:140
 
-**Returns:** `string`
-
-___
-
+**Returns:** *string*

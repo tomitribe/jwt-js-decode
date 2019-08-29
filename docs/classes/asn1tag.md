@@ -1,10 +1,12 @@
-[jwt-js-decode](../README.md) > [Asn1Tag](../classes/asn1tag.md)
+**[jwt-js-decode](../README.md)**
+
+[Globals](../globals.md) › [Asn1Tag](asn1tag.md)
 
 # Class: Asn1Tag
 
 ## Hierarchy
 
-**Asn1Tag**
+* **Asn1Tag**
 
 ## Index
 
@@ -18,55 +20,42 @@
 * [tagConstructed](asn1tag.md#tagconstructed)
 * [tagNumber](asn1tag.md#tagnumber)
 
----
-
 ## Constructors
-
-<a id="constructor"></a>
 
 ###  constructor
 
-⊕ **new Asn1Tag**(stream: *`any`*): [Asn1Tag](asn1tag.md)
+\+ **new Asn1Tag**(`stream`: any): *[Asn1Tag](asn1tag.md)*
 
-*Defined in jwt-js-decode.ts:629*
+Defined in jwt-js-decode.ts:630
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| stream | `any` |
+Name | Type |
+------ | ------ |
+`stream` | any |
 
-**Returns:** [Asn1Tag](asn1tag.md)
-
-___
+**Returns:** *[Asn1Tag](asn1tag.md)*
 
 ## Properties
 
-<a id="tagclass"></a>
-
 ###  tagClass
 
-**● tagClass**: *`number`* = 0
+• **tagClass**: *number* = 0
 
-*Defined in jwt-js-decode.ts:627*
+Defined in jwt-js-decode.ts:628
 
 ___
-<a id="tagconstructed"></a>
 
 ###  tagConstructed
 
-**● tagConstructed**: *`boolean`* = false
+• **tagConstructed**: *boolean* = false
 
-*Defined in jwt-js-decode.ts:628*
+Defined in jwt-js-decode.ts:629
 
 ___
-<a id="tagnumber"></a>
 
 ###  tagNumber
 
-**● tagNumber**: *`number`* = 0
+• **tagNumber**: *number* = 0
 
-*Defined in jwt-js-decode.ts:629*
-
-___
-
+Defined in jwt-js-decode.ts:630

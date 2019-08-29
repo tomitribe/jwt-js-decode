@@ -4,67 +4,33 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var pako = _interopDefault(require('pako'));
-var crypto = _interopDefault(require('crypto'));
-
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
-
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-MERCHANTABLITY OR NON-INFRINGEMENT.
-
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
-***************************************************************************** */
-
-function __awaiter(thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-}
-
-function __generator(thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+function _interopNamespace(e) {
+    if (e && e.__esModule) { return e; } else {
+        var n = {};
+        if (e) {
+            Object.keys(e).forEach(function (k) {
+                var d = Object.getOwnPropertyDescriptor(e, k);
+                Object.defineProperty(n, k, d.get ? d : {
+                    enumerable: true,
+                    get: function () {
+                        return e[k];
+                    }
+                });
+            });
+        }
+        n['default'] = e;
+        return n;
     }
 }
+
+var pako = _interopDefault(require('pako'));
 
 var max = 10000000000000; // biggest 10^n integer that can still fit 2^53 when multiplied by 256
-var Int10 = /** @class */ (function () {
-    function Int10(value) {
+class Int10 {
+    constructor(value) {
         this.buf = [+value || 0];
     }
-    Int10.prototype.mulAdd = function (m, c) {
+    mulAdd(m, c) {
         // assert(m <= 256)
         var b = this.buf, l = b.length, i, t;
         for (i = 0; i < l; ++i) {
@@ -79,8 +45,9 @@ var Int10 = /** @class */ (function () {
         }
         if (c > 0)
             b[i] = c;
-    };
-    Int10.prototype.sub = function (c) {
+    }
+    ;
+    sub(c) {
         // assert(m <= 256)
         var b = this.buf, l = b.length, i, t;
         for (i = 0; i < l; ++i) {
@@ -95,30 +62,33 @@ var Int10 = /** @class */ (function () {
         }
         while (b[b.length - 1] === 0)
             b.pop();
-    };
-    Int10.prototype.toString = function (base) {
+    }
+    ;
+    toString(base) {
         if ((base || 10) != 10)
             throw 'only base 10 is supported';
         var b = this.buf, s = b[b.length - 1].toString();
         for (var i = b.length - 2; i >= 0; --i)
             s += (max + b[i]).toString().substring(1);
         return s;
-    };
-    Int10.prototype.valueOf = function () {
+    }
+    ;
+    valueOf() {
         var b = this.buf, v = 0;
         for (var i = b.length - 1; i >= 0; --i)
             v = v * max + b[i];
         return v;
-    };
-    Int10.prototype.simplify = function () {
+    }
+    ;
+    simplify() {
         var b = this.buf;
         return (b.length == 1) ? b[0] : this;
-    };
-    return Int10;
-}());
+    }
+    ;
+}
 
-var UNSUPPORTED_ALGORITHM = 'Unsupported algorithm name specified! Supported algorithms: "HS256", "HS384", "HS512", "RS256", "RS384", "RS512" and "none".';
-var ILLEGAL_ARGUMENT = 'Illegal argument specified!';
+const UNSUPPORTED_ALGORITHM = 'Unsupported algorithm name specified! Supported algorithms: "HS256", "HS384", "HS512", "RS256", "RS384", "RS512" and "none".';
+const ILLEGAL_ARGUMENT = 'Illegal argument specified!';
 // clean leading zeros
 function cleanZeros(b) {
     return b[0] === 0 ? cleanZeros(b.slice(1)) : b;
@@ -126,21 +96,20 @@ function cleanZeros(b) {
 function hex2AB(hex) {
     if (!hex)
         throw new Error(ILLEGAL_ARGUMENT);
-    var match = hex.match(/[0-9A-F]{2}/ig);
+    const match = hex.match(/[0-9A-F]{2}/ig);
     if (!match)
         throw new Error(ILLEGAL_ARGUMENT);
-    return new Uint8Array(match.map(function (i) { return parseInt(i, 16); }));
+    return new Uint8Array(match.map(i => parseInt(i, 16)));
 }
 
-var ellipsis = "\u2026", reTimeS = /^(\d\d)(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])([01]\d|2[0-3])(?:([0-5]\d)(?:([0-5]\d)(?:[.,](\d{1,3}))?)?)?(Z|[-+](?:[0]\d|1[0-2])([0-5]\d)?)?$/, reTimeL = /^(\d\d\d\d)(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])([01]\d|2[0-3])(?:([0-5]\d)(?:([0-5]\d)(?:[.,](\d{1,3}))?)?)?(Z|[-+](?:[0]\d|1[0-2])([0-5]\d)?)?$/;
+const ellipsis = "\u2026", reTimeS = /^(\d\d)(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])([01]\d|2[0-3])(?:([0-5]\d)(?:([0-5]\d)(?:[.,](\d{1,3}))?)?)?(Z|[-+](?:[0]\d|1[0-2])([0-5]\d)?)?$/, reTimeL = /^(\d\d\d\d)(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])([01]\d|2[0-3])(?:([0-5]\d)(?:([0-5]\d)(?:[.,](\d{1,3}))?)?)?(Z|[-+](?:[0]\d|1[0-2])([0-5]\d)?)?$/;
 function stringCut(str, len) {
     if (str.length > len)
         str = str.substring(0, len) + ellipsis;
     return str;
 }
-var Stream = /** @class */ (function () {
-    function Stream(enc, pos) {
-        if (pos === void 0) { pos = 0; }
+class Stream {
+    constructor(enc, pos = 0) {
         this.hexDigits = "0123456789ABCDEF";
         if (enc instanceof Stream) {
             this.enc = enc.enc;
@@ -151,17 +120,19 @@ var Stream = /** @class */ (function () {
             this.pos = pos;
         }
     }
-    Stream.prototype.get = function (pos) {
+    get(pos) {
         if (pos === undefined)
             pos = this.pos++;
         if (pos >= this.enc.length)
             throw 'Requesting byte offset ' + pos + ' on a stream of length ' + this.enc.length;
         return (typeof this.enc == "string") ? this.enc.charCodeAt(pos) : this.enc[pos];
-    };
-    Stream.prototype.hexByte = function (b) {
+    }
+    ;
+    hexByte(b) {
         return this.hexDigits.charAt((b >> 4) & 0xF) + this.hexDigits.charAt(b & 0xF);
-    };
-    Stream.prototype.hexDump = function (start, end, raw) {
+    }
+    ;
+    hexDump(start, end, raw) {
         var s = "";
         for (var i = start; i < end; ++i) {
             s += this.hexByte(this.get(i));
@@ -178,22 +149,25 @@ var Stream = /** @class */ (function () {
                 }
         }
         return s;
-    };
-    Stream.prototype.isASCII = function (start, end) {
+    }
+    ;
+    isASCII(start, end) {
         for (var i = start; i < end; ++i) {
             var c = this.get(i);
             if (c < 32 || c > 176)
                 return false;
         }
         return true;
-    };
-    Stream.prototype.parseStringISO = function (start, end) {
+    }
+    ;
+    parseStringISO(start, end) {
         var s = "";
         for (var i = start; i < end; ++i)
             s += String.fromCharCode(this.get(i));
         return s;
-    };
-    Stream.prototype.parseStringUTF = function (start, end) {
+    }
+    ;
+    parseStringUTF(start, end) {
         var s = "";
         for (var i = start; i < end;) {
             var c = this.get(i++);
@@ -205,8 +179,9 @@ var Stream = /** @class */ (function () {
                 s += String.fromCharCode(((c & 0x0F) << 12) | ((this.get(i++) & 0x3F) << 6) | (this.get(i++) & 0x3F));
         }
         return s;
-    };
-    Stream.prototype.parseStringBMP = function (start, end) {
+    }
+    ;
+    parseStringBMP(start, end) {
         var str = "", hi, lo;
         for (var i = start; i < end;) {
             hi = this.get(i++);
@@ -214,8 +189,9 @@ var Stream = /** @class */ (function () {
             str += String.fromCharCode((hi << 8) | lo);
         }
         return str;
-    };
-    Stream.prototype.parseTime = function (start, end, shortYear) {
+    }
+    ;
+    parseTime(start, end, shortYear) {
         var s = this.parseStringISO(start, end), m = (shortYear ? reTimeS : reTimeL).exec(s);
         if (!m)
             return "Unrecognized time: " + s;
@@ -241,8 +217,9 @@ var Stream = /** @class */ (function () {
             }
         }
         return s;
-    };
-    Stream.prototype.parseInteger = function (start, end) {
+    }
+    ;
+    parseInteger(start, end) {
         var v = this.get(start), neg = (v > 127), pad = neg ? 255 : 0, len, s = '';
         while (v == pad && ++start < end)
             v = this.get(start);
@@ -250,7 +227,7 @@ var Stream = /** @class */ (function () {
         if (len === 0)
             return neg ? -1 : 0;
         if (len > 4) {
-            var t = +v;
+            let t = +v;
             len <<= 3;
             while (((t ^ pad) & 0x80) === 0) {
                 t <<= 1;
@@ -260,12 +237,13 @@ var Stream = /** @class */ (function () {
         }
         if (neg)
             v = v - 256;
-        var n = new Int10(v);
-        for (var i = start + 1; i < end; ++i)
+        const n = new Int10(v);
+        for (let i = start + 1; i < end; ++i)
             n.mulAdd(256, this.get(i));
         return s + n.toString();
-    };
-    Stream.prototype.parseBitString = function (start, end, maxLength) {
+    }
+    ;
+    parseBitString(start, end, maxLength) {
         var unusedBit = this.get(start), lenBit = ((end - start - 1) << 3) - unusedBit, intro = "(" + lenBit + " bit)\n", s = "";
         for (var i = start + 1; i < end; ++i) {
             var b = this.get(i), skip = (i == end - 1) ? unusedBit : 0;
@@ -275,8 +253,9 @@ var Stream = /** @class */ (function () {
                 return intro + stringCut(s, maxLength);
         }
         return intro + s;
-    };
-    Stream.prototype.parseOctetString = function (start, end, maxLength) {
+    }
+    ;
+    parseOctetString(start, end, maxLength) {
         if (this.isASCII(start, end))
             return stringCut(this.parseStringISO(start, end), maxLength);
         var len = end - start, s = "(" + len + " byte)\n";
@@ -288,8 +267,9 @@ var Stream = /** @class */ (function () {
         if (len > maxLength)
             s += ellipsis;
         return s;
-    };
-    Stream.prototype.parseOID = function (start, end, maxLength) {
+    }
+    ;
+    parseOID(start, end, maxLength) {
         var s = '', n = new Int10(), bits = 0;
         for (var i = start; i < end; ++i) {
             var v = this.get(i);
@@ -318,11 +298,11 @@ var Stream = /** @class */ (function () {
         if (bits > 0)
             s += ".incomplete";
         return s;
-    };
-    return Stream;
-}());
-var ASN1 = /** @class */ (function () {
-    function ASN1(stream, header, length, tag, sub) {
+    }
+    ;
+}
+class ASN1 {
+    constructor(stream, header, length, tag, sub) {
         if (!(tag instanceof ASN1Tag))
             throw 'Invalid tag value.';
         this.stream = stream;
@@ -331,7 +311,7 @@ var ASN1 = /** @class */ (function () {
         this.tag = tag;
         this.sub = sub;
     }
-    ASN1.prototype.typeName = function () {
+    typeName() {
         switch (this.tag.tagClass) {
             case 0:
                 switch (this.tag.tagNumber) {
@@ -398,8 +378,9 @@ var ASN1 = /** @class */ (function () {
             case 3:
                 return "Private_" + this.tag.tagNumber.toString();
         }
-    };
-    ASN1.prototype.content = function (maxLength) {
+    }
+    ;
+    content(maxLength) {
         if (this.tag === undefined)
             return null;
         if (maxLength === undefined)
@@ -445,32 +426,39 @@ var ASN1 = /** @class */ (function () {
                 return this.stream.parseTime(content, content + len, (this.tag.tagNumber == 0x17));
         }
         return null;
-    };
-    ASN1.prototype.toString = function () {
+    }
+    ;
+    toString() {
         return this.typeName() + "@" + this.stream.pos + "[header:" + this.header + ",length:" + this.length + ",sub:" + ((this.sub === null) ? 'null' : this.sub.length) + "]";
-    };
-    ASN1.prototype.posStart = function () {
+    }
+    ;
+    posStart() {
         return this.stream.pos;
-    };
-    ASN1.prototype.posContent = function () {
+    }
+    ;
+    posContent() {
         return this.stream.pos + this.header;
-    };
-    ASN1.prototype.posEnd = function () {
+    }
+    ;
+    posEnd() {
         return this.stream.pos + this.header + Math.abs(this.length);
-    };
-    ASN1.prototype.toHexString = function (root) {
+    }
+    ;
+    toHexString(root) {
         return this.stream.hexDump(this.posStart(), this.posEnd(), true);
-    };
-    ASN1.prototype.getHex = function () {
+    }
+    ;
+    getHex() {
         return this.stream.hexDump(this.posContent(), this.posEnd(), true);
-    };
-    ASN1.prototype.getAB = function (clean) {
-        if (clean === void 0) { clean = true; }
+    }
+    ;
+    getAB(clean = true) {
         return clean ? cleanZeros(hex2AB(this.getHex())) : hex2AB(this.getHex());
-    };
-    ASN1.decodeLength = function (stream) {
-        var buf = stream.get();
-        var len = buf & 0x7F;
+    }
+    ;
+    static decodeLength(stream) {
+        let buf = stream.get();
+        const len = buf & 0x7F;
         if (len == buf)
             return len;
         if (len > 6)
@@ -481,16 +469,17 @@ var ASN1 = /** @class */ (function () {
         for (var i = 0; i < len; ++i)
             buf = (buf * 256) + stream.get();
         return buf;
-    };
-    ASN1.decode = function (stream) {
+    }
+    ;
+    static decode(stream) {
         if (!(stream instanceof Stream))
             stream = new Stream(stream, 0);
-        var streamStart = new Stream(stream);
-        var tag = new ASN1Tag(stream);
-        var len = ASN1.decodeLength(stream), sub = null;
-        var start = stream.pos;
-        var header = start - streamStart.pos;
-        var getSub = function () {
+        const streamStart = new Stream(stream);
+        const tag = new ASN1Tag(stream);
+        let len = ASN1.decodeLength(stream), sub = null;
+        const start = stream.pos;
+        const header = start - streamStart.pos;
+        const getSub = function () {
             sub = [];
             if (len !== null) {
                 var end = start + len;
@@ -502,7 +491,7 @@ var ASN1 = /** @class */ (function () {
             else {
                 try {
                     for (;;) {
-                        var s = ASN1.decode(stream);
+                        const s = ASN1.decode(stream);
                         if (s.tag.isEOC())
                             break;
                         sub[sub.length] = s;
@@ -537,11 +526,11 @@ var ASN1 = /** @class */ (function () {
             stream.pos = start + Math.abs(len);
         }
         return new ASN1(streamStart, header, len, tag, sub);
-    };
-    return ASN1;
-}());
-var ASN1Tag = /** @class */ (function () {
-    function ASN1Tag(stream) {
+    }
+    ;
+}
+class ASN1Tag {
+    constructor(stream) {
         var buf = stream.get();
         this.tagClass = buf >> 6;
         this.tagConstructed = ((buf & 0x20) !== 0);
@@ -555,14 +544,15 @@ var ASN1Tag = /** @class */ (function () {
             this.tagNumber = n.simplify();
         }
     }
-    ASN1Tag.prototype.isUniversal = function () {
+    isUniversal() {
         return this.tagClass === 0x00;
-    };
-    ASN1Tag.prototype.isEOC = function () {
+    }
+    ;
+    isEOC() {
         return this.tagClass === 0x00 && this.tagNumber === 0x00;
-    };
-    return ASN1Tag;
-}());
+    }
+    ;
+}
 
 /*
 //crypto-browserify:
@@ -574,39 +564,38 @@ import { createSign, createVerify } from "browserify-sign";
 //node.js
 import { createHmac, createSign, createVerify } from "crypto";
 */
-var webCrypto = typeof window === "object" && (window.crypto || window['msCrypto']);
-var webCryptoSubtle = webCrypto && (webCrypto.subtle || webCrypto['webkitSubtle'] || webCrypto['Subtle']);
+const webCrypto = typeof window === "object" && (window.crypto || window['msCrypto']);
+const webCryptoSubtle = webCrypto && (webCrypto.subtle || webCrypto['webkitSubtle'] || webCrypto['Subtle']);
 /**
  * Class for creating a JwtSplit object with three parts of JWT Token as strings
  *
  * @class  JwtSplit
  */
-var JwtSplit = /** @class */ (function () {
-    function JwtSplit(str) {
+class JwtSplit {
+    constructor(str) {
         if (typeof str !== 'string') {
             throw new Error(ILLEGAL_ARGUMENT);
         }
-        var jwtArr = str.split('.');
+        const jwtArr = str.split('.');
         if (jwtArr.length !== 3) {
             throw new Error(ILLEGAL_ARGUMENT);
         }
-        var header = jwtArr[0], payload = jwtArr[1], signature = jwtArr[2];
+        const [header, payload, signature] = jwtArr;
         this.header = header;
         this.payload = payload;
         this.signature = signature;
     }
-    JwtSplit.prototype.toString = function () {
+    toString() {
         return this.header + '.' + this.payload + '.' + this.signature;
-    };
-    return JwtSplit;
-}());
+    }
+}
 /**
  * Class for creating a JwtDecode object with three parts of JWT Token, header and payload decoded and parsed, signature in initial form
  *
  * @class  JwtDecode
  */
-var JwtDecode = /** @class */ (function () {
-    function JwtDecode(str) {
+class JwtDecode {
+    constructor(str) {
         /**
          * Header (first) part of JWT Token
          *
@@ -631,18 +620,17 @@ var JwtDecode = /** @class */ (function () {
         if (typeof str !== 'string') {
             throw new Error(ILLEGAL_ARGUMENT);
         }
-        var jwtObj = jwtSplit(str);
+        const jwtObj = jwtSplit(str);
         if (jwtObj) {
             this.header = jwtObj.header ? s2J(bu2s(jwtObj.header)) : {};
             this.payload = jwtObj.payload ? (isGzip(this.header) ? s2J(zbu2s(jwtObj.payload)) : s2J(bu2s(jwtObj.payload))) : {};
             this.signature = jwtObj.signature || '';
         }
     }
-    JwtDecode.prototype.toString = function () {
+    toString() {
         return s2bu(J2s(this.header)) + '.' + (isGzip(this.header) ? s2zbu(J2s(this.payload)) : s2bu(J2s(this.payload))) + '.' + this.signature;
-    };
-    return JwtDecode;
-}());
+    }
+}
 /**
  * Try running function and replace it's response as Promise.resolve/reject
  *
@@ -785,7 +773,7 @@ function jwtDecode(str) {
 function jwtSplit(str) {
     return new JwtSplit(str);
 }
-var splitJwt = jwtSplit;
+const splitJwt = jwtSplit;
 /**
  * Converts base64 string to string
  *
@@ -880,8 +868,8 @@ function zip(str) {
  * @returns {ArrayBuffer | Uint8Array} charCode ArrayBuffer
  */
 function s2AB(str) {
-    var buff = new Uint8Array(str.length);
-    for (var i = 0; i < str.length; i++)
+    const buff = new Uint8Array(str.length);
+    for (let i = 0; i < str.length; i++)
         buff[i] = str.charCodeAt(i);
     return buff;
 }
@@ -895,39 +883,27 @@ function s2AB(str) {
 function AB2s(buff) {
     if (buff instanceof ArrayBuffer)
         buff = new Uint8Array(buff);
-    return String.fromCharCode.apply(String, buff);
+    return String.fromCharCode.apply(String, Array.from(buff));
 }
 /**
  * Async function inspired by createHmac in crypto (used WebCrypto Api supported by most browsers)
  *
  */
-function createHmac(name, secret) {
-    return __awaiter(this, void 0, void 0, function () {
-        var keyData;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    if (!webCryptoSubtle) return [3 /*break*/, 2];
-                    keyData = s2AB(secret);
-                    return [4 /*yield*/, webCryptoSubtle.importKey('raw', keyData, { name: 'HMAC', hash: { name: name } }, true, ['sign']).then(function (key) {
-                            return {
-                                update: function (thing) {
-                                    return __awaiter(this, void 0, void 0, function () {
-                                        return __generator(this, function (_a) {
-                                            switch (_a.label) {
-                                                case 0: return [4 /*yield*/, webCryptoSubtle.sign('HMAC', key, s2AB(thing))];
-                                                case 1: return [2 /*return*/, _a.sent()];
-                                            }
-                                        });
-                                    });
-                                }
-                            };
-                        })];
-                case 1: return [2 /*return*/, _a.sent()];
-                case 2: return [2 /*return*/, !!crypto && crypto.createHmac ? Promise.resolve(crypto.createHmac(name.replace('SHA-', 'sha'), secret)) : Promise.reject(webCrypto)];
-            }
+async function createHmac(name, secret) {
+    if (webCryptoSubtle) {
+        const keyData = s2AB(secret);
+        return await webCryptoSubtle.importKey('raw', keyData, { name: 'HMAC', hash: { name: name } }, true, ['sign']).then(key => {
+            return {
+                update: async function (thing) {
+                    return await webCryptoSubtle.sign('HMAC', key, s2AB(thing));
+                }
+            };
         });
-    });
+    }
+    else {
+        const crypto = await new Promise(function (resolve) { resolve(_interopNamespace(require('crypto'))); });
+        return !!crypto && crypto.createHmac ? Promise.resolve(crypto.createHmac(name.replace('SHA-', 'sha'), secret)) : Promise.reject(webCrypto);
+    }
 }
 /**
  * Algorithm HMAC sign generator
@@ -938,34 +914,9 @@ function algHSsign(bits) {
      * Algorithm HMAC signer
      *
      */
-    return function sign(thing, secret) {
-        return __awaiter(this, void 0, void 0, function () {
-            var hmac, _a, _b, _c, _d, _e, _f;
-            return __generator(this, function (_g) {
-                switch (_g.label) {
-                    case 0: return [4 /*yield*/, createHmac('SHA-' + bits, secret)];
-                    case 1:
-                        hmac = _g.sent();
-                        _b = (_a = Promise).resolve;
-                        if (!webCryptoSubtle) return [3 /*break*/, 4];
-                        _d = s2bu;
-                        _e = AB2s;
-                        _f = hmac;
-                        if (!_f) return [3 /*break*/, 3];
-                        return [4 /*yield*/, hmac.update(thing)];
-                    case 2:
-                        _f = (_g.sent());
-                        _g.label = 3;
-                    case 3:
-                        _c = _d.apply(void 0, [_e.apply(void 0, [_f])]);
-                        return [3 /*break*/, 5];
-                    case 4:
-                        _c = b2bu(hmac && hmac.update(thing).digest('base64'));
-                        _g.label = 5;
-                    case 5: return [2 /*return*/, _b.apply(_a, [_c])];
-                }
-            });
-        });
+    return async function sign(thing, secret) {
+        const hmac = await createHmac('SHA-' + bits, secret);
+        return Promise.resolve(webCryptoSubtle ? s2bu(AB2s(hmac && await hmac.update(thing))) : b2bu(hmac && hmac.update(thing).digest('base64')));
     };
 }
 /**
@@ -977,30 +928,23 @@ function algHSverify(bits) {
      * Algorithm HMAC verifier
      *
      */
-    return function verify(thing, signature, secret) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, algHSsign(bits)(thing, secret)];
-                    case 1: return [2 /*return*/, (_a.sent()) === signature];
-                }
-            });
-        });
+    return async function verify(thing, signature, secret) {
+        return await algHSsign(bits)(thing, secret) === signature;
     };
 }
 function s2pem(secret) {
     if (typeof secret !== 'string') {
         throw new Error(ILLEGAL_ARGUMENT);
     }
-    var type = 'public';
+    let type = 'public';
     function ignore(line) {
-        if (ignoreLinesPriv.some(function (ign) { return line.toUpperCase().indexOf(ign) > -1; })) {
+        if (ignoreLinesPriv.some(ign => line.toUpperCase().indexOf(ign) > -1)) {
             type = 'private';
             return false;
         }
-        return !ignoreLinesPub.some(function (ign) { return line.toUpperCase().indexOf(ign) > -1; });
+        return !ignoreLinesPub.some(ign => line.toUpperCase().indexOf(ign) > -1);
     }
-    var lines = secret.split('\n'), ignoreLinesPriv = [
+    const lines = secret.split('\n'), ignoreLinesPriv = [
         '-BEGIN RSA PRIVATE KEY-',
         '-END RSA PRIVATE KEY-'
     ], ignoreLinesPub = [
@@ -1008,9 +952,7 @@ function s2pem(secret) {
         '-BEGIN PUBLIC KEY-',
         '-END PUBLIC KEY-',
         '-END RSA PUBLIC KEY-'
-    ], body = lines.map(function (line) { return line.trim(); }).filter(function (line) {
-        return line.length && ignore(line);
-    }).join('');
+    ], body = lines.map(line => line.trim()).filter(line => line.length && ignore(line)).join('');
     if (body.length) {
         return { body: s2AB(b2s(bu2b(body))), type: type };
     }
@@ -1138,24 +1080,23 @@ export function pem2asn1(buff: ArrayBuffer | Uint8Array): any {
     return res;
 }
 */
-var Asn1Tag = /** @class */ (function () {
-    function Asn1Tag(stream) {
+class Asn1Tag {
+    constructor(stream) {
         this.tagClass = 0;
         this.tagConstructed = false;
         this.tagNumber = 0;
-        var buf = stream.read();
+        const buf = stream.read();
         this.tagClass = buf >> 6;
         this.tagConstructed = ((buf & 0x20) !== 0);
         this.tagNumber = buf & 0x1F;
     }
-    return Asn1Tag;
-}());
+}
 function pem2asn1(buff) {
     if (!buff)
         throw new Error(ILLEGAL_ARGUMENT);
     if (buff instanceof ArrayBuffer)
         buff = new Uint8Array(buff);
-    var asn1 = ASN1.decode(buff), res = {};
+    let asn1 = ASN1.decode(buff), res = {};
     if (asn1.sub.length === 3) {
         asn1 = asn1.sub[2].sub[0];
     }
@@ -1183,7 +1124,7 @@ function pem2asn1(buff) {
     return res;
 }
 function asn12jwk(asn1, type, extra) {
-    var pemTypes = ['public', 'private'];
+    const pemTypes = ['public', 'private'];
     if (!asn1)
         throw new Error(ILLEGAL_ARGUMENT);
     type = ((typeof type === 'string') && type.toLowerCase())
@@ -1191,16 +1132,16 @@ function asn12jwk(asn1, type, extra) {
     if (type === 'private' && !asn1.privateExponent) {
         throw new Error(ILLEGAL_ARGUMENT);
     }
-    var v = asn1.publicExponent;
-    var expSize = Math.ceil(Math.log(v) / Math.log(256));
-    var exp = new Uint8Array(expSize).map(function (el) {
+    let v = asn1.publicExponent;
+    const expSize = Math.ceil(Math.log(v) / Math.log(256));
+    const exp = new Uint8Array(expSize).map(function (el) {
         el = v % 256;
         v = Math.floor(v / 256);
         return el;
     }).reverse();
-    var jwk = Object.assign({ kty: 'RSA' }, extra, {
+    let jwk = Object.assign({ kty: 'RSA' }, extra, {
         n: s2bu(AB2s(asn1.modulus)),
-        e: s2bu(AB2s(exp))
+        e: s2bu(AB2s(exp)),
     });
     if (type === 'private') {
         Object.assign(jwk, {
@@ -1215,8 +1156,8 @@ function asn12jwk(asn1, type, extra) {
     return jwk;
 }
 function pem2jwk(secret, type, extra) {
-    return tryPromise(function () {
-        var pem = s2pem(secret);
+    return tryPromise(() => {
+        const pem = s2pem(secret);
         return asn12jwk(pem2asn1(pem.body), type, extra);
     });
 }
@@ -1230,45 +1171,44 @@ export function parsePem(secret: string, concType?: "public" | "private", extra?
         })
 }
 */
-function createSign(name) {
+async function createSign(name) {
     if (webCryptoSubtle) {
         return {
             update: function (thing) {
                 return {
-                    sign: function (secret, encoding) {
-                        return __awaiter(this, void 0, void 0, function () {
-                            var _this = this;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0: return [4 /*yield*/, pem2jwk(secret, 'private', {
-                                            key_ops: ['sign'],
-                                            alg: name.replace('SHA-', 'RS')
-                                        }).then(function (keyData) { return __awaiter(_this, void 0, void 0, function () {
-                                            var _this = this;
-                                            return __generator(this, function (_a) {
-                                                switch (_a.label) {
-                                                    case 0: return [4 /*yield*/, webCryptoSubtle.importKey('jwk', keyData, { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, true, ['sign']).then(function (key) { return __awaiter(_this, void 0, void 0, function () {
-                                                            return __generator(this, function (_a) {
-                                                                switch (_a.label) {
-                                                                    case 0: return [4 /*yield*/, webCryptoSubtle.sign({ name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, key, s2AB(thing)).then(AB2s).then(s2b)];
-                                                                    case 1: return [2 /*return*/, _a.sent()];
-                                                                }
-                                                            });
-                                                        }); })];
-                                                    case 1: return [2 /*return*/, _a.sent()];
-                                                }
-                                            });
-                                        }); })];
-                                    case 1: return [2 /*return*/, _a.sent()];
-                                }
+                    sign: async function (secret, encoding) {
+                        return await pem2jwk(secret, 'private', {
+                            key_ops: ['sign'],
+                            alg: name.replace('SHA-', 'RS')
+                        }).then(async (keyData) => {
+                            return await webCryptoSubtle.importKey('jwk', keyData, { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, true, ['sign']).then(async (key) => {
+                                return await webCryptoSubtle.sign({ name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, key, s2AB(thing)).then(AB2s).then(s2b);
                             });
                         });
+                        /* Issue1: does not work with all versions of PEM keys...
+                        return await parsePem(secret, 'private').then(async pem => {
+                            return await webCryptoSubtle.importKey(
+                                'pkcs8',
+                                pem.body,
+                                { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } },
+                                true,
+                                ['sign']
+                            ).then(async key => {
+                                return await webCryptoSubtle.sign(
+                                    'RSASSA-PKCS1-v1_5',
+                                    key,
+                                    s2AB(thing)
+                                ).then(AB2s).then(s2b)
+                            })
+                        })
+                        */
                     }
                 };
             }
         };
     }
     else {
+        const crypto = await new Promise(function (resolve) { resolve(_interopNamespace(require('crypto'))); });
         if (!!crypto && crypto.createSign) {
             return crypto.createSign(name.replace('SHA-', 'RSA-SHA'));
         }
@@ -1278,70 +1218,54 @@ function createSign(name) {
     }
 }
 function algRSsign(bits) {
-    return function sign(thing, privateKey) {
-        return __awaiter(this, void 0, void 0, function () {
-            var res, _a, e_1;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _b.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, createSign('SHA-' + bits)];
-                    case 1:
-                        res = _b.sent();
-                        _a = b2bu;
-                        return [4 /*yield*/, res.update(thing).sign(privateKey, 'base64')];
-                    case 2: return [2 /*return*/, _a.apply(void 0, [_b.sent()])];
-                    case 3:
-                        e_1 = _b.sent();
-                        return [2 /*return*/, Promise.reject(new Error(e_1.message))];
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
+    return async function sign(thing, privateKey) {
+        try {
+            const res = await createSign('SHA-' + bits);
+            return b2bu(await res.update(thing).sign(privateKey, 'base64'));
+        }
+        catch (e) {
+            return Promise.reject(new Error(e.message));
+        }
     };
 }
-function createVerify(name) {
+async function createVerify(name) {
     if (webCryptoSubtle) {
         return {
             update: function (thing) {
                 return {
-                    verify: function (secret, signature, encoding) {
-                        return __awaiter(this, void 0, void 0, function () {
-                            var _this = this;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0: return [4 /*yield*/, pem2jwk(secret, 'public', {
-                                            key_ops: ['verify'],
-                                            alg: name.replace('SHA-', 'RS')
-                                        }).then(function (_a) {
-                                            var kty = _a.kty, n = _a.n, e = _a.e;
-                                            return __awaiter(_this, void 0, void 0, function () {
-                                                var _this = this;
-                                                return __generator(this, function (_b) {
-                                                    switch (_b.label) {
-                                                        case 0: return [4 /*yield*/, webCryptoSubtle.importKey('jwk', { kty: kty, n: n, e: e }, { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, false, ['verify']).then(function (key) { return __awaiter(_this, void 0, void 0, function () {
-                                                                return __generator(this, function (_a) {
-                                                                    switch (_a.label) {
-                                                                        case 0: return [4 /*yield*/, webCryptoSubtle.verify('RSASSA-PKCS1-v1_5', key, s2AB(bu2s(signature)), s2AB(thing))];
-                                                                        case 1: return [2 /*return*/, _a.sent()];
-                                                                    }
-                                                                });
-                                                            }); })];
-                                                        case 1: return [2 /*return*/, _b.sent()];
-                                                    }
-                                                });
-                                            });
-                                        })];
-                                    case 1: return [2 /*return*/, _a.sent()];
-                                }
+                    verify: async function (secret, signature, encoding) {
+                        return await pem2jwk(secret, 'public', {
+                            key_ops: ['verify'],
+                            alg: name.replace('SHA-', 'RS')
+                        }).then(async ({ kty, n, e }) => {
+                            return await webCryptoSubtle.importKey('jwk', { kty, n, e }, { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, false, ['verify']).then(async (key) => {
+                                return await webCryptoSubtle.verify('RSASSA-PKCS1-v1_5', key, s2AB(bu2s(signature)), s2AB(thing));
                             });
                         });
+                        /* Issue1: does not work with all versions of PEM keys...
+                        return await parsePem(secret, 'public').then(async pem => {
+                            return await webCryptoSubtle.importKey(
+                                'spki',
+                                pem.body,
+                                { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } },
+                                true,
+                                ['verify']
+                            ).then(async key => {
+                                return await webCryptoSubtle.verify(
+                                    'RSASSA-PKCS1-v1_5',
+                                    key,
+                                    s2AB(bu2s(signature)),
+                                    s2AB(thing)
+                                )
+                            })
+                        })*/
                     }
                 };
             }
         };
     }
     else {
+        const crypto = await new Promise(function (resolve) { resolve(_interopNamespace(require('crypto'))); });
         if (!!crypto && crypto.createVerify) {
             return crypto.createVerify(name.replace('SHA-', 'RSA-SHA'));
         }
@@ -1351,191 +1275,137 @@ function createVerify(name) {
     }
 }
 function algRSverify(bits) {
-    return function verify(thing, signature, publicKey) {
-        return __awaiter(this, void 0, void 0, function () {
-            var rsaVerify, e_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        signature = bu2b(signature);
-                        return [4 /*yield*/, createVerify('SHA-' + bits)];
-                    case 1:
-                        rsaVerify = _a.sent();
-                        return [4 /*yield*/, rsaVerify.update(thing).verify(publicKey, signature, 'base64')];
-                    case 2: return [2 /*return*/, _a.sent()];
-                    case 3:
-                        e_2 = _a.sent();
-                        return [2 /*return*/, Promise.reject(new Error(e_2.message))];
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
+    return async function verify(thing, signature, publicKey) {
+        try {
+            signature = bu2b(signature);
+            const rsaVerify = await createVerify('SHA-' + bits);
+            return await rsaVerify.update(thing).verify(publicKey, signature, 'base64');
+        }
+        catch (e) {
+            return Promise.reject(new Error(e.message));
+        }
     };
 }
 /**
  * Universal algorithm verifier
  *
  */
-function algVerify(algorithm, thing, signature, secret) {
-    return __awaiter(this, void 0, void 0, function () {
-        var algo, type, bits, _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    if (typeof algorithm !== 'string' || algorithm.length < 4) {
-                        throw new Error(UNSUPPORTED_ALGORITHM);
-                    }
-                    algo = algorithm.toLowerCase();
-                    if (algo === 'none') {
-                        return [2 /*return*/, signature === ''];
-                    }
-                    type = algo.slice(0, 2), bits = parseInt(algo.slice(2));
-                    if (isNaN(bits) || ([256, 384, 512].indexOf(bits) < 0)) {
-                        throw new Error(UNSUPPORTED_ALGORITHM);
-                    }
-                    _a = type;
-                    switch (_a) {
-                        case 'rs': return [3 /*break*/, 1];
-                        case 'hs': return [3 /*break*/, 3];
-                    }
-                    return [3 /*break*/, 5];
-                case 1: return [4 /*yield*/, algRSverify(bits)(thing, signature, secret)];
-                case 2: return [2 /*return*/, _b.sent()];
-                case 3: return [4 /*yield*/, algHSverify(bits)(thing, signature, secret)];
-                case 4: return [2 /*return*/, _b.sent()];
-                case 5: throw new Error(UNSUPPORTED_ALGORITHM);
-            }
-        });
-    });
+async function algVerify(algorithm, thing, signature, secret) {
+    if (typeof algorithm !== 'string' || algorithm.length < 4) {
+        throw new Error(UNSUPPORTED_ALGORITHM);
+    }
+    const algo = algorithm.toLowerCase();
+    if (algo === 'none') {
+        return signature === '';
+    }
+    const type = algo.slice(0, 2), bits = parseInt(algo.slice(2));
+    if (isNaN(bits) || ([256, 384, 512].indexOf(bits) < 0)) {
+        throw new Error(UNSUPPORTED_ALGORITHM);
+    }
+    switch (type) {
+        case 'rs':
+            return await algRSverify(bits)(thing, signature, secret);
+        case 'hs':
+            return await algHSverify(bits)(thing, signature, secret);
+        default:
+            throw new Error(UNSUPPORTED_ALGORITHM);
+    }
 }
 /**
  * Universal algorithm signer
  *
  */
-function algSign(algorithm, thing, secret) {
-    return __awaiter(this, void 0, void 0, function () {
-        var algo, type, bits, _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    if (typeof algorithm !== 'string' || algorithm.length < 4) {
-                        throw new Error(UNSUPPORTED_ALGORITHM);
-                    }
-                    algo = algorithm.toLowerCase();
-                    if (algo === 'none') {
-                        return [2 /*return*/, ''];
-                    }
-                    type = algo.slice(0, 2), bits = parseInt(algo.slice(2));
-                    if (isNaN(bits) || ([256, 384, 512].indexOf(bits) < 0)) {
-                        throw new Error(UNSUPPORTED_ALGORITHM);
-                    }
-                    _a = type;
-                    switch (_a) {
-                        case 'rs': return [3 /*break*/, 1];
-                        case 'hs': return [3 /*break*/, 3];
-                    }
-                    return [3 /*break*/, 5];
-                case 1: return [4 /*yield*/, algRSsign(bits)(thing, secret)];
-                case 2: return [2 /*return*/, _b.sent()];
-                case 3: return [4 /*yield*/, algHSsign(bits)(thing, secret)];
-                case 4: return [2 /*return*/, _b.sent()];
-                case 5: throw new Error(UNSUPPORTED_ALGORITHM);
-            }
-        });
-    });
+async function algSign(algorithm, thing, secret) {
+    if (typeof algorithm !== 'string' || algorithm.length < 4) {
+        throw new Error(UNSUPPORTED_ALGORITHM);
+    }
+    const algo = algorithm.toLowerCase();
+    if (algo === 'none') {
+        return '';
+    }
+    const type = algo.slice(0, 2), bits = parseInt(algo.slice(2));
+    if (isNaN(bits) || ([256, 384, 512].indexOf(bits) < 0)) {
+        throw new Error(UNSUPPORTED_ALGORITHM);
+    }
+    switch (type) {
+        case 'rs':
+            return await algRSsign(bits)(thing, secret);
+        case 'hs':
+            return await algHSsign(bits)(thing, secret);
+        default:
+            throw new Error(UNSUPPORTED_ALGORITHM);
+    }
 }
-function jwtVerify(jwtStr, secret) {
-    return __awaiter(this, void 0, void 0, function () {
-        var jwt, header, thing;
-        return __generator(this, function (_a) {
-            jwt = jwtSplit(jwtStr), header = s2J(bu2s(jwt.header)), thing = jwt.header + '.' + jwt.payload;
-            return [2 /*return*/, tryPromise(function () { return algVerify(header.alg, thing, jwt.signature, secret); })];
-        });
-    });
+async function jwtVerify(jwtStr, secret) {
+    const jwt = jwtSplit(jwtStr), header = s2J(bu2s(jwt.header)), thing = jwt.header + '.' + jwt.payload;
+    return tryPromise(() => algVerify(header.alg, thing, jwt.signature, secret));
 }
-var verifyJwt = jwtVerify;
+const verifyJwt = jwtVerify;
 function jwtSign(jwtStr, secret) {
-    var _this = this;
-    var jwt = jwtSplit(jwtStr), header = s2J(bu2s(jwt.header)), thing = jwt.header + '.' + jwt.payload;
-    return tryPromise(function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, algSign(header.alg, thing, secret)];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
-    }); }); });
+    const jwt = jwtSplit(jwtStr), header = s2J(bu2s(jwt.header)), thing = jwt.header + '.' + jwt.payload;
+    return tryPromise(async () => await algSign(header.alg, thing, secret));
 }
-var signJwt = jwtSign;
-function jwtResign(jwtStr, secret, alg) {
-    return __awaiter(this, void 0, void 0, function () {
-        var jwt, _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    jwt = jwtDecode(jwtStr);
-                    if (!!alg)
-                        jwt.header.alg = alg;
-                    _a = jwt;
-                    return [4 /*yield*/, jwtSign(jwt.toString(), secret)];
-                case 1:
-                    _a.signature = _b.sent();
-                    return [2 /*return*/, jwt.toString()];
-            }
-        });
-    });
+const signJwt = jwtSign;
+async function jwtResign(jwtStr, secret, alg) {
+    const jwt = jwtDecode(jwtStr);
+    if (!!alg)
+        jwt.header.alg = alg;
+    jwt.signature = await jwtSign(jwt.toString(), secret);
+    return jwt.toString();
 }
-var resignJwt = jwtResign;
+const resignJwt = jwtResign;
 /**
  * Used for testing only
  *
  * @hidden
  */
-function cryptoType() {
+async function cryptoType() {
+    const crypto = await new Promise(function (resolve) { resolve(_interopNamespace(require('crypto'))); });
     return crypto ? crypto['type'] || 'crypto-node' : 'undefined';
 }
 
-exports.webCrypto = webCrypto;
-exports.webCryptoSubtle = webCryptoSubtle;
-exports.JwtSplit = JwtSplit;
-exports.JwtDecode = JwtDecode;
-exports.tryPromise = tryPromise;
-exports.s2J = s2J;
-exports.J2s = J2s;
-exports.b2s = b2s;
-exports.b2bu = b2bu;
-exports.bu2b = bu2b;
-exports.bu2s = bu2s;
-exports.isGzip = isGzip;
-exports.jwtDecode = jwtDecode;
-exports.jwtSplit = jwtSplit;
-exports.splitJwt = splitJwt;
-exports.s2b = s2b;
-exports.s2bu = s2bu;
-exports.s2zbu = s2zbu;
-exports.unzip = unzip;
-exports.zbu2s = zbu2s;
-exports.zip = zip;
-exports.s2AB = s2AB;
 exports.AB2s = AB2s;
-exports.createHmac = createHmac;
+exports.Asn1Tag = Asn1Tag;
+exports.J2s = J2s;
+exports.JwtDecode = JwtDecode;
+exports.JwtSplit = JwtSplit;
 exports.algHSsign = algHSsign;
 exports.algHSverify = algHSverify;
-exports.s2pem = s2pem;
-exports.Asn1Tag = Asn1Tag;
-exports.pem2asn1 = pem2asn1;
-exports.asn12jwk = asn12jwk;
-exports.pem2jwk = pem2jwk;
-exports.createSign = createSign;
 exports.algRSsign = algRSsign;
-exports.createVerify = createVerify;
 exports.algRSverify = algRSverify;
-exports.algVerify = algVerify;
 exports.algSign = algSign;
-exports.jwtVerify = jwtVerify;
-exports.verifyJwt = verifyJwt;
-exports.jwtSign = jwtSign;
-exports.signJwt = signJwt;
-exports.jwtResign = jwtResign;
-exports.resignJwt = resignJwt;
+exports.algVerify = algVerify;
+exports.asn12jwk = asn12jwk;
+exports.b2bu = b2bu;
+exports.b2s = b2s;
+exports.bu2b = bu2b;
+exports.bu2s = bu2s;
+exports.createHmac = createHmac;
+exports.createSign = createSign;
+exports.createVerify = createVerify;
 exports.cryptoType = cryptoType;
+exports.isGzip = isGzip;
+exports.jwtDecode = jwtDecode;
+exports.jwtResign = jwtResign;
+exports.jwtSign = jwtSign;
+exports.jwtSplit = jwtSplit;
+exports.jwtVerify = jwtVerify;
+exports.pem2asn1 = pem2asn1;
+exports.pem2jwk = pem2jwk;
+exports.resignJwt = resignJwt;
+exports.s2AB = s2AB;
+exports.s2J = s2J;
+exports.s2b = s2b;
+exports.s2bu = s2bu;
+exports.s2pem = s2pem;
+exports.s2zbu = s2zbu;
+exports.signJwt = signJwt;
+exports.splitJwt = splitJwt;
+exports.tryPromise = tryPromise;
+exports.unzip = unzip;
+exports.verifyJwt = verifyJwt;
+exports.webCrypto = webCrypto;
+exports.webCryptoSubtle = webCryptoSubtle;
+exports.zbu2s = zbu2s;
+exports.zip = zip;
 //# sourceMappingURL=jwt-js-decode.cjs.js.map

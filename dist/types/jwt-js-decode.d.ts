@@ -240,9 +240,9 @@ export declare class Asn1Tag {
 export declare function pem2asn1(buff: ArrayBuffer | Uint8Array): any;
 export declare function asn12jwk(asn1: any, type?: string, extra?: any): any;
 export declare function pem2jwk(secret: string, type?: "public" | "private", extra?: any): Promise<any>;
-export declare function createSign(name: string): any;
+export declare function createSign(name: string): Promise<any>;
 export declare function algRSsign(bits: number): (thing: string, privateKey: string) => Promise<string>;
-export declare function createVerify(name: string): any;
+export declare function createVerify(name: string): Promise<any>;
 export declare function algRSverify(bits: number): (thing: string, signature: string, publicKey: string) => Promise<boolean>;
 /**
  * Universal algorithm verifier
@@ -265,8 +265,8 @@ export declare const resignJwt: typeof jwtResign;
  *
  * @hidden
  */
-export declare function cryptoType(): string;
-declare const jwsJsDecode: {
+export declare function cryptoType(): Promise<string>;
+declare const _default: {
     ILLEGAL_ARGUMENT: string;
     UNSUPPORTED_ALGORITHM: string;
     resignJwt: typeof jwtResign;
@@ -312,4 +312,4 @@ declare const jwsJsDecode: {
     zbu2s: typeof zbu2s;
     zip: typeof zip;
 };
-export default jwsJsDecode;
+export default _default;

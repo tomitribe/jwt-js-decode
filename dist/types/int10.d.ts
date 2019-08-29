@@ -1,4 +1,4 @@
-export declare class Int10 {
+export default class Int10 {
     buf: any[];
     constructor(value?: any);
     mulAdd(m: any, c: any): void;
@@ -7,3 +7,4 @@ export declare class Int10 {
     valueOf(): number;
     simplify(): any;
 }
+export { Int10 };

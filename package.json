@@ -1,6 +1,6 @@
 {
   "name": "jwt-js-decode",
-  "version": "1.3.7",
+  "version": "1.4.0",
   "description": "",
   "keywords": [],
   "main": "dist/jwt-js-decode.umd.js",
@@ -52,6 +52,7 @@
   },
   "jest": {
     "transform": {
+      "^.+\\.js$": "babel-jest",
       "^.+\\.tsx?$": "ts-jest"
     },
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
@@ -66,8 +67,11 @@
       "/node_modules/",
       "/test/"
     ],
+    "modulePaths": ["<rootDir>/src", "<rootDir>/node_modules"],
     "collectCoverage": false,
-    "setupTestFrameworkScriptFile": "./jest.setup.js",
+    "setupFilesAfterEnv": [
+      "./jest.setup.js"
+    ],
     "globals": {
       "ts-jest": {
         "tsConfigFile": "tsconfig.jest.json"
@@ -75,37 +79,37 @@
     }
   },
   "dependencies": {
-    "pako": "1.0.6"
+    "pako": "1.0.10"
   },
   "devDependencies": {
-    "@types/jest": "^23.0.2",
-    "@types/node": "^10.3.2",
-    "@types/pako": "^1.0.0",
+    "@types/jest": "^24.0.18",
+    "@types/node": "^12.7.2",
+    "@types/pako": "^1.0.1",
+    "babel-jest": "^24.9.0",
     "babel-register": "^6.26.0",
     "browserify-sign": "^4.0.4",
     "create-hash": "^1.2.0",
     "create-hmac": "^1.1.7",
-    "jest": "^23.1.0",
-    "lint-staged": "^7.2.0",
+    "jest": "^24.9.0",
+    "lint-staged": "^9.2.5",
     "lodash.camelcase": "^4.3.0",
-    "prettier": "^1.13.5",
-    "rimraf": "^2.6.2",
-    "rollup": "^0.60.4",
-    "rollup-plugin-commonjs": "^9.1.3",
-    "rollup-plugin-json": "^3.0.0",
-    "rollup-plugin-node-resolve": "^3.3.0",
+    "prettier": "^1.18.2",
+    "rimraf": "^3.0.0",
+    "rollup": "^1.20.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-sourcemaps": "^0.4.2",
-    "rollup-plugin-typescript2": "^0.15.0",
-    "rollup-plugin-uglify": "^4.0.0",
-    "rollup-plugin-uglify-es": "0.0.1",
+    "rollup-plugin-terser": "^5.1.1",
+    "rollup-plugin-typescript2": "^0.24.0",
     "subtle": "git+https://github.com/Dexmaster/subtle.git#97bb1842778155a9485df8c0eda84cdfa645468a",
-    "ts-jest": "^22.4.6",
-    "ts-node": "^6.1.1",
-    "tslint": "^5.10.0",
-    "tslint-config-prettier": "^1.13.0",
-    "tslint-config-standard": "^7.0.0",
-    "typedoc": "^0.11.1",
-    "typedoc-plugin-markdown": "^1.1.13",
+    "ts-jest": "^24.0.2",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.19.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-config-standard": "^8.0.1",
+    "typedoc": "^0.15.0",
+    "typedoc-plugin-markdown": "^2.1.4",
     "typescript": "^2.9.1"
   }
 }

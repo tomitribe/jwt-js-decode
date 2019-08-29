@@ -1,5 +1,4 @@
 import pako from 'pako';
-import crypto from 'crypto';
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -883,7 +882,7 @@ function s2AB(str) {
 function AB2s(buff) {
     if (buff instanceof ArrayBuffer)
         buff = new Uint8Array(buff);
-    return String.fromCharCode.apply(String, buff);
+    return String.fromCharCode.apply(String, Array.from(buff));
 }
 /**
  * Async function inspired by createHmac in crypto (used WebCrypto Api supported by most browsers)
@@ -904,6 +903,7 @@ function createHmac(name, secret) {
             });
         }
         else {
+            const crypto = yield import('crypto');
             return !!crypto && crypto.createHmac ? Promise.resolve(crypto.createHmac(name.replace('SHA-', 'sha'), secret)) : Promise.reject(webCrypto);
         }
     });
@@ -1179,51 +1179,54 @@ export function parsePem(secret: string, concType?: "public" | "private", extra?
 }
 */
 function createSign(name) {
-    if (webCryptoSubtle) {
-        return {
-            update: function (thing) {
-                return {
-                    sign: function (secret, encoding) {
-                        return __awaiter(this, void 0, void 0, function* () {
-                            return yield pem2jwk(secret, 'private', {
-                                key_ops: ['sign'],
-                                alg: name.replace('SHA-', 'RS')
-                            }).then((keyData) => __awaiter(this, void 0, void 0, function* () {
-                                return yield webCryptoSubtle.importKey('jwk', keyData, { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, true, ['sign']).then((key) => __awaiter(this, void 0, void 0, function* () {
-                                    return yield webCryptoSubtle.sign({ name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, key, s2AB(thing)).then(AB2s).then(s2b);
+    return __awaiter(this, void 0, void 0, function* () {
+        if (webCryptoSubtle) {
+            return {
+                update: function (thing) {
+                    return {
+                        sign: function (secret, encoding) {
+                            return __awaiter(this, void 0, void 0, function* () {
+                                return yield pem2jwk(secret, 'private', {
+                                    key_ops: ['sign'],
+                                    alg: name.replace('SHA-', 'RS')
+                                }).then((keyData) => __awaiter(this, void 0, void 0, function* () {
+                                    return yield webCryptoSubtle.importKey('jwk', keyData, { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, true, ['sign']).then((key) => __awaiter(this, void 0, void 0, function* () {
+                                        return yield webCryptoSubtle.sign({ name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, key, s2AB(thing)).then(AB2s).then(s2b);
+                                    }));
                                 }));
-                            }));
-                            /* Issue1: does not work with all versions of PEM keys...
-                            return await parsePem(secret, 'private').then(async pem => {
-                                return await webCryptoSubtle.importKey(
-                                    'pkcs8',
-                                    pem.body,
-                                    { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } },
-                                    true,
-                                    ['sign']
-                                ).then(async key => {
-                                    return await webCryptoSubtle.sign(
-                                        'RSASSA-PKCS1-v1_5',
-                                        key,
-                                        s2AB(thing)
-                                    ).then(AB2s).then(s2b)
+                                /* Issue1: does not work with all versions of PEM keys...
+                                return await parsePem(secret, 'private').then(async pem => {
+                                    return await webCryptoSubtle.importKey(
+                                        'pkcs8',
+                                        pem.body,
+                                        { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } },
+                                        true,
+                                        ['sign']
+                                    ).then(async key => {
+                                        return await webCryptoSubtle.sign(
+                                            'RSASSA-PKCS1-v1_5',
+                                            key,
+                                            s2AB(thing)
+                                        ).then(AB2s).then(s2b)
+                                    })
                                 })
-                            })
-                            */
-                        });
-                    }
-                };
-            }
-        };
-    }
-    else {
-        if (!!crypto && crypto.createSign) {
-            return crypto.createSign(name.replace('SHA-', 'RSA-SHA'));
+                                */
+                            });
+                        }
+                    };
+                }
+            };
         }
         else {
-            throw new Error(ILLEGAL_ARGUMENT);
+            const crypto = yield import('crypto');
+            if (!!crypto && crypto.createSign) {
+                return crypto.createSign(name.replace('SHA-', 'RSA-SHA'));
+            }
+            else {
+                throw new Error(ILLEGAL_ARGUMENT);
+            }
         }
-    }
+    });
 }
 function algRSsign(bits) {
     return function sign(thing, privateKey) {
@@ -1239,51 +1242,54 @@ function algRSsign(bits) {
     };
 }
 function createVerify(name) {
-    if (webCryptoSubtle) {
-        return {
-            update: function (thing) {
-                return {
-                    verify: function (secret, signature, encoding) {
-                        return __awaiter(this, void 0, void 0, function* () {
-                            return yield pem2jwk(secret, 'public', {
-                                key_ops: ['verify'],
-                                alg: name.replace('SHA-', 'RS')
-                            }).then(({ kty, n, e }) => __awaiter(this, void 0, void 0, function* () {
-                                return yield webCryptoSubtle.importKey('jwk', { kty, n, e }, { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, false, ['verify']).then((key) => __awaiter(this, void 0, void 0, function* () {
-                                    return yield webCryptoSubtle.verify('RSASSA-PKCS1-v1_5', key, s2AB(bu2s(signature)), s2AB(thing));
+    return __awaiter(this, void 0, void 0, function* () {
+        if (webCryptoSubtle) {
+            return {
+                update: function (thing) {
+                    return {
+                        verify: function (secret, signature, encoding) {
+                            return __awaiter(this, void 0, void 0, function* () {
+                                return yield pem2jwk(secret, 'public', {
+                                    key_ops: ['verify'],
+                                    alg: name.replace('SHA-', 'RS')
+                                }).then(({ kty, n, e }) => __awaiter(this, void 0, void 0, function* () {
+                                    return yield webCryptoSubtle.importKey('jwk', { kty, n, e }, { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, false, ['verify']).then((key) => __awaiter(this, void 0, void 0, function* () {
+                                        return yield webCryptoSubtle.verify('RSASSA-PKCS1-v1_5', key, s2AB(bu2s(signature)), s2AB(thing));
+                                    }));
                                 }));
-                            }));
-                            /* Issue1: does not work with all versions of PEM keys...
-                            return await parsePem(secret, 'public').then(async pem => {
-                                return await webCryptoSubtle.importKey(
-                                    'spki',
-                                    pem.body,
-                                    { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } },
-                                    true,
-                                    ['verify']
-                                ).then(async key => {
-                                    return await webCryptoSubtle.verify(
-                                        'RSASSA-PKCS1-v1_5',
-                                        key,
-                                        s2AB(bu2s(signature)),
-                                        s2AB(thing)
-                                    )
-                                })
-                            })*/
-                        });
-                    }
-                };
-            }
-        };
-    }
-    else {
-        if (!!crypto && crypto.createVerify) {
-            return crypto.createVerify(name.replace('SHA-', 'RSA-SHA'));
+                                /* Issue1: does not work with all versions of PEM keys...
+                                return await parsePem(secret, 'public').then(async pem => {
+                                    return await webCryptoSubtle.importKey(
+                                        'spki',
+                                        pem.body,
+                                        { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } },
+                                        true,
+                                        ['verify']
+                                    ).then(async key => {
+                                        return await webCryptoSubtle.verify(
+                                            'RSASSA-PKCS1-v1_5',
+                                            key,
+                                            s2AB(bu2s(signature)),
+                                            s2AB(thing)
+                                        )
+                                    })
+                                })*/
+                            });
+                        }
+                    };
+                }
+            };
         }
         else {
-            throw new Error(ILLEGAL_ARGUMENT);
+            const crypto = yield import('crypto');
+            if (!!crypto && crypto.createVerify) {
+                return crypto.createVerify(name.replace('SHA-', 'RSA-SHA'));
+            }
+            else {
+                throw new Error(ILLEGAL_ARGUMENT);
+            }
         }
-    }
+    });
 }
 function algRSverify(bits) {
     return function verify(thing, signature, publicKey) {
@@ -1381,8 +1387,11 @@ const resignJwt = jwtResign;
  * @hidden
  */
 function cryptoType() {
-    return crypto ? crypto['type'] || 'crypto-node' : 'undefined';
+    return __awaiter(this, void 0, void 0, function* () {
+        const crypto = yield import('crypto');
+        return crypto ? crypto['type'] || 'crypto-node' : 'undefined';
+    });
 }
 
-export { webCrypto, webCryptoSubtle, JwtSplit, JwtDecode, tryPromise, s2J, J2s, b2s, b2bu, bu2b, bu2s, isGzip, jwtDecode, jwtSplit, splitJwt, s2b, s2bu, s2zbu, unzip, zbu2s, zip, s2AB, AB2s, createHmac, algHSsign, algHSverify, s2pem, Asn1Tag, pem2asn1, asn12jwk, pem2jwk, createSign, algRSsign, createVerify, algRSverify, algVerify, algSign, jwtVerify, verifyJwt, jwtSign, signJwt, jwtResign, resignJwt, cryptoType };
+export { AB2s, Asn1Tag, J2s, JwtDecode, JwtSplit, algHSsign, algHSverify, algRSsign, algRSverify, algSign, algVerify, asn12jwk, b2bu, b2s, bu2b, bu2s, createHmac, createSign, createVerify, cryptoType, isGzip, jwtDecode, jwtResign, jwtSign, jwtSplit, jwtVerify, pem2asn1, pem2jwk, resignJwt, s2AB, s2J, s2b, s2bu, s2pem, s2zbu, signJwt, splitJwt, tryPromise, unzip, verifyJwt, webCrypto, webCryptoSubtle, zbu2s, zip };
 //# sourceMappingURL=jwt-js-decode.es6.js.map

@@ -19,5 +19,5 @@ export function hex2AB(hex: string): ArrayBuffer | Uint8Array {
 
 export function AB2hex(buff: ArrayBuffer | Uint8Array): string {
     if (buff instanceof ArrayBuffer) buff = new Uint8Array(buff);
-    return buff.reduce(num2hex, '');
+    return (buff as Uint8Array).reduce(num2hex, '');
 }

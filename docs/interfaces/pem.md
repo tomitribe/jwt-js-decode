@@ -1,10 +1,12 @@
-[jwt-js-decode](../README.md) > [PEM](../interfaces/pem.md)
+**[jwt-js-decode](../README.md)**
+
+[Globals](../globals.md) › [PEM](pem.md)
 
 # Interface: PEM
 
 ## Hierarchy
 
-**PEM**
+* **PEM**
 
 ## Index
 
@@ -13,28 +15,18 @@
 * [body](pem.md#body)
 * [type](pem.md#type)
 
----
-
 ## Properties
-
-<a id="body"></a>
 
 ###  body
 
-**● body**: * `ArrayBuffer` &#124; `Uint8Array`
-*
+• **body**: *ArrayBuffer | Uint8Array*
 
-*Defined in jwt-js-decode.ts:469*
+Defined in jwt-js-decode.ts:470
 
 ___
-<a id="type"></a>
 
 ###  type
 
-**● type**: * "private" &#124; "public"
-*
+• **type**: *"private" | "public"*
 
-*Defined in jwt-js-decode.ts:470*
-
-___
-
+Defined in jwt-js-decode.ts:471

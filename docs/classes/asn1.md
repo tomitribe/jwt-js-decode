@@ -1,10 +1,12 @@
-[jwt-js-decode](../README.md) > [ASN1](../classes/asn1.md)
+**[jwt-js-decode](../README.md)**
+
+[Globals](../globals.md) › [ASN1](asn1.md)
 
 # Class: ASN1
 
 ## Hierarchy
 
-**ASN1**
+* **ASN1**
 
 ## Index
 
@@ -31,234 +33,205 @@
 * [toHexString](asn1.md#tohexstring)
 * [toString](asn1.md#tostring)
 * [typeName](asn1.md#typename)
-* [decode](asn1.md#decode)
-* [decodeLength](asn1.md#decodelength)
-
----
+* [decode](asn1.md#static-decode)
+* [decodeLength](asn1.md#static-decodelength)
 
 ## Constructors
 
-<a id="constructor"></a>
-
 ###  constructor
 
-⊕ **new ASN1**(stream: *`any`*, header: *`any`*, length: *`any`*, tag: *`any`*, sub: *`any`*): [ASN1](asn1.md)
+\+ **new ASN1**(`stream`: any, `header`: any, `length`: any, `tag`: any, `sub`: any): *[ASN1](asn1.md)*
 
-*Defined in asn1.ts:225*
+Defined in asn1.ts:225
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| stream | `any` |
-| header | `any` |
-| length | `any` |
-| tag | `any` |
-| sub | `any` |
+Name | Type |
+------ | ------ |
+`stream` | any |
+`header` | any |
+`length` | any |
+`tag` | any |
+`sub` | any |
 
-**Returns:** [ASN1](asn1.md)
-
-___
+**Returns:** *[ASN1](asn1.md)*
 
 ## Properties
 
-<a id="header"></a>
-
 ###  header
 
-**● header**: *`any`*
+• **header**: *any*
 
-*Defined in asn1.ts:222*
+Defined in asn1.ts:222
 
 ___
-<a id="length"></a>
 
 ###  length
 
-**● length**: *`any`*
+• **length**: *any*
 
-*Defined in asn1.ts:223*
+Defined in asn1.ts:223
 
 ___
-<a id="stream"></a>
 
 ###  stream
 
-**● stream**: *`any`*
+• **stream**: *any*
 
-*Defined in asn1.ts:221*
+Defined in asn1.ts:221
 
 ___
-<a id="sub"></a>
 
 ###  sub
 
-**● sub**: *`any`*
+• **sub**: *any*
 
-*Defined in asn1.ts:225*
+Defined in asn1.ts:225
 
 ___
-<a id="tag"></a>
 
 ###  tag
 
-**● tag**: *`any`*
+• **tag**: *any*
 
-*Defined in asn1.ts:224*
-
-___
+Defined in asn1.ts:224
 
 ## Methods
 
-<a id="content"></a>
-
 ###  content
 
-▸ **content**(maxLength?: *`any`*): `any`
+▸ **content**(`maxLength?`: any): *any*
 
-*Defined in asn1.ts:305*
+Defined in asn1.ts:305
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| `Optional` maxLength | `any` |
+Name | Type |
+------ | ------ |
+`maxLength?` | any |
 
-**Returns:** `any`
+**Returns:** *any*
 
 ___
-<a id="getab"></a>
 
 ###  getAB
 
-▸ **getAB**(clean?: *`boolean`*): `any`
+▸ **getAB**(`clean`: boolean): *any*
 
-*Defined in asn1.ts:387*
+Defined in asn1.ts:387
 
 **Parameters:**
 
-| Param | Type | Default value |
-| ------ | ------ | ------ |
-| `Default value` clean | `boolean` | true |
+Name | Type | Default |
+------ | ------ | ------ |
+`clean` | boolean | true |
 
-**Returns:** `any`
+**Returns:** *any*
 
 ___
-<a id="gethex"></a>
 
 ###  getHex
 
-▸ **getHex**(): `any`
+▸ **getHex**(): *any*
 
-*Defined in asn1.ts:383*
+Defined in asn1.ts:383
 
-**Returns:** `any`
+**Returns:** *any*
 
 ___
-<a id="poscontent"></a>
 
 ###  posContent
 
-▸ **posContent**(): `any`
+▸ **posContent**(): *any*
 
-*Defined in asn1.ts:371*
+Defined in asn1.ts:371
 
-**Returns:** `any`
+**Returns:** *any*
 
 ___
-<a id="posend"></a>
 
 ###  posEnd
 
-▸ **posEnd**(): `any`
+▸ **posEnd**(): *any*
 
-*Defined in asn1.ts:375*
+Defined in asn1.ts:375
 
-**Returns:** `any`
+**Returns:** *any*
 
 ___
-<a id="posstart"></a>
 
 ###  posStart
 
-▸ **posStart**(): `any`
+▸ **posStart**(): *any*
 
-*Defined in asn1.ts:367*
+Defined in asn1.ts:367
 
-**Returns:** `any`
+**Returns:** *any*
 
 ___
-<a id="tohexstring"></a>
 
 ###  toHexString
 
-▸ **toHexString**(root?: *`any`*): `any`
+▸ **toHexString**(`root?`: any): *any*
 
-*Defined in asn1.ts:379*
+Defined in asn1.ts:379
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| `Optional` root | `any` |
+Name | Type |
+------ | ------ |
+`root?` | any |
 
-**Returns:** `any`
+**Returns:** *any*
 
 ___
-<a id="tostring"></a>
 
 ###  toString
 
-▸ **toString**(): `string`
+▸ **toString**(): *string*
 
-*Defined in asn1.ts:363*
+Defined in asn1.ts:363
 
-**Returns:** `string`
+**Returns:** *string*
 
 ___
-<a id="typename"></a>
 
 ###  typeName
 
-▸ **typeName**():  `undefined` &#124; `string`
+▸ **typeName**(): *undefined | string*
 
-*Defined in asn1.ts:236*
+Defined in asn1.ts:236
 
-**Returns:**  `undefined` &#124; `string`
+**Returns:** *undefined | string*
 
 ___
-<a id="decode"></a>
 
-### `<Static>` decode
+### `Static` decode
 
-▸ **decode**(stream: *`any`*): [ASN1](asn1.md)
+▸ **decode**(`stream`: any): *[ASN1](asn1.md)*
 
-*Defined in asn1.ts:406*
+Defined in asn1.ts:406
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| stream | `any` |
+Name | Type |
+------ | ------ |
+`stream` | any |
 
-**Returns:** [ASN1](asn1.md)
+**Returns:** *[ASN1](asn1.md)*
 
 ___
-<a id="decodelength"></a>
 
-### `<Static>` decodeLength
+### `Static` decodeLength
 
-▸ **decodeLength**(stream: *`any`*): `any`
+▸ **decodeLength**(`stream`: any): *any*
 
-*Defined in asn1.ts:391*
+Defined in asn1.ts:391
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| stream | `any` |
+Name | Type |
+------ | ------ |
+`stream` | any |
 
-**Returns:** `any`
-
-___
-
+**Returns:** *any*

@@ -1,7 +1,9 @@
 {
   "extends": "./tsconfig",
   "compilerOptions": {
-    "module": "es2015",
-    "lib": [ "ES2015" ]
+    "module": "esnext",
+    "target": "es5",
+    "lib": [ "ES2015", "DOM", "esnext" ],
+    "allowJs": true
   }
 }
