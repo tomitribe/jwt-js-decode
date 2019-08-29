@@ -3,11 +3,11 @@ import commonjs from 'rollup-plugin-commonjs';
 import sourceMaps from 'rollup-plugin-sourcemaps';
 import typescript from 'rollup-plugin-typescript2';
 import json from 'rollup-plugin-json';
-import {uglify} from 'rollup-plugin-uglify';
-import uglifyEs from 'rollup-plugin-uglify-es';
 import camelCase from 'lodash.camelcase';
 
 import pkg from './package.json';
+
+const {terser} = require('rollup-plugin-terser');
 
 const libraryName = pkg.name;
 
@@ -17,14 +17,12 @@ const baseConfig = {
         include: 'src/**'
     },
     plugins: [
-        json(),
         typescript({useTsconfigDeclarationDir: true}),
         commonjs(),
-        resolve({isBrowser: true}),
+        json(),
         sourceMaps()
     ]
 };
-
 const es6Config = Object.assign({}, baseConfig, {
     output: {
         file: pkg.es6,
@@ -34,7 +32,7 @@ const es6Config = Object.assign({}, baseConfig, {
     },
     external: ['pako', 'crypto'],
     plugins: [
-        json(),
+        resolve(),
         typescript({
             useTsconfigDeclarationDir: true,
             tsconfigOverride: {
@@ -45,7 +43,7 @@ const es6Config = Object.assign({}, baseConfig, {
             }
         }),
         commonjs(),
-        resolve(),
+        json(),
         sourceMaps()
     ]
 });
@@ -79,25 +77,54 @@ const libConfig = Object.assign({}, baseConfig, {
     ]
 });
 
-const libConfigMin  = Object.assign({}, baseConfig, {
-        external: ['pako', 'crypto'],
-        output: [].concat(libConfig.output, [es6Config.output]).map(function (item) {
-           return Object.assign({}, item, {file: item.file.replace(/\.js$/,".min.js"), sourcemap: false});
-        }),
-        plugins: [json(), typescript({useTsconfigDeclarationDir: true}), commonjs(), resolve(), uglifyEs()]
-    });
+const libConfigMin = Object.assign({}, baseConfig, {
+    external: ['pako', 'crypto'],
+    output: [].concat(libConfig.output, [es6Config.output]).map(function (item) {
+        return Object.assign({}, item, {file: item.file.replace(/\.js$/, ".min.js"), sourcemap: false});
+    }),
+    plugins: [
+        resolve(),
+        typescript({useTsconfigDeclarationDir: true}),
+        commonjs(),
+        json(),
+        terser({
+            compress: {warnings: false},
+            output: {comments: false},
+            mangle: false
+        })]
+});
 
 const browserConfig = Object.assign({}, baseConfig, {
     external: ['crypto'],
     output: {
         file: pkg.browser,
         name: camelCase(libraryName),
-        format: 'umd',
+        format: 'esm',
         exports: 'named',
         sourcemap: false,
         globals: ['crypto']
     },
-    plugins: [json(), typescript({useTsconfigDeclarationDir: true}), resolve({browser: true}), commonjs(), uglify()]
+    plugins: [
+        resolve({
+            mainFields: ['browser'],
+            isBrowser: true
+        }),
+        typescript({
+            useTsconfigDeclarationDir: true,
+            tsconfigOverride: {
+                compilerOptions: {
+                    target: 'esnext',
+                    declaration: true
+                }
+            }
+        }),
+        json(),
+        commonjs(),
+        terser({
+            compress: {warnings: false},
+            output: {comments: false},
+            mangle: false
+        })]
 });
 
 const packedConfig = Object.assign({}, baseConfig, {
@@ -110,7 +137,26 @@ const packedConfig = Object.assign({}, baseConfig, {
         sourcemap: false,
         globals: ['crypto']
     },
-    plugins: [json(), typescript({useTsconfigDeclarationDir: true}), commonjs(), resolve(), uglify()]
+    plugins: [resolve({
+        mainFields: ['browser'],
+        isBrowser: true
+    }),
+        typescript({
+            useTsconfigDeclarationDir: true,
+            tsconfigOverride: {
+                compilerOptions: {
+                    target: 'esnext',
+                    declaration: true
+                }
+            }
+        }),
+        json(),
+        commonjs(),
+        terser({
+            compress: {warnings: false},
+            output: {comments: false},
+            mangle: false
+        })]
 });
-
-export default [es6Config, libConfig, libConfigMin, browserConfig, packedConfig];
+//
+export default [es6Config, libConfig, libConfigMin, packedConfig, browserConfig];

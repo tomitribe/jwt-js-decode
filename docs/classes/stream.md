@@ -1,10 +1,12 @@
-[jwt-js-decode](../README.md) > [Stream](../classes/stream.md)
+**[jwt-js-decode](../README.md)**
+
+[Globals](../globals.md) › [Stream](stream.md)
 
 # Class: Stream
 
 ## Hierarchy
 
-**Stream**
+* **Stream**
 
 ## Index
 
@@ -33,278 +35,250 @@
 * [parseStringUTF](stream.md#parsestringutf)
 * [parseTime](stream.md#parsetime)
 
----
-
 ## Constructors
-
-<a id="constructor"></a>
 
 ###  constructor
 
-⊕ **new Stream**(enc: *`any`*, pos?: *`number`*): [Stream](stream.md)
+\+ **new Stream**(`enc`: any, `pos`: number): *[Stream](stream.md)*
 
-*Defined in asn1.ts:16*
+Defined in asn1.ts:16
 
 **Parameters:**
 
-| Param | Type | Default value |
-| ------ | ------ | ------ |
-| enc | `any` | - |
-| `Default value` pos | `number` | 0 |
+Name | Type | Default |
+------ | ------ | ------ |
+`enc` | any | - |
+`pos` | number | 0 |
 
-**Returns:** [Stream](stream.md)
-
-___
+**Returns:** *[Stream](stream.md)*
 
 ## Properties
 
-<a id="enc"></a>
-
 ###  enc
 
-**● enc**: *`any`*
+• **enc**: *any*
 
-*Defined in asn1.ts:15*
+Defined in asn1.ts:15
 
 ___
-<a id="hexdigits"></a>
 
 ###  hexDigits
 
-**● hexDigits**: *`string`* = "0123456789ABCDEF"
+• **hexDigits**: *string* = "0123456789ABCDEF"
 
-*Defined in asn1.ts:36*
+Defined in asn1.ts:36
 
 ___
-<a id="pos"></a>
 
 ###  pos
 
-**● pos**: *`any`*
+• **pos**: *any*
 
-*Defined in asn1.ts:16*
-
-___
+Defined in asn1.ts:16
 
 ## Methods
 
-<a id="get"></a>
-
 ###  get
 
-▸ **get**(pos: *`any`*): `any`
+▸ **get**(`pos`: any): *any*
 
-*Defined in asn1.ts:28*
+Defined in asn1.ts:28
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| pos | `any` |
+Name | Type |
+------ | ------ |
+`pos` | any |
 
-**Returns:** `any`
+**Returns:** *any*
 
 ___
-<a id="hexbyte"></a>
 
 ###  hexByte
 
-▸ **hexByte**(b: *`any`*): `string`
+▸ **hexByte**(`b`: any): *string*
 
-*Defined in asn1.ts:38*
+Defined in asn1.ts:38
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| b | `any` |
+Name | Type |
+------ | ------ |
+`b` | any |
 
-**Returns:** `string`
+**Returns:** *string*
 
 ___
-<a id="hexdump"></a>
 
 ###  hexDump
 
-▸ **hexDump**(start: *`any`*, end: *`any`*, raw: *`any`*): `string`
+▸ **hexDump**(`start`: any, `end`: any, `raw`: any): *string*
 
-*Defined in asn1.ts:42*
+Defined in asn1.ts:42
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| start | `any` |
-| end | `any` |
-| raw | `any` |
+Name | Type |
+------ | ------ |
+`start` | any |
+`end` | any |
+`raw` | any |
 
-**Returns:** `string`
+**Returns:** *string*
 
 ___
-<a id="isascii"></a>
 
 ###  isASCII
 
-▸ **isASCII**(start: *`any`*, end: *`any`*): `boolean`
+▸ **isASCII**(`start`: any, `end`: any): *boolean*
 
-*Defined in asn1.ts:61*
+Defined in asn1.ts:61
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| start | `any` |
-| end | `any` |
+Name | Type |
+------ | ------ |
+`start` | any |
+`end` | any |
 
-**Returns:** `boolean`
+**Returns:** *boolean*
 
 ___
-<a id="parsebitstring"></a>
 
 ###  parseBitString
 
-▸ **parseBitString**(start: *`any`*, end: *`any`*, maxLength: *`any`*): `string`
+▸ **parseBitString**(`start`: any, `end`: any, `maxLength`: any): *string*
 
-*Defined in asn1.ts:157*
+Defined in asn1.ts:157
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| start | `any` |
-| end | `any` |
-| maxLength | `any` |
+Name | Type |
+------ | ------ |
+`start` | any |
+`end` | any |
+`maxLength` | any |
 
-**Returns:** `string`
+**Returns:** *string*
 
 ___
-<a id="parseinteger"></a>
 
 ###  parseInteger
 
-▸ **parseInteger**(start: *`any`*, end: *`any`*):  `string` &#124; `0` &#124; `-1`
+▸ **parseInteger**(`start`: any, `end`: any): *string | 0 | -1*
 
-*Defined in asn1.ts:130*
+Defined in asn1.ts:130
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| start | `any` |
-| end | `any` |
+Name | Type |
+------ | ------ |
+`start` | any |
+`end` | any |
 
-**Returns:**  `string` &#124; `0` &#124; `-1`
+**Returns:** *string | 0 | -1*
 
 ___
-<a id="parseoid"></a>
 
 ###  parseOID
 
-▸ **parseOID**(start: *`any`*, end: *`any`*, maxLength: *`any`*): `any`
+▸ **parseOID**(`start`: any, `end`: any, `maxLength`: any): *any*
 
-*Defined in asn1.ts:188*
+Defined in asn1.ts:188
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| start | `any` |
-| end | `any` |
-| maxLength | `any` |
+Name | Type |
+------ | ------ |
+`start` | any |
+`end` | any |
+`maxLength` | any |
 
-**Returns:** `any`
+**Returns:** *any*
 
 ___
-<a id="parseoctetstring"></a>
 
 ###  parseOctetString
 
-▸ **parseOctetString**(start: *`any`*, end: *`any`*, maxLength: *`any`*): `any`
+▸ **parseOctetString**(`start`: any, `end`: any, `maxLength`: any): *any*
 
-*Defined in asn1.ts:173*
+Defined in asn1.ts:173
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| start | `any` |
-| end | `any` |
-| maxLength | `any` |
+Name | Type |
+------ | ------ |
+`start` | any |
+`end` | any |
+`maxLength` | any |
 
-**Returns:** `any`
+**Returns:** *any*
 
 ___
-<a id="parsestringbmp"></a>
 
 ###  parseStringBMP
 
-▸ **parseStringBMP**(start: *`any`*, end: *`any`*): `string`
+▸ **parseStringBMP**(`start`: any, `end`: any): *string*
 
-*Defined in asn1.ts:91*
+Defined in asn1.ts:91
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| start | `any` |
-| end | `any` |
+Name | Type |
+------ | ------ |
+`start` | any |
+`end` | any |
 
-**Returns:** `string`
+**Returns:** *string*
 
 ___
-<a id="parsestringiso"></a>
 
 ###  parseStringISO
 
-▸ **parseStringISO**(start: *`any`*, end: *`any`*): `string`
+▸ **parseStringISO**(`start`: any, `end`: any): *string*
 
-*Defined in asn1.ts:70*
+Defined in asn1.ts:70
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| start | `any` |
-| end | `any` |
+Name | Type |
+------ | ------ |
+`start` | any |
+`end` | any |
 
-**Returns:** `string`
+**Returns:** *string*
 
 ___
-<a id="parsestringutf"></a>
 
 ###  parseStringUTF
 
-▸ **parseStringUTF**(start: *`any`*, end: *`any`*): `string`
+▸ **parseStringUTF**(`start`: any, `end`: any): *string*
 
-*Defined in asn1.ts:77*
+Defined in asn1.ts:77
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| start | `any` |
-| end | `any` |
+Name | Type |
+------ | ------ |
+`start` | any |
+`end` | any |
 
-**Returns:** `string`
+**Returns:** *string*
 
 ___
-<a id="parsetime"></a>
 
 ###  parseTime
 
-▸ **parseTime**(start: *`any`*, end: *`any`*, shortYear: *`any`*): `string`
+▸ **parseTime**(`start`: any, `end`: any, `shortYear`: any): *string*
 
-*Defined in asn1.ts:101*
+Defined in asn1.ts:101
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| start | `any` |
-| end | `any` |
-| shortYear | `any` |
+Name | Type |
+------ | ------ |
+`start` | any |
+`end` | any |
+`shortYear` | any |
 
-**Returns:** `string`
-
-___
-
+**Returns:** *string*

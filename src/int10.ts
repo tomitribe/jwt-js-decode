@@ -1,6 +1,6 @@
 var max = 10000000000000; // biggest 10^n integer that can still fit 2^53 when multiplied by 256
 
-export class Int10 {
+export default class Int10 {
     buf: any[];
 
     constructor(value?) {
@@ -67,3 +67,5 @@ export class Int10 {
         return (b.length == 1) ? b[0] : this;
     };
 }
+
+export { Int10 };

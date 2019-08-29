@@ -1,5 +1,5 @@
 import pako from "pako";
-import crypto from "crypto";
+
 /* Issue3: Works, but ASN1 adds 14kb of code to this lib
 import ASN1 from "asn1js";
 */
@@ -403,7 +403,7 @@ export function s2AB(str: string): ArrayBuffer | Uint8Array {
  */
 export function AB2s(buff: ArrayBuffer | Uint8Array): string {
     if (buff instanceof ArrayBuffer) buff = new Uint8Array(buff);
-    return String.fromCharCode.apply(String, buff);
+    return String.fromCharCode.apply(String, Array.from(buff as Uint8Array));
 }
 
 /**
@@ -432,6 +432,7 @@ export async function createHmac(name: string, secret: string): Promise<any> {
             }
         })
     } else {
+        const crypto = await import("crypto");
         return !!crypto && crypto.createHmac ? Promise.resolve(crypto.createHmac(name.replace('SHA-', 'sha'), secret)) : Promise.reject(webCrypto);
     }
 }
@@ -728,7 +729,7 @@ export function parsePem(secret: string, concType?: "public" | "private", extra?
 }
 */
 
-export function createSign(name: string): any {
+export async function createSign(name: string): Promise<any> {
     if (webCryptoSubtle) {
         return {
             update: function (thing: string): any {
@@ -775,6 +776,7 @@ export function createSign(name: string): any {
             }
         }
     } else {
+        const crypto = await import("crypto");
         if (!!crypto && crypto.createSign) {
             return crypto.createSign(name.replace('SHA-', 'RSA-SHA'))
         } else {
@@ -794,7 +796,7 @@ export function algRSsign(bits: number) {
     }
 }
 
-export function createVerify(name: string): any {
+export async function createVerify(name: string): Promise<any> {
     if (webCryptoSubtle) {
         return {
             update: function (thing: string): any {
@@ -842,6 +844,7 @@ export function createVerify(name: string): any {
             }
         }
     } else {
+        const crypto = await import("crypto");
         if (!!crypto && crypto.createVerify) {
             return crypto.createVerify(name.replace('SHA-', 'RSA-SHA'))
         } else {
@@ -952,11 +955,12 @@ export const resignJwt = jwtResign;
  *
  * @hidden
  */
-export function cryptoType(): string {
+export async function cryptoType(): Promise<string> {
+    const crypto = await import("crypto");
     return crypto ? crypto['type'] || 'crypto-node' : 'undefined';
 }
 
-const jwsJsDecode = {
+export default {
     ILLEGAL_ARGUMENT,
     UNSUPPORTED_ALGORITHM,
     resignJwt,
@@ -1002,5 +1006,3 @@ const jwsJsDecode = {
     zbu2s,
     zip,
 };
-
-export default jwsJsDecode;

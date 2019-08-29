@@ -1,4 +1,6 @@
-[jwt-js-decode](../README.md) > [JwtPart](../interfaces/jwtpart.md)
+**[jwt-js-decode](../README.md)**
+
+[Globals](../globals.md) › [JwtPart](jwtpart.md)
 
 # Interface: JwtPart
 
@@ -6,14 +8,10 @@ JwtPart interface basically object type definition used as a placeholder
 
 ## Hierarchy
 
-**JwtPart**
+* **JwtPart**
 
 ## Indexable
 
-\[key: `string`\]:&nbsp;`any`
+* \[ **key**: *string*\]: any
+
 JwtPart interface basically object type definition used as a placeholder
-
-## Index
-
----
-

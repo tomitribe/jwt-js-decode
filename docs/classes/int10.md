@@ -1,10 +1,12 @@
-[jwt-js-decode](../README.md) > [Int10](../classes/int10.md)
+**[jwt-js-decode](../README.md)**
+
+[Globals](../globals.md) › [Int10](int10.md)
 
 # Class: Int10
 
 ## Hierarchy
 
-**Int10**
+* **Int10**
 
 ## Index
 
@@ -24,114 +26,95 @@
 * [toString](int10.md#tostring)
 * [valueOf](int10.md#valueof)
 
----
-
 ## Constructors
-
-<a id="constructor"></a>
 
 ###  constructor
 
-⊕ **new Int10**(value?: *`any`*): [Int10](int10.md)
+\+ **new Int10**(`value?`: any): *[Int10](int10.md)*
 
-*Defined in int10.ts:4*
+Defined in int10.ts:4
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| `Optional` value | `any` |
+Name | Type |
+------ | ------ |
+`value?` | any |
 
-**Returns:** [Int10](int10.md)
-
-___
+**Returns:** *[Int10](int10.md)*
 
 ## Properties
 
-<a id="buf"></a>
-
 ###  buf
 
-**● buf**: *`any`[]*
+• **buf**: *any[]*
 
-*Defined in int10.ts:4*
-
-___
+Defined in int10.ts:4
 
 ## Methods
 
-<a id="muladd"></a>
-
 ###  mulAdd
 
-▸ **mulAdd**(m: *`any`*, c: *`any`*): `void`
+▸ **mulAdd**(`m`: any, `c`: any): *void*
 
-*Defined in int10.ts:10*
+Defined in int10.ts:10
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| m | `any` |
-| c | `any` |
+Name | Type |
+------ | ------ |
+`m` | any |
+`c` | any |
 
-**Returns:** `void`
+**Returns:** *void*
 
 ___
-<a id="simplify"></a>
 
 ###  simplify
 
-▸ **simplify**(): `any`
+▸ **simplify**(): *any*
 
-*Defined in int10.ts:65*
+Defined in int10.ts:65
 
-**Returns:** `any`
+**Returns:** *any*
 
 ___
-<a id="sub"></a>
 
 ###  sub
 
-▸ **sub**(c: *`any`*): `void`
+▸ **sub**(`c`: any): *void*
 
-*Defined in int10.ts:29*
+Defined in int10.ts:29
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| c | `any` |
+Name | Type |
+------ | ------ |
+`c` | any |
 
-**Returns:** `void`
+**Returns:** *void*
 
 ___
-<a id="tostring"></a>
 
 ###  toString
 
-▸ **toString**(base?: * `undefined` &#124; `number`*): `any`
+▸ **toString**(`base?`: undefined | number): *any*
 
-*Defined in int10.ts:47*
+Defined in int10.ts:47
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| `Optional` base |  `undefined` &#124; `number`|
+Name | Type |
+------ | ------ |
+`base?` | undefined \| number |
 
-**Returns:** `any`
+**Returns:** *any*
 
 ___
-<a id="valueof"></a>
 
 ###  valueOf
 
-▸ **valueOf**(): `number`
+▸ **valueOf**(): *number*
 
-*Defined in int10.ts:57*
+Defined in int10.ts:57
 
-**Returns:** `number`
-
-___
-
+**Returns:** *number*
