@@ -1,6 +1,4 @@
-**[jwt-js-decode](../README.md)**
-
-[Globals](../globals.md) › [ASN1](asn1.md)
+[jwt-js-decode](../README.md) › [Globals](../globals.md) › [ASN1](asn1.md)
 
 # Class: ASN1
 

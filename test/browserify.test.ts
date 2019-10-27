@@ -1,4 +1,28 @@
-jest.unmock('crypto');
+beforeAll(() => {
+    jest.mock('create-hash', () => {
+        return jest.requireActual("create-hash/browser.js");
+    });
+    jest.mock('randombytes', () => {
+        return jest.requireActual('crypto').randomBytes;
+    });
+    jest.mock('crypto', () => {
+        const {createVerify, createSign} = jest.requireActual("browserify-sign/browser/index.js");
+        return {
+            createHmac: jest.requireActual('create-hmac/browser.js'),
+            createVerify,
+            createSign,
+            randomBytes: jest.requireActual('crypto').randomBytes,
+            type: 'crypto-browserify'
+        };
+    });
+});
+
+afterAll(() => {
+    jest.unmock('randombytes');
+    jest.unmock('create-hash');
+    jest.unmock('create-hmac');
+    jest.unmock('crypto');
+});
 
 import { cryptoType, jwtDecode, jwtSign, jwtSplit, jwtVerify, resignJwt } from "../src";
 import {
@@ -9,17 +33,6 @@ import {
     jwtStrNormal_HS256,
     jwtStrNormal_HS512, jwtStrNormal_RS256, jwtStrNormal_RS512
 } from "./test.keys";
-
-const brs = require("browserify-sign/browser/index.js"), ch = require("create-hash/browser.js");
-jest.doMock("create-hash", () => ch);
-jest.doMock('crypto', function () {
-    return {
-        createHmac: require('create-hmac/browser.js'),
-        createVerify: brs.createVerify,
-        createSign: brs.createSign,
-        type: 'crypto-browserify'
-    };
-});
 
 /**
  * crypto-browserify general tests

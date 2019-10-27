@@ -1,6 +1,4 @@
-**[jwt-js-decode](README.md)**
-
-[Globals](globals.md)
+[jwt-js-decode](README.md) › [Globals](globals.md)
 
 # jwt-js-decode
 
@@ -23,7 +21,9 @@
 
 ### Variables
 
+* [CRYPTO_NOT_FOUND](globals.md#const-crypto_not_found)
 * [ILLEGAL_ARGUMENT](globals.md#const-illegal_argument)
+* [PAKO_NOT_FOUND](globals.md#const-pako_not_found)
 * [UNSUPPORTED_ALGORITHM](globals.md#const-unsupported_algorithm)
 * [ellipsis](globals.md#const-ellipsis)
 * [max](globals.md#max)
@@ -56,6 +56,7 @@
 * [createHmac](globals.md#createhmac)
 * [createSign](globals.md#createsign)
 * [createVerify](globals.md#createverify)
+* [generateErrorMessage](globals.md#generateerrormessage)
 * [hex2AB](globals.md#hex2ab)
 * [isGzip](globals.md#isgzip)
 * [jwtDecode](globals.md#jwtdecode)
@@ -80,11 +81,27 @@
 
 ## Variables
 
+### `Const` CRYPTO_NOT_FOUND
+
+• **CRYPTO_NOT_FOUND**: *"Could not find 'crypto'."* = "Could not find 'crypto'."
+
+Defined in util.ts:3
+
+___
+
 ### `Const` ILLEGAL_ARGUMENT
 
 • **ILLEGAL_ARGUMENT**: *"Illegal argument specified!"* = "Illegal argument specified!"
 
 Defined in util.ts:2
+
+___
+
+### `Const` PAKO_NOT_FOUND
+
+• **PAKO_NOT_FOUND**: *"Could not find 'pako'."* = "Could not find 'pako'."
+
+Defined in util.ts:4
 
 ___
 
@@ -132,7 +149,7 @@ ___
 
 • **resignJwt**: *[jwtResign](globals.md#jwtresign)* =  jwtResign
 
-Defined in jwt-js-decode.ts:951
+Defined in jwt-js-decode.ts:968
 
 ___
 
@@ -140,7 +157,7 @@ ___
 
 • **signJwt**: *[jwtSign](globals.md#jwtsign)* =  jwtSign
 
-Defined in jwt-js-decode.ts:942
+Defined in jwt-js-decode.ts:959
 
 ___
 
@@ -148,7 +165,7 @@ ___
 
 • **splitJwt**: *[jwtSplit](globals.md#jwtsplit)* =  jwtSplit
 
-Defined in jwt-js-decode.ts:292
+Defined in jwt-js-decode.ts:301
 
 ___
 
@@ -156,7 +173,7 @@ ___
 
 • **verifyJwt**: *[jwtVerify](globals.md#jwtverify)* =  jwtVerify
 
-Defined in jwt-js-decode.ts:933
+Defined in jwt-js-decode.ts:950
 
 ___
 
@@ -164,7 +181,7 @@ ___
 
 • **webCrypto**: *false | Crypto* =  typeof window === "object" && (window.crypto || window['msCrypto'])
 
-Defined in jwt-js-decode.ts:20
+Defined in jwt-js-decode.ts:29
 
 ___
 
@@ -172,7 +189,7 @@ ___
 
 • **webCryptoSubtle**: *false | SubtleCrypto* =  webCrypto && (webCrypto.subtle || webCrypto['webkitSubtle'] || webCrypto['Subtle'])
 
-Defined in jwt-js-decode.ts:21
+Defined in jwt-js-decode.ts:30
 
 ## Functions
 
@@ -180,13 +197,13 @@ Defined in jwt-js-decode.ts:21
 
 ▸ **AB2hex**(`buff`: ArrayBuffer | Uint8Array): *string*
 
-Defined in util.ts:20
+Defined in util.ts:34
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`buff` | ArrayBuffer \| Uint8Array |
+`buff` | ArrayBuffer &#124; Uint8Array |
 
 **Returns:** *string*
 
@@ -196,7 +213,7 @@ ___
 
 ▸ **AB2s**(`buff`: ArrayBuffer | Uint8Array): *string*
 
-Defined in jwt-js-decode.ts:404
+Defined in jwt-js-decode.ts:421
 
 Converts ArrayBuffer to string
 
@@ -204,7 +221,7 @@ Converts ArrayBuffer to string
 
 Name | Type | Description |
 ------ | ------ | ------ |
-`buff` | ArrayBuffer \| Uint8Array | charCode ArrayBuffer to convert  |
+`buff` | ArrayBuffer &#124; Uint8Array | charCode ArrayBuffer to convert  |
 
 **Returns:** *string*
 
@@ -216,7 +233,7 @@ ___
 
 ▸ **J2s**(`obj`: any): *string*
 
-Defined in jwt-js-decode.ts:182
+Defined in jwt-js-decode.ts:191
 
 Converts JSON object to string
 
@@ -236,7 +253,7 @@ ___
 
 ▸ **algHSsign**(`bits`: number): *sign*
 
-Defined in jwt-js-decode.ts:444
+Defined in jwt-js-decode.ts:461
 
 Algorithm HMAC sign generator
 
@@ -254,7 +271,7 @@ ___
 
 ▸ **algHSverify**(`bits`: number): *verify*
 
-Defined in jwt-js-decode.ts:459
+Defined in jwt-js-decode.ts:476
 
 Algorithm HMAC verify generator
 
@@ -272,7 +289,7 @@ ___
 
 ▸ **algRSsign**(`bits`: number): *sign*
 
-Defined in jwt-js-decode.ts:788
+Defined in jwt-js-decode.ts:805
 
 **Parameters:**
 
@@ -288,7 +305,7 @@ ___
 
 ▸ **algRSverify**(`bits`: number): *verify*
 
-Defined in jwt-js-decode.ts:856
+Defined in jwt-js-decode.ts:873
 
 **Parameters:**
 
@@ -304,7 +321,7 @@ ___
 
 ▸ **algSign**(`algorithm`: string, `thing`: string, `secret`: string): *Promise‹string›*
 
-Defined in jwt-js-decode.ts:901
+Defined in jwt-js-decode.ts:918
 
 Universal algorithm signer
 
@@ -324,7 +341,7 @@ ___
 
 ▸ **algVerify**(`algorithm`: string, `thing`: string, `signature`: string, `secret`: string): *Promise‹boolean›*
 
-Defined in jwt-js-decode.ts:872
+Defined in jwt-js-decode.ts:889
 
 Universal algorithm verifier
 
@@ -345,14 +362,14 @@ ___
 
 ▸ **asn12jwk**(`asn1`: any, `type?`: undefined | string, `extra?`: any): *any*
 
-Defined in jwt-js-decode.ts:678
+Defined in jwt-js-decode.ts:695
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
 `asn1` | any |
-`type?` | undefined \| string |
+`type?` | undefined &#124; string |
 `extra?` | any |
 
 **Returns:** *any*
@@ -363,7 +380,7 @@ ___
 
 ▸ **b2bu**(`str`: string): *string*
 
-Defined in jwt-js-decode.ts:216
+Defined in jwt-js-decode.ts:225
 
 Converts base64 string to base64url string
 
@@ -383,7 +400,7 @@ ___
 
 ▸ **b2s**(`str`: string): *string*
 
-Defined in jwt-js-decode.ts:197
+Defined in jwt-js-decode.ts:206
 
 Converts string to base64 string
 
@@ -403,7 +420,7 @@ ___
 
 ▸ **bu2b**(`str`: string): *string*
 
-Defined in jwt-js-decode.ts:235
+Defined in jwt-js-decode.ts:244
 
 Converts base64url string to base64 string
 
@@ -423,7 +440,7 @@ ___
 
 ▸ **bu2s**(`str`: string): *string*
 
-Defined in jwt-js-decode.ts:255
+Defined in jwt-js-decode.ts:264
 
 Converts base64url string to string
 
@@ -443,7 +460,7 @@ ___
 
 ▸ **cleanZeros**(`b`: any): *any*
 
-Defined in util.ts:9
+Defined in util.ts:23
 
 **Parameters:**
 
@@ -459,7 +476,7 @@ ___
 
 ▸ **createHmac**(`name`: string, `secret`: string): *Promise‹any›*
 
-Defined in jwt-js-decode.ts:414
+Defined in jwt-js-decode.ts:431
 
 Async function inspired by createHmac in crypto (used WebCrypto Api supported by most browsers)
 
@@ -478,7 +495,7 @@ ___
 
 ▸ **createSign**(`name`: string): *Promise‹any›*
 
-Defined in jwt-js-decode.ts:732
+Defined in jwt-js-decode.ts:749
 
 **Parameters:**
 
@@ -494,7 +511,7 @@ ___
 
 ▸ **createVerify**(`name`: string): *Promise‹any›*
 
-Defined in jwt-js-decode.ts:799
+Defined in jwt-js-decode.ts:816
 
 **Parameters:**
 
@@ -506,11 +523,30 @@ Name | Type |
 
 ___
 
+###  generateErrorMessage
+
+▸ **generateErrorMessage**(`value`: any, `callee`: any, `argumentName`: string, `defaultType`: string): *string*
+
+Defined in util.ts:6
+
+**Parameters:**
+
+Name | Type | Default |
+------ | ------ | ------ |
+`value` | any | - |
+`callee` | any | - |
+`argumentName` | string | "argument" |
+`defaultType` | string | "string" |
+
+**Returns:** *string*
+
+___
+
 ###  hex2AB
 
 ▸ **hex2AB**(`hex`: string): *ArrayBuffer | Uint8Array*
 
-Defined in util.ts:13
+Defined in util.ts:27
 
 **Parameters:**
 
@@ -526,7 +562,7 @@ ___
 
 ▸ **isGzip**(`header`: [JwtPart](interfaces/jwtpart.md)): *boolean*
 
-Defined in jwt-js-decode.ts:266
+Defined in jwt-js-decode.ts:275
 
 Check if header has zip property (and it is equal to 'GZIP', ignorecase)
 
@@ -544,17 +580,18 @@ ___
 
 ###  jwtDecode
 
-▸ **jwtDecode**(`str`: string): *[JwtDecode](classes/jwtdecode.md)*
+▸ **jwtDecode**(`str`: string, `callee`: string): *[JwtDecode](classes/jwtdecode.md)*
 
-Defined in jwt-js-decode.ts:277
+Defined in jwt-js-decode.ts:286
 
 Decode jwtToken header and payload
 
 **Parameters:**
 
-Name | Type | Description |
------- | ------ | ------ |
-`str` | string | data string to decode  |
+Name | Type | Default | Description |
+------ | ------ | ------ | ------ |
+`str` | string | - | data string to decode  |
+`callee` | string | "jwtDecode" | - |
 
 **Returns:** *[JwtDecode](classes/jwtdecode.md)*
 
@@ -566,7 +603,7 @@ ___
 
 ▸ **jwtResign**(`jwtStr`: string, `secret`: string, `alg?`: undefined | string): *Promise‹string›*
 
-Defined in jwt-js-decode.ts:944
+Defined in jwt-js-decode.ts:961
 
 **Parameters:**
 
@@ -574,7 +611,7 @@ Name | Type |
 ------ | ------ |
 `jwtStr` | string |
 `secret` | string |
-`alg?` | undefined \| string |
+`alg?` | undefined &#124; string |
 
 **Returns:** *Promise‹string›*
 
@@ -584,7 +621,7 @@ ___
 
 ▸ **jwtSign**(`jwtStr`: string, `secret`: string): *Promise‹string›*
 
-Defined in jwt-js-decode.ts:935
+Defined in jwt-js-decode.ts:952
 
 **Parameters:**
 
@@ -599,17 +636,18 @@ ___
 
 ###  jwtSplit
 
-▸ **jwtSplit**(`str`: string): *[JwtSplit](classes/jwtsplit.md)*
+▸ **jwtSplit**(`str`: string, `callee`: string): *[JwtSplit](classes/jwtsplit.md)*
 
-Defined in jwt-js-decode.ts:288
+Defined in jwt-js-decode.ts:297
 
 Split jwtToken into object {header, payload, signature}
 
 **Parameters:**
 
-Name | Type | Description |
------- | ------ | ------ |
-`str` | string | data string to split  |
+Name | Type | Default | Description |
+------ | ------ | ------ | ------ |
+`str` | string | - | data string to split  |
+`callee` | string | "jwtSplit" | - |
 
 **Returns:** *[JwtSplit](classes/jwtsplit.md)*
 
@@ -621,7 +659,7 @@ ___
 
 ▸ **jwtVerify**(`jwtStr`: string, `secret`: string): *Promise‹boolean›*
 
-Defined in jwt-js-decode.ts:926
+Defined in jwt-js-decode.ts:943
 
 **Parameters:**
 
@@ -638,7 +676,7 @@ ___
 
 ▸ **num2hex**(`memo`: string, `i`: number): *string*
 
-Defined in util.ts:4
+Defined in util.ts:18
 
 **Parameters:**
 
@@ -655,13 +693,13 @@ ___
 
 ▸ **pem2asn1**(`buff`: ArrayBuffer | Uint8Array): *any*
 
-Defined in jwt-js-decode.ts:640
+Defined in jwt-js-decode.ts:657
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`buff` | ArrayBuffer \| Uint8Array |
+`buff` | ArrayBuffer &#124; Uint8Array |
 
 **Returns:** *any*
 
@@ -671,14 +709,14 @@ ___
 
 ▸ **pem2jwk**(`secret`: string, `type?`: "public" | "private", `extra?`: any): *Promise‹any›*
 
-Defined in jwt-js-decode.ts:714
+Defined in jwt-js-decode.ts:731
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
 `secret` | string |
-`type?` | "public" \| "private" |
+`type?` | "public" &#124; "private" |
 `extra?` | any |
 
 **Returns:** *Promise‹any›*
@@ -689,7 +727,7 @@ ___
 
 ▸ **s2AB**(`str`: string): *ArrayBuffer | Uint8Array*
 
-Defined in jwt-js-decode.ts:391
+Defined in jwt-js-decode.ts:408
 
 Converts string to ArrayBuffer
 
@@ -709,7 +747,7 @@ ___
 
 ▸ **s2J**(`str`: string): *any*
 
-Defined in jwt-js-decode.ts:167
+Defined in jwt-js-decode.ts:176
 
 Converts string to JSON object
 
@@ -729,7 +767,7 @@ ___
 
 ▸ **s2b**(`str`: string): *string*
 
-Defined in jwt-js-decode.ts:301
+Defined in jwt-js-decode.ts:310
 
 Converts base64 string to string
 
@@ -749,7 +787,7 @@ ___
 
 ▸ **s2bu**(`str`: string): *string*
 
-Defined in jwt-js-decode.ts:320
+Defined in jwt-js-decode.ts:329
 
 Converts string to base64url string
 
@@ -769,7 +807,7 @@ ___
 
 ▸ **s2pem**(`secret`: string): *[PEM](interfaces/pem.md)*
 
-Defined in jwt-js-decode.ts:474
+Defined in jwt-js-decode.ts:491
 
 **Parameters:**
 
@@ -785,7 +823,7 @@ ___
 
 ▸ **s2zbu**(`str`: string): *string*
 
-Defined in jwt-js-decode.ts:331
+Defined in jwt-js-decode.ts:340
 
 Gzip and encode data string to base64url string
 
@@ -822,7 +860,7 @@ ___
 
 ▸ **tryPromise**(`fn`: any): *Promise‹any›*
 
-Defined in jwt-js-decode.ts:152
+Defined in jwt-js-decode.ts:161
 
 Try running function and replace it's response as Promise.resolve/reject
 
@@ -842,7 +880,7 @@ ___
 
 ▸ **unzip**(`str`: string): *string*
 
-Defined in jwt-js-decode.ts:342
+Defined in jwt-js-decode.ts:351
 
 Converts from gzip data string to string
 
@@ -862,7 +900,7 @@ ___
 
 ▸ **zbu2s**(`str`: string): *string*
 
-Defined in jwt-js-decode.ts:361
+Defined in jwt-js-decode.ts:374
 
 Decode from base64url and unzip data string
 
@@ -882,7 +920,7 @@ ___
 
 ▸ **zip**(`str`: string): *string*
 
-Defined in jwt-js-decode.ts:372
+Defined in jwt-js-decode.ts:385
 
 Converts string to gzip data string
 

@@ -1,7 +1,15 @@
-jest.unmock('crypto');
+beforeAll(() => {
+    jest.mock('crypto', function () {
+        return { ...jest.requireActual('crypto') };
+    });
+});
+
+afterAll(() => {
+    jest.unmock('crypto');
+});
 
 import { cryptoType, isGzip, jwtDecode, jwtSign, jwtSplit, jwtVerify, resignJwt } from "../src";
-import { ILLEGAL_ARGUMENT } from "../src/util";
+import { generateErrorMessage, ILLEGAL_ARGUMENT } from "../src/util";
 import {
     jwtPrivKey_RS,
     jwtPubKey_RS,
@@ -31,15 +39,17 @@ describe("jwtSplit tests", function () {
     });
 
     it("error is thrown when provided with string without two dots", async function () {
+        const str = '1.23';
         expect(function () {
-            jwtSplit('1.23')
-        }).toThrowError(ILLEGAL_ARGUMENT)
+            jwtSplit(str)
+        }).toThrowError(generateErrorMessage(str, 'jwtSplit', 'JWT string'))
     });
 
     it("error is thrown when provided with Array", async function () {
+        const str = <any>[];
         expect(function () {
             jwtSplit(<any>[])
-        }).toThrowError(ILLEGAL_ARGUMENT)
+        }).toThrowError(generateErrorMessage(str, 'jwtSplit', 'JWT string'))
     });
 });
 
@@ -67,15 +77,17 @@ describe("jwtDecode tests", function () {
     });
 
     it("error is thrown when provided with string without two dots", async function () {
+        const str = '1.23';
         expect(function () {
-            jwtDecode('1.23')
-        }).toThrowError(ILLEGAL_ARGUMENT)
+            jwtDecode(str)
+        }).toThrowError(generateErrorMessage(str, 'jwtDecode', 'JWT string'))
     });
 
     it("error is thrown when provided with Array", async function () {
+        const str = <any>[];
         expect(function () {
             jwtDecode(<any>[])
-        }).toThrowError(ILLEGAL_ARGUMENT)
+        }).toThrowError(generateErrorMessage(str, 'jwtDecode', 'JWT string'))
     });
 
 });
@@ -169,7 +181,7 @@ describe("jwtVerify tests (Node.js version) HS", function () {
 
 describe("jwtSign tests (Node.js version) RS", function () {
     it("it works when cryptoType equals 'crypto-node'", async function () {
-        expect(cryptoType()).toEqual('crypto-node');
+        expect(await cryptoType()).toEqual('crypto-node');
     });
 
     it("it works when jwtStrNormal_HS256 equals jwtStrNormal_RS256 after resigning with RS256", async function () {
@@ -235,8 +247,7 @@ describe("jwtSign tests (Node.js version) RS", function () {
 
 
     it("it fails when provided with a proper jwt String and not a private key (jwtStrGzip_RS256)", async function () {
-        await jwtSign(jwtStrGzip_RS256, jwtPubKey_RS)
-            .catch(res => expect(res).toEqual(expect.any(Error)));
+        await expect(jwtSign(jwtStrGzip_RS256, jwtPubKey_RS)).rejects.toThrowError();
     });
 
 });
@@ -244,7 +255,7 @@ describe("jwtSign tests (Node.js version) RS", function () {
 
 describe("jwtVerify tests (Node.js version) RS", function () {
     it("it works when cryptoType equals 'crypto-node'", async function () {
-        expect(cryptoType()).toEqual('crypto-node');
+        expect(await cryptoType()).toEqual('crypto-node');
     });
 
     it("it works when provided with a proper jwt String and jwtPubKey_RS (jwtStrNormal_RS256)", async function () {
@@ -256,12 +267,10 @@ describe("jwtVerify tests (Node.js version) RS", function () {
     });
 
     it("it fails when provided with a proper jwt String and wrong public key jwtSecondPubKey_RS (jwtStrNormal_RS512)", async function () {
-        await jwtVerify(jwtStrNormal_RS512, jwtSecondPubKey_RS)
-            .catch(e => expect(e).toEqual(expect.any(Error)));
+        await expect(jwtVerify(jwtStrNormal_RS512, jwtSecondPubKey_RS)).resolves.toBeFalsy();
     });
 
     it("it fails when provided with a proper jwt String and not public key jwtSecondPrivKey_RS (jwtStrGzip_RS256)", async function () {
-        await jwtVerify(jwtStrNormal_RS512, jwtSecondPrivKey_RS)
-            .catch(e => expect(e).toEqual(expect.any(Error)));
+        await expect(jwtVerify(jwtStrNormal_RS512, jwtSecondPrivKey_RS)).rejects.toThrowError();
     });
 });

@@ -1,4 +1,15 @@
-jest.unmock('crypto');
+beforeAll(() => {
+    jest.mock('crypto', function () {
+        return {...jest.requireActual('crypto'), type: 'web-crypto'};
+    });
+    Object.defineProperty(window, 'crypto', { value: { subtle: require('subtle') }, writable: true });
+    Window['crypto'] = { subtle: require('subtle') };
+});
+
+afterAll(() => {
+    jest.unmock('crypto');
+    delete Window['crypto'];
+});
 
 import { cryptoType, jwtDecode, jwtSign, jwtSplit, jwtVerify, resignJwt } from "../src";
 import {
@@ -11,13 +22,6 @@ import {
     jwtStrNormal_RS512
 } from "./test.keys";
 
-const cr = require('crypto');
-
-// TODO: fix pako and crypto-mocks
-jest.doMock('crypto', function () {
-    return { ...cr, type: 'web-crypto' };
-});
-Object.defineProperty(window, 'crypto', { value: { subtle: require('subtle') }, writable: true });
 
 /**
  * WebCrypto API general tests

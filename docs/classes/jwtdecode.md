@@ -1,6 +1,4 @@
-**[jwt-js-decode](../README.md)**
-
-[Globals](../globals.md) › [JwtDecode](jwtdecode.md)
+[jwt-js-decode](../README.md) › [Globals](../globals.md) › [JwtDecode](jwtdecode.md)
 
 # Class: JwtDecode
 
@@ -32,15 +30,16 @@ Class for creating a JwtDecode object with three parts of JWT Token, header and 
 
 ###  constructor
 
-\+ **new JwtDecode**(`str`: string): *[JwtDecode](jwtdecode.md)*
+\+ **new JwtDecode**(`str`: string, `callee`: string): *[JwtDecode](jwtdecode.md)*
 
-Defined in jwt-js-decode.ts:126
+Defined in jwt-js-decode.ts:135
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`str` | string |
+Name | Type | Default |
+------ | ------ | ------ |
+`str` | string | - |
+`callee` | string | "JwtDecode" |
 
 **Returns:** *[JwtDecode](jwtdecode.md)*
 
@@ -50,7 +49,7 @@ Name | Type |
 
 • **header**: *[JwtPart](../interfaces/jwtpart.md)*
 
-Defined in jwt-js-decode.ts:110
+Defined in jwt-js-decode.ts:119
 
 Header (first) part of JWT Token
 
@@ -64,7 +63,7 @@ ___
 
 • **payload**: *[JwtPart](../interfaces/jwtpart.md)*
 
-Defined in jwt-js-decode.ts:118
+Defined in jwt-js-decode.ts:127
 
 Payload (second) part of JWT Token
 
@@ -78,7 +77,7 @@ ___
 
 • **signature**: *string* = ""
 
-Defined in jwt-js-decode.ts:126
+Defined in jwt-js-decode.ts:135
 
 Signature (third) part of JWT Token
 
@@ -92,6 +91,6 @@ Signature (third) part of JWT Token
 
 ▸ **toString**(): *string*
 
-Defined in jwt-js-decode.ts:140
+Defined in jwt-js-decode.ts:149
 
 **Returns:** *string*

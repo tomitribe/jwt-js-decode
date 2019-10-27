@@ -1,6 +1,4 @@
-**[jwt-js-decode](../README.md)**
-
-[Globals](../globals.md) › [Int10](int10.md)
+[jwt-js-decode](../README.md) › [Globals](../globals.md) › [Int10](int10.md)
 
 # Class: Int10
 
@@ -105,7 +103,7 @@ Defined in int10.ts:47
 
 Name | Type |
 ------ | ------ |
-`base?` | undefined \| number |
+`base?` | undefined &#124; number |
 
 **Returns:** *any*
 

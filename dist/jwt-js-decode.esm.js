@@ -64,6 +64,21 @@ class Int10 {
 
 const UNSUPPORTED_ALGORITHM = 'Unsupported algorithm name specified! Supported algorithms: "HS256", "HS384", "HS512", "RS256", "RS384", "RS512" and "none".';
 const ILLEGAL_ARGUMENT = 'Illegal argument specified!';
+const CRYPTO_NOT_FOUND = 'Could not find \'crypto\'.';
+const PAKO_NOT_FOUND = 'Could not find \'pako\'.';
+function generateErrorMessage(value, callee, argumentName = 'argument', defaultType = 'string') {
+    let message = `Invalid argument passed to ${callee}.`;
+    if (typeof value !== defaultType) {
+        message += ` Expected type '${defaultType}', received '${typeof value}'.`;
+    }
+    else if (!value) {
+        message += ` Provided ${argumentName} is empty.`;
+    }
+    else if (argumentName !== 'argument') {
+        message += ` Provided ${argumentName} is invalid.`;
+    }
+    return message;
+}
 // clean leading zeros
 function cleanZeros(b) {
     return b[0] === 0 ? cleanZeros(b.slice(1)) : b;
@@ -547,13 +562,13 @@ const webCryptoSubtle = webCrypto && (webCrypto.subtle || webCrypto['webkitSubtl
  * @class  JwtSplit
  */
 class JwtSplit {
-    constructor(str) {
+    constructor(str, callee = 'JwtSplit') {
         if (typeof str !== 'string') {
-            throw new Error(ILLEGAL_ARGUMENT);
+            throw new Error(generateErrorMessage(str, callee, 'JWT string'));
         }
         const jwtArr = str.split('.');
         if (jwtArr.length !== 3) {
-            throw new Error(ILLEGAL_ARGUMENT);
+            throw new Error(generateErrorMessage(str, callee, 'JWT string'));
         }
         const [header, payload, signature] = jwtArr;
         this.header = header;
@@ -570,7 +585,7 @@ class JwtSplit {
  * @class  JwtDecode
  */
 class JwtDecode {
-    constructor(str) {
+    constructor(str, callee = 'JwtDecode') {
         /**
          * Header (first) part of JWT Token
          *
@@ -593,9 +608,9 @@ class JwtDecode {
          */
         this.signature = '';
         if (typeof str !== 'string') {
-            throw new Error(ILLEGAL_ARGUMENT);
+            throw new Error(generateErrorMessage(str, callee, 'JWT string'));
         }
-        const jwtObj = jwtSplit(str);
+        const jwtObj = jwtSplit(str, callee);
         if (jwtObj) {
             this.header = jwtObj.header ? s2J(bu2s(jwtObj.header)) : {};
             this.payload = jwtObj.payload ? (isGzip(this.header) ? s2J(zbu2s(jwtObj.payload)) : s2J(bu2s(jwtObj.payload))) : {};
@@ -735,8 +750,8 @@ function isGzip(header) {
  *
  * @returns {JwtDecode} object with decoded header and body, and signature untouched
  */
-function jwtDecode(str) {
-    return new JwtDecode(str);
+function jwtDecode(str, callee = 'jwtDecode') {
+    return new JwtDecode(str, callee);
 }
 /**
  * Split jwtToken into object {header, payload, signature}
@@ -745,8 +760,8 @@ function jwtDecode(str) {
  *
  * @returns {JwtSplit} jwt split object of three strings
  */
-function jwtSplit(str) {
-    return new JwtSplit(str);
+function jwtSplit(str, callee = 'jwtSplit') {
+    return new JwtSplit(str, callee);
 }
 const splitJwt = jwtSplit;
 /**
@@ -802,11 +817,16 @@ function unzip(str) {
     if (typeof str !== 'string') {
         throw new Error(ILLEGAL_ARGUMENT);
     }
-    return pako.inflate(str, {
-        raw: false,
-        from: 'string',
-        to: 'string'
-    });
+    if (!!pako && pako.inflate) {
+        return pako.inflate(str, {
+            raw: false,
+            from: 'string',
+            to: 'string'
+        });
+    }
+    else {
+        throw new Error(PAKO_NOT_FOUND);
+    }
 }
 /**
  * Decode from base64url and unzip data string
@@ -829,11 +849,16 @@ function zip(str) {
     if (typeof str !== 'string') {
         throw new Error(ILLEGAL_ARGUMENT);
     }
-    return pako.deflate(str, {
-        raw: false,
-        from: 'string',
-        to: 'string'
-    });
+    if (!!pako && pako.deflate) {
+        return pako.deflate(str, {
+            raw: false,
+            from: 'string',
+            to: 'string'
+        });
+    }
+    else {
+        throw new Error(PAKO_NOT_FOUND);
+    }
 }
 /**
  * Converts string to ArrayBuffer
@@ -1188,7 +1213,7 @@ async function createSign(name) {
             return crypto.createSign(name.replace('SHA-', 'RSA-SHA'));
         }
         else {
-            throw new Error(ILLEGAL_ARGUMENT);
+            throw new Error(CRYPTO_NOT_FOUND);
         }
     }
 }
@@ -1199,7 +1224,7 @@ function algRSsign(bits) {
             return b2bu(await res.update(thing).sign(privateKey, 'base64'));
         }
         catch (e) {
-            return Promise.reject(new Error(e.message));
+            return Promise.reject(e);
         }
     };
 }
@@ -1245,7 +1270,7 @@ async function createVerify(name) {
             return crypto.createVerify(name.replace('SHA-', 'RSA-SHA'));
         }
         else {
-            throw new Error(ILLEGAL_ARGUMENT);
+            throw new Error(CRYPTO_NOT_FOUND);
         }
     }
 }
@@ -1257,7 +1282,7 @@ function algRSverify(bits) {
             return await rsaVerify.update(thing).verify(publicKey, signature, 'base64');
         }
         catch (e) {
-            return Promise.reject(new Error(e.message));
+            return Promise.reject(e);
         }
     };
 }
@@ -1312,17 +1337,17 @@ async function algSign(algorithm, thing, secret) {
     }
 }
 async function jwtVerify(jwtStr, secret) {
-    const jwt = jwtSplit(jwtStr), header = s2J(bu2s(jwt.header)), thing = jwt.header + '.' + jwt.payload;
+    const jwt = jwtSplit(jwtStr, 'jwtVerify'), header = s2J(bu2s(jwt.header)), thing = jwt.header + '.' + jwt.payload;
     return tryPromise(() => algVerify(header.alg, thing, jwt.signature, secret));
 }
 const verifyJwt = jwtVerify;
 function jwtSign(jwtStr, secret) {
-    const jwt = jwtSplit(jwtStr), header = s2J(bu2s(jwt.header)), thing = jwt.header + '.' + jwt.payload;
+    const jwt = jwtSplit(jwtStr, 'jwtSign'), header = s2J(bu2s(jwt.header)), thing = jwt.header + '.' + jwt.payload;
     return tryPromise(async () => await algSign(header.alg, thing, secret));
 }
 const signJwt = jwtSign;
 async function jwtResign(jwtStr, secret, alg) {
-    const jwt = jwtDecode(jwtStr);
+    const jwt = jwtDecode(jwtStr, 'jwtResign');
     if (!!alg)
         jwt.header.alg = alg;
     jwt.signature = await jwtSign(jwt.toString(), secret);

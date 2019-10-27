@@ -1,6 +1,4 @@
-**[jwt-js-decode](../README.md)**
-
-[Globals](../globals.md) › [PEM](pem.md)
+[jwt-js-decode](../README.md) › [Globals](../globals.md) › [PEM](pem.md)
 
 # Interface: PEM
 
@@ -21,7 +19,7 @@
 
 • **body**: *ArrayBuffer | Uint8Array*
 
-Defined in jwt-js-decode.ts:470
+Defined in jwt-js-decode.ts:487
 
 ___
 
@@ -29,4 +27,4 @@ ___
 
 • **type**: *"private" | "public"*
 
-Defined in jwt-js-decode.ts:471
+Defined in jwt-js-decode.ts:488

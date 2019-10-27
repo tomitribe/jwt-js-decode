@@ -1,6 +1,4 @@
-**[jwt-js-decode](../README.md)**
-
-[Globals](../globals.md) › [Stream](stream.md)
+[jwt-js-decode](../README.md) › [Globals](../globals.md) › [Stream](stream.md)
 
 # Class: Stream
 

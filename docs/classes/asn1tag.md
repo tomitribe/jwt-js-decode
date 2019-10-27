@@ -1,6 +1,4 @@
-**[jwt-js-decode](../README.md)**
-
-[Globals](../globals.md) › [Asn1Tag](asn1tag.md)
+[jwt-js-decode](../README.md) › [Globals](../globals.md) › [Asn1Tag](asn1tag.md)
 
 # Class: Asn1Tag
 
@@ -26,7 +24,7 @@
 
 \+ **new Asn1Tag**(`stream`: any): *[Asn1Tag](asn1tag.md)*
 
-Defined in jwt-js-decode.ts:630
+Defined in jwt-js-decode.ts:647
 
 **Parameters:**
 
@@ -42,7 +40,7 @@ Name | Type |
 
 • **tagClass**: *number* = 0
 
-Defined in jwt-js-decode.ts:628
+Defined in jwt-js-decode.ts:645
 
 ___
 
@@ -50,7 +48,7 @@ ___
 
 • **tagConstructed**: *boolean* = false
 
-Defined in jwt-js-decode.ts:629
+Defined in jwt-js-decode.ts:646
 
 ___
 
@@ -58,4 +56,4 @@ ___
 
 • **tagNumber**: *number* = 0
 
-Defined in jwt-js-decode.ts:630
+Defined in jwt-js-decode.ts:647
