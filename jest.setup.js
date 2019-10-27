@@ -1,3 +1,5 @@
-afterEach(function () {
-    jest.unmock('crypto');
+beforeAll(function () {
+    jest.mock('pako', () => {
+        return jest.requireActual('pako');
+    });
 });

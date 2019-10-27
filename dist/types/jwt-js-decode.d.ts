@@ -28,7 +28,7 @@ export declare class JwtSplit {
      * @type {string}
      */
     signature: string;
-    constructor(str: string);
+    constructor(str: string, callee?: string);
     toString(): string;
 }
 /** JwtPart interface basically object type definition used as a placeholder */
@@ -62,7 +62,7 @@ export declare class JwtDecode {
      * @type {string}
      */
     signature: string;
-    constructor(str: string);
+    constructor(str: string, callee?: string);
     toString(): string;
 }
 /**
@@ -137,7 +137,7 @@ export declare function isGzip(header: JwtPart): boolean;
  *
  * @returns {JwtDecode} object with decoded header and body, and signature untouched
  */
-export declare function jwtDecode(str: string): JwtDecode;
+export declare function jwtDecode(str: string, callee?: string): JwtDecode;
 /**
  * Split jwtToken into object {header, payload, signature}
  *
@@ -145,7 +145,7 @@ export declare function jwtDecode(str: string): JwtDecode;
  *
  * @returns {JwtSplit} jwt split object of three strings
  */
-export declare function jwtSplit(str: string): JwtSplit;
+export declare function jwtSplit(str: string, callee?: string): JwtSplit;
 export declare const splitJwt: typeof jwtSplit;
 /**
  * Converts base64 string to string

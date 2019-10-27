@@ -1,6 +1,6 @@
-**[jwt-js-decode](README.md)**
+[jwt-js-decode](README.md) › [Globals](globals.md)
 
-[Globals](globals.md)
+# jwt-js-decode
 
 # jwt-js-decode
 

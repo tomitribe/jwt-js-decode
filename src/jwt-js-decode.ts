@@ -1,12 +1,21 @@
 import pako from "pako";
-
 /* Issue3: Works, but ASN1 adds 14kb of code to this lib
 import ASN1 from "asn1js";
 */
 // Simplified/improved version of
 // "asn1js": "git+https://github.com/lapo-luchini/asn1js.git",
 import { ASN1 } from "./asn1";
-import { AB2hex, cleanZeros, hex2AB, ILLEGAL_ARGUMENT, num2hex, UNSUPPORTED_ALGORITHM } from "./util";
+import {
+    AB2hex,
+    cleanZeros,
+    CRYPTO_NOT_FOUND,
+    generateErrorMessage,
+    hex2AB,
+    ILLEGAL_ARGUMENT,
+    num2hex,
+    PAKO_NOT_FOUND,
+    UNSUPPORTED_ALGORITHM
+} from "./util";
 /*
 //crypto-browserify:
 import { createHmac, createSign, createVerify } from "crypto-browserify";
@@ -69,14 +78,14 @@ export class JwtSplit {
      */
     signature: string;
 
-    constructor(str: string) {
+    constructor(str: string, callee = 'JwtSplit') {
         if (typeof str !== 'string') {
-            throw new Error(ILLEGAL_ARGUMENT);
+            throw new Error(generateErrorMessage(str, callee, 'JWT string'));
         }
 
         const jwtArr = str.split('.');
         if (jwtArr.length !== 3) {
-            throw new Error(ILLEGAL_ARGUMENT);
+            throw new Error(generateErrorMessage(str, callee, 'JWT string'));
         }
 
         const [header, payload, signature] = jwtArr;
@@ -125,11 +134,11 @@ export class JwtDecode {
      */
     public signature: string = '';
 
-    constructor(str: string) {
+    constructor(str: string, callee = 'JwtDecode') {
         if (typeof str !== 'string') {
-            throw new Error(ILLEGAL_ARGUMENT);
+            throw new Error(generateErrorMessage(str, callee, 'JWT string'));
         }
-        const jwtObj: JwtSplit = jwtSplit(str);
+        const jwtObj: JwtSplit = jwtSplit(str, callee);
         if (jwtObj) {
             this.header = jwtObj.header ? s2J(bu2s(jwtObj.header)) : {};
             this.payload = jwtObj.payload ? (isGzip(this.header) ? s2J(zbu2s(jwtObj.payload)) : s2J(bu2s(jwtObj.payload))) : {};
@@ -274,8 +283,8 @@ export function isGzip(header: JwtPart): boolean {
  *
  * @returns {JwtDecode} object with decoded header and body, and signature untouched
  */
-export function jwtDecode(str: string): JwtDecode {
-    return new JwtDecode(str);
+export function jwtDecode(str: string, callee = 'jwtDecode'): JwtDecode {
+    return new JwtDecode(str, callee);
 }
 
 /**
@@ -285,8 +294,8 @@ export function jwtDecode(str: string): JwtDecode {
  *
  * @returns {JwtSplit} jwt split object of three strings
  */
-export function jwtSplit(str: string): JwtSplit {
-    return new JwtSplit(str);
+export function jwtSplit(str: string, callee = 'jwtSplit'): JwtSplit {
+    return new JwtSplit(str, callee);
 }
 
 export const splitJwt = jwtSplit;
@@ -344,11 +353,15 @@ export function unzip(str: string): string {
         throw new Error(ILLEGAL_ARGUMENT);
     }
 
-    return pako.inflate(str, {
-        raw: false,
-        from: 'string',
-        to: 'string'
-    } as Pako.InflateOptions & { to: 'string' });
+    if (!!pako && pako.inflate) {
+        return pako.inflate(str, {
+            raw: false,
+            from: 'string',
+            to: 'string'
+        } as Pako.InflateOptions & { to: 'string' });
+    } else {
+        throw new Error(PAKO_NOT_FOUND);
+    }
 }
 
 /**
@@ -374,11 +387,15 @@ export function zip(str: string): string {
         throw new Error(ILLEGAL_ARGUMENT);
     }
 
-    return pako.deflate(str, {
-        raw: false,
-        from: 'string',
-        to: 'string'
-    } as Pako.DeflateOptions & { to: 'string' });
+    if (!!pako && pako.deflate) {
+        return pako.deflate(str, {
+            raw: false,
+            from: 'string',
+            to: 'string'
+        } as Pako.DeflateOptions & { to: 'string' });
+    } else {
+        throw new Error(PAKO_NOT_FOUND);
+    }
 }
 
 /**
@@ -780,7 +797,7 @@ export async function createSign(name: string): Promise<any> {
         if (!!crypto && crypto.createSign) {
             return crypto.createSign(name.replace('SHA-', 'RSA-SHA'))
         } else {
-            throw new Error(ILLEGAL_ARGUMENT);
+            throw new Error(CRYPTO_NOT_FOUND);
         }
     }
 }
@@ -791,7 +808,7 @@ export function algRSsign(bits: number) {
             const res = await createSign('SHA-' + bits);
             return b2bu(await res.update(thing).sign(privateKey, 'base64'));
         } catch (e) {
-            return Promise.reject(new Error(e.message));
+            return Promise.reject(e);
         }
     }
 }
@@ -848,7 +865,7 @@ export async function createVerify(name: string): Promise<any> {
         if (!!crypto && crypto.createVerify) {
             return crypto.createVerify(name.replace('SHA-', 'RSA-SHA'))
         } else {
-            throw new Error(ILLEGAL_ARGUMENT);
+            throw new Error(CRYPTO_NOT_FOUND);
         }
     }
 }
@@ -860,7 +877,7 @@ export function algRSverify(bits: number) {
             const rsaVerify = await createVerify('SHA-' + bits);
             return await rsaVerify.update(thing).verify(publicKey, signature, 'base64');
         } catch (e) {
-            return Promise.reject(new Error(e.message));
+            return Promise.reject(e);
         }
     }
 }
@@ -924,7 +941,7 @@ export async function algSign(algorithm: string, thing: string, secret: string):
 }
 
 export async function jwtVerify(jwtStr: string, secret: string): Promise<boolean> {
-    const jwt = jwtSplit(jwtStr),
+    const jwt = jwtSplit(jwtStr, 'jwtVerify'),
         header = s2J(bu2s(jwt.header)),
         thing = jwt.header + '.' + jwt.payload;
     return tryPromise(() => algVerify(header.alg, thing, jwt.signature, secret));
@@ -933,7 +950,7 @@ export async function jwtVerify(jwtStr: string, secret: string): Promise<boolean
 export const verifyJwt = jwtVerify;
 
 export function jwtSign(jwtStr: string, secret: string): Promise<string> {
-    const jwt = jwtSplit(jwtStr),
+    const jwt = jwtSplit(jwtStr, 'jwtSign'),
         header = s2J(bu2s(jwt.header)),
         thing = jwt.header + '.' + jwt.payload;
     return tryPromise(async () => await algSign(header.alg, thing, secret));
@@ -942,7 +959,7 @@ export function jwtSign(jwtStr: string, secret: string): Promise<string> {
 export const signJwt = jwtSign;
 
 export async function jwtResign(jwtStr: string, secret: string, alg?: string): Promise<string> {
-    const jwt = jwtDecode(jwtStr);
+    const jwt = jwtDecode(jwtStr, 'jwtResign');
     if (!!alg) jwt.header.alg = alg;
     jwt.signature = await jwtSign(jwt.toString(), secret);
     return jwt.toString();

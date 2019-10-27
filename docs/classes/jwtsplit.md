@@ -1,6 +1,4 @@
-**[jwt-js-decode](../README.md)**
-
-[Globals](../globals.md) › [JwtSplit](jwtsplit.md)
+[jwt-js-decode](../README.md) › [Globals](../globals.md) › [JwtSplit](jwtsplit.md)
 
 # Class: JwtSplit
 
@@ -32,15 +30,16 @@ Class for creating a JwtSplit object with three parts of JWT Token as strings
 
 ###  constructor
 
-\+ **new JwtSplit**(`str`: string): *[JwtSplit](jwtsplit.md)*
+\+ **new JwtSplit**(`str`: string, `callee`: string): *[JwtSplit](jwtsplit.md)*
 
-Defined in jwt-js-decode.ts:70
+Defined in jwt-js-decode.ts:79
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`str` | string |
+Name | Type | Default |
+------ | ------ | ------ |
+`str` | string | - |
+`callee` | string | "JwtSplit" |
 
 **Returns:** *[JwtSplit](jwtsplit.md)*
 
@@ -50,7 +49,7 @@ Name | Type |
 
 • **header**: *string*
 
-Defined in jwt-js-decode.ts:54
+Defined in jwt-js-decode.ts:63
 
 Header (first) part of JWT Token
 
@@ -64,7 +63,7 @@ ___
 
 • **payload**: *string*
 
-Defined in jwt-js-decode.ts:62
+Defined in jwt-js-decode.ts:71
 
 Payload (second) part of JWT Token
 
@@ -78,7 +77,7 @@ ___
 
 • **signature**: *string*
 
-Defined in jwt-js-decode.ts:70
+Defined in jwt-js-decode.ts:79
 
 Signature (third) part of JWT Token
 
@@ -92,6 +91,6 @@ Signature (third) part of JWT Token
 
 ▸ **toString**(): *string*
 
-Defined in jwt-js-decode.ts:88
+Defined in jwt-js-decode.ts:97
 
 **Returns:** *string*

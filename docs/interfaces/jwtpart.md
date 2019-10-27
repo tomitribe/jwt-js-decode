@@ -1,6 +1,4 @@
-**[jwt-js-decode](../README.md)**
-
-[Globals](../globals.md) › [JwtPart](jwtpart.md)
+[jwt-js-decode](../README.md) › [Globals](../globals.md) › [JwtPart](jwtpart.md)
 
 # Interface: JwtPart
 
