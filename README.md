@@ -26,7 +26,7 @@ npm i -S jwt-js-decode
 
 ### Require lib
 ```javascript
-import jwtJsDecode from 'jwt-js-decode';
+import * as jwtJsDecode from 'jwt-js-decode';
 ```
 or
 ```javascript
@@ -41,20 +41,22 @@ Other links you can find on [`yarn`](https://yarnpkg.com/en/package/jwt-js-decod
 ### Usage
 
 ```javascript
+    import { jwtDecode, jwtVerify, resignJwt } from 'jwt-js-decode';
+    
     // just decode 'token' into {header: Object, payload: Object, signature: String}
-    let jwt = jwtJsDecode.jwtDecode('token');
+    let jwt = jwtDecode('token');
     console.log(jwt.payload);
 
     // or verify 'token' with provided secret and decode it
-    jwtJsDecode.jwtVerify('token', 'secret').then(res => {
+    jwtVerify('token', 'secret').then(res => {
         if (res === true) {
-            const jwt = jwtJsDecode.jwtDecode('token');
+            const jwt = jwtDecode('token');
             console.log(jwt.payload);
         }
     });
     
     // advanced resignJwt token with newSecret secret should be same type as jwt.header.alg
-    jwtJsDecode.resignJwt('token', 'newSecret').then(newToken =>  {
+    resignJwt('token', 'newSecret').then(newToken =>  {
         console.log(newToken);
     });
 ```
