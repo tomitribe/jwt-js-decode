@@ -38,6 +38,15 @@ or
 ```
 Other links you can find on [`yarn`](https://yarnpkg.com/en/package/jwt-js-decode)
 
+P.S. For Webpack 5 browser bundling, there is need to add crypto fallback config ([example stackblitz](https://stackblitz.com/edit/github-m1gvkd?file=webpack.config.js)):
+```
+resolve: {
+  fallback: {
+    crypto: false,
+  },
+},
+```
+
 ### Usage
 
 ```javascript
