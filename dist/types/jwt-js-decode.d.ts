@@ -1,6 +1,6 @@
 import { AB2hex, cleanZeros, hex2AB, num2hex } from "./util";
-export declare const webCrypto: boolean | Crypto;
-export declare const webCryptoSubtle: boolean | SubtleCrypto;
+export declare const webCrypto: false | Crypto;
+export declare const webCryptoSubtle: false | SubtleCrypto;
 /**
  * Class for creating a JwtSplit object with three parts of JWT Token as strings
  *
@@ -200,9 +200,9 @@ export declare function zip(str: string): string;
  *
  * @param {string} str - data string to convert
  *
- * @returns {ArrayBuffer | Uint8Array} charCode ArrayBuffer
+ * @returns {ArrayBuffer} charCode ArrayBuffer
  */
-export declare function s2AB(str: string): ArrayBuffer | Uint8Array;
+export declare function s2AB(str: string): ArrayBuffer;
 /**
  * Converts ArrayBuffer to string
  *
