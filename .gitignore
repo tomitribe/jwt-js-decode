@@ -23,3 +23,5 @@ node_modules
 coverage/
 #docs/
 .webcrypto/
+
+.vscode/
