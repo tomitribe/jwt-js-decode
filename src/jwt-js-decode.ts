@@ -30,25 +30,6 @@ export const webCrypto = typeof window === "object" && (window.crypto || window[
 export const webCryptoSubtle = webCrypto && (webCrypto.subtle || webCrypto['webkitSubtle'] || webCrypto['Subtle']);
 
 /**
- * Pako 1.0.6 has 'from' property which is not included in current version of typeDef @types/pako@1.0.0
- *
- * @hidden
- */
-declare namespace Pako {
-    export interface DeflateOptions {
-        raw?: boolean;
-        from?: string;
-        to?: string;
-    }
-
-    export interface InflateOptions {
-        raw?: boolean;
-        from?: string;
-        to?: string;
-    }
-}
-
-/**
  * Class for creating a JwtSplit object with three parts of JWT Token as strings
  *
  * @class  JwtSplit
@@ -177,7 +158,7 @@ export function s2J(str: string): any {
     try {
         return JSON.parse(str);
     } catch (e) {
-        throw new Error(e.message);
+        throw e;
     }
 }
 
@@ -192,7 +173,7 @@ export function J2s(obj: any): string {
     try {
         return JSON.stringify(obj);
     } catch (e) {
-        throw new Error(e.message);
+        throw e;
     }
 }
 
@@ -211,7 +192,7 @@ export function b2s(str: string): string {
             return Buffer.from(str, 'base64').toString('binary')
         } else throw new Error(ILLEGAL_ARGUMENT);
     } catch (e) {
-        throw new Error(e);
+        throw e;
     }
 }
 
@@ -309,13 +290,13 @@ export const splitJwt = jwtSplit;
  */
 export function s2b(str: string): string {
     try {
-        if (typeof window === 'object' && typeof window.atob === 'function') {
+        if (typeof window === 'object' && typeof window.btoa === 'function') {
             return window.btoa(str);
         } else if (typeof Buffer !== 'undefined') {
             return Buffer.from(str).toString('base64');
         } else throw new Error(ILLEGAL_ARGUMENT);
     } catch (e) {
-        throw new Error(e);
+        throw e;
     }
 }
 
@@ -354,11 +335,9 @@ export function unzip(str: string): string {
     }
 
     if (!!pako && pako.inflate) {
-        return pako.inflate(str, {
-            raw: false,
-            from: 'string',
-            to: 'string'
-        } as Pako.InflateOptions & { to: 'string' });
+        return AB2s(pako.inflate(s2AB(str), {
+            raw: false
+        }));
     } else {
         throw new Error(PAKO_NOT_FOUND);
     }
@@ -388,11 +367,9 @@ export function zip(str: string): string {
     }
 
     if (!!pako && pako.deflate) {
-        return pako.deflate(str, {
-            raw: false,
-            from: 'string',
-            to: 'string'
-        } as Pako.DeflateOptions & { to: 'string' });
+        return AB2s(pako.deflate(str, {
+            raw: false
+        }));
     } else {
         throw new Error(PAKO_NOT_FOUND);
     }
@@ -403,11 +380,12 @@ export function zip(str: string): string {
  *
  * @param {string} str - data string to convert
  *
- * @returns {ArrayBuffer | Uint8Array} charCode ArrayBuffer
+ * @returns {ArrayBuffer} charCode ArrayBuffer
  */
-export function s2AB(str: string): ArrayBuffer | Uint8Array {
-    const buff = new Uint8Array(str.length);
-    for (let i = 0; i < str.length; i++) buff[i] = str.charCodeAt(i);
+export function s2AB(str: string): ArrayBuffer {
+    const buff = new ArrayBuffer(str.length);
+    const view = new Uint8Array(buff);
+    for (let i = 0; i < str.length; i++) view[i] = str.charCodeAt(i);
     return buff;
 }
 
@@ -419,8 +397,8 @@ export function s2AB(str: string): ArrayBuffer | Uint8Array {
  * @returns {string} data string
  */
 export function AB2s(buff: ArrayBuffer | Uint8Array): string {
-    if (buff instanceof ArrayBuffer) buff = new Uint8Array(buff);
-    return String.fromCharCode.apply(String, Array.from(buff as Uint8Array));
+    if(!(buff instanceof Uint8Array)) buff = new Uint8Array(buff);
+    return String.fromCharCode.apply(String, Array.from(buff as any));
 }
 
 /**
@@ -465,7 +443,11 @@ export function algHSsign(bits: number) {
      */
     return async function sign(thing: string, secret: string): Promise<string> {
         const hmac = await createHmac('SHA-' + bits, secret);
-        return Promise.resolve(webCryptoSubtle ? s2bu(AB2s(hmac && await hmac.update(thing))) : b2bu(hmac && hmac.update(thing).digest('base64')));
+        if (webCryptoSubtle) {
+            if(!hmac) return Promise.reject(ILLEGAL_ARGUMENT);
+            return Promise.resolve(s2bu(AB2s(await hmac.update(thing))));
+        }
+        return Promise.resolve(b2bu(hmac.update(thing).digest('base64')));
     }
 }
 
@@ -973,7 +955,7 @@ export const resignJwt = jwtResign;
  * @hidden
  */
 export async function cryptoType(): Promise<string> {
-    const crypto = await import("crypto");
+    const crypto = webCrypto || await import("crypto");
     return crypto ? crypto['type'] || 'crypto-node' : 'undefined';
 }
 

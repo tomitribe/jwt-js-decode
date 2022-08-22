@@ -1,0 +1,10 @@
+{
+    "out": "docs",
+    "excludeExternals": true,
+    "theme": "markdown",
+    "readme" : "none",
+    "name": "Jwt-js-decode Documentation",
+    "entryPoints": [
+        "src/jwt-js-decode.ts"
+    ]
+}

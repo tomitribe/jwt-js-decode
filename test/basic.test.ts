@@ -270,7 +270,7 @@ describe("jwtVerify tests (Node.js version) RS", function () {
         await expect(jwtVerify(jwtStrNormal_RS512, jwtSecondPubKey_RS)).resolves.toBeFalsy();
     });
 
-    it("it fails when provided with a proper jwt String and not public key jwtSecondPrivKey_RS (jwtStrGzip_RS256)", async function () {
-        await expect(jwtVerify(jwtStrNormal_RS512, jwtSecondPrivKey_RS)).rejects.toThrowError();
+    it("it fails when provided with a proper jwt String and wrong private key jwtSecondPrivKey_RS (jwtStrGzip_RS256)", async function () {
+        await expect(jwtVerify(jwtStrNormal_RS512, jwtSecondPrivKey_RS)).resolves.toBeFalsy();
     });
 });
