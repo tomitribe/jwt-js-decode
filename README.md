@@ -34,7 +34,7 @@ const jwtJsDecode = require('jwt-js-decode');
 ```
 or
 ```html
-<script src="https://unpkg.com/jwt-js-decode@1.2.0"></script>
+<script src="//unpkg.com/jwt-js-decode@1.5.1/dist/jwt-js-decode.pkg.min.js"></script>
 ```
 Other links you can find on [`yarn`](https://yarnpkg.com/en/package/jwt-js-decode)
 
@@ -72,13 +72,13 @@ resolve: {
 
 ## Sandboxes
 
-Runkit (node.js sandbox 1.3.7)
+Runkit (node.js sandbox 1.5.1)
 [https://npm.runkit.com/jwt-js-decode](https://npm.runkit.com/jwt-js-decode)
 
-Plunkr (browser sandbox 1.3.7 + CodeMirror)
+Plunkr (browser sandbox 1.5.1 + CodeMirror)
 [https://plnkr.co/edit/WaawWXswkexfXaFfRDjQ](https://plnkr.co/edit/WaawWXswkexfXaFfRDjQ)
 
-Plunkr (browser sandbox 1.1.7)
+Plunkr (browser sandbox 1.5.1)
 [https://plnkr.co/edit/zCNpiTXBbPKNxNVnHhkU](https://plnkr.co/edit/zCNpiTXBbPKNxNVnHhkU)
 
 ## Development
