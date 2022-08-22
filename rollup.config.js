@@ -99,7 +99,7 @@ const browserConfig = Object.assign({}, baseConfig, {
     output: {
         file: pkg.browser,
         name: camelCase(libraryName),
-        format: 'esm',
+        format: 'umd',
         exports: 'named',
         sourcemap: false,
         globals: ['crypto']
@@ -123,7 +123,7 @@ const browserConfig = Object.assign({}, baseConfig, {
         terser({
             compress: {warnings: false},
             output: {comments: false},
-            mangle: false
+            mangle: true
         })]
 });
 
@@ -137,10 +137,11 @@ const packedConfig = Object.assign({}, baseConfig, {
         sourcemap: false,
         globals: ['crypto']
     },
-    plugins: [resolve({
-        mainFields: ['browser'],
-        isBrowser: true
-    }),
+    plugins: [
+        resolve({
+            mainFields: ['browser'],
+            isBrowser: true,
+        }),
         typescript({
             useTsconfigDeclarationDir: true,
             tsconfigOverride: {
@@ -155,7 +156,7 @@ const packedConfig = Object.assign({}, baseConfig, {
         terser({
             compress: {warnings: false},
             output: {comments: false},
-            mangle: false
+            mangle: true
         })]
 });
 //

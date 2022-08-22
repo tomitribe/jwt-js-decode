@@ -28,7 +28,7 @@
 
 #### Defined in
 
-[jwt-js-decode.ts:631](https://github.com/tomitribe/jwt-js-decode/blob/8208960/src/jwt-js-decode.ts#L631)
+[jwt-js-decode.ts:631](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L631)
 
 ## Properties
 
@@ -38,7 +38,7 @@
 
 #### Defined in
 
-[jwt-js-decode.ts:627](https://github.com/tomitribe/jwt-js-decode/blob/8208960/src/jwt-js-decode.ts#L627)
+[jwt-js-decode.ts:627](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L627)
 
 ___
 
@@ -48,7 +48,7 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:628](https://github.com/tomitribe/jwt-js-decode/blob/8208960/src/jwt-js-decode.ts#L628)
+[jwt-js-decode.ts:628](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L628)
 
 ___
 
@@ -58,4 +58,4 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:629](https://github.com/tomitribe/jwt-js-decode/blob/8208960/src/jwt-js-decode.ts#L629)
+[jwt-js-decode.ts:629](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L629)

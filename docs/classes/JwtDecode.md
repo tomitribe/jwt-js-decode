@@ -35,7 +35,7 @@ Class for creating a JwtDecode object with three parts of JWT Token, header and 
 
 #### Defined in
 
-[jwt-js-decode.ts:118](https://github.com/tomitribe/jwt-js-decode/blob/8208960/src/jwt-js-decode.ts#L118)
+[jwt-js-decode.ts:118](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L118)
 
 ## Properties
 
@@ -51,7 +51,7 @@ header
 
 #### Defined in
 
-[jwt-js-decode.ts:100](https://github.com/tomitribe/jwt-js-decode/blob/8208960/src/jwt-js-decode.ts#L100)
+[jwt-js-decode.ts:100](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L100)
 
 ___
 
@@ -67,7 +67,7 @@ payload
 
 #### Defined in
 
-[jwt-js-decode.ts:108](https://github.com/tomitribe/jwt-js-decode/blob/8208960/src/jwt-js-decode.ts#L108)
+[jwt-js-decode.ts:108](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L108)
 
 ___
 
@@ -83,7 +83,7 @@ signature
 
 #### Defined in
 
-[jwt-js-decode.ts:116](https://github.com/tomitribe/jwt-js-decode/blob/8208960/src/jwt-js-decode.ts#L116)
+[jwt-js-decode.ts:116](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L116)
 
 ## Methods
 
@@ -97,4 +97,4 @@ signature
 
 #### Defined in
 
-[jwt-js-decode.ts:130](https://github.com/tomitribe/jwt-js-decode/blob/8208960/src/jwt-js-decode.ts#L130)
+[jwt-js-decode.ts:130](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L130)
