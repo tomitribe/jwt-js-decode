@@ -672,7 +672,7 @@ function s2J(str) {
         return JSON.parse(str);
     }
     catch (e) {
-        throw new Error(e.message);
+        throw e;
     }
 }
 /**
@@ -687,7 +687,7 @@ function J2s(obj) {
         return JSON.stringify(obj);
     }
     catch (e) {
-        throw new Error(e.message);
+        throw e;
     }
 }
 /**
@@ -709,7 +709,7 @@ function b2s(str) {
             throw new Error(ILLEGAL_ARGUMENT);
     }
     catch (e) {
-        throw new Error(e);
+        throw e;
     }
 }
 /**
@@ -797,7 +797,7 @@ const splitJwt = jwtSplit;
  */
 function s2b(str) {
     try {
-        if (typeof window === 'object' && typeof window.atob === 'function') {
+        if (typeof window === 'object' && typeof window.btoa === 'function') {
             return window.btoa(str);
         }
         else if (typeof Buffer !== 'undefined') {
@@ -807,7 +807,7 @@ function s2b(str) {
             throw new Error(ILLEGAL_ARGUMENT);
     }
     catch (e) {
-        throw new Error(e);
+        throw e;
     }
 }
 /**
@@ -842,11 +842,9 @@ function unzip(str) {
         throw new Error(ILLEGAL_ARGUMENT);
     }
     if (!!pako && pako.inflate) {
-        return pako.inflate(str, {
-            raw: false,
-            from: 'string',
-            to: 'string'
-        });
+        return AB2s(pako.inflate(s2AB(str), {
+            raw: false
+        }));
     }
     else {
         throw new Error(PAKO_NOT_FOUND);
@@ -874,11 +872,9 @@ function zip(str) {
         throw new Error(ILLEGAL_ARGUMENT);
     }
     if (!!pako && pako.deflate) {
-        return pako.deflate(str, {
-            raw: false,
-            from: 'string',
-            to: 'string'
-        });
+        return AB2s(pako.deflate(str, {
+            raw: false
+        }));
     }
     else {
         throw new Error(PAKO_NOT_FOUND);
@@ -889,12 +885,13 @@ function zip(str) {
  *
  * @param {string} str - data string to convert
  *
- * @returns {ArrayBuffer | Uint8Array} charCode ArrayBuffer
+ * @returns {ArrayBuffer} charCode ArrayBuffer
  */
 function s2AB(str) {
-    const buff = new Uint8Array(str.length);
+    const buff = new ArrayBuffer(str.length);
+    const view = new Uint8Array(buff);
     for (let i = 0; i < str.length; i++)
-        buff[i] = str.charCodeAt(i);
+        view[i] = str.charCodeAt(i);
     return buff;
 }
 /**
@@ -905,7 +902,7 @@ function s2AB(str) {
  * @returns {string} data string
  */
 function AB2s(buff) {
-    if (buff instanceof ArrayBuffer)
+    if (!(buff instanceof Uint8Array))
         buff = new Uint8Array(buff);
     return String.fromCharCode.apply(String, Array.from(buff));
 }
@@ -945,7 +942,12 @@ function algHSsign(bits) {
     return function sign(thing, secret) {
         return __awaiter(this, void 0, void 0, function* () {
             const hmac = yield createHmac('SHA-' + bits, secret);
-            return Promise.resolve(webCryptoSubtle ? s2bu(AB2s(hmac && (yield hmac.update(thing)))) : b2bu(hmac && hmac.update(thing).digest('base64')));
+            if (webCryptoSubtle) {
+                if (!hmac)
+                    return Promise.reject(ILLEGAL_ARGUMENT);
+                return Promise.resolve(s2bu(AB2s(yield hmac.update(thing))));
+            }
+            return Promise.resolve(b2bu(hmac.update(thing).digest('base64')));
         });
     };
 }
@@ -1413,7 +1415,7 @@ const resignJwt = jwtResign;
  */
 function cryptoType() {
     return __awaiter(this, void 0, void 0, function* () {
-        const crypto = yield import('crypto');
+        const crypto = webCrypto || (yield import('crypto'));
         return crypto ? crypto['type'] || 'crypto-node' : 'undefined';
     });
 }

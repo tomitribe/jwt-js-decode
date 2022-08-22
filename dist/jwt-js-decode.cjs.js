@@ -2,31 +2,33 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+var pako = require('pako');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 function _interopNamespace(e) {
-    if (e && e.__esModule) { return e; } else {
-        var n = {};
-        if (e) {
-            Object.keys(e).forEach(function (k) {
+    if (e && e.__esModule) return e;
+    var n = Object.create(null);
+    if (e) {
+        Object.keys(e).forEach(function (k) {
+            if (k !== 'default') {
                 var d = Object.getOwnPropertyDescriptor(e, k);
                 Object.defineProperty(n, k, d.get ? d : {
                     enumerable: true,
-                    get: function () {
-                        return e[k];
-                    }
+                    get: function () { return e[k]; }
                 });
-            });
-        }
-        n['default'] = e;
-        return n;
+            }
+        });
     }
+    n["default"] = e;
+    return Object.freeze(n);
 }
 
-var pako = _interopDefault(require('pako'));
+var pako__default = /*#__PURE__*/_interopDefaultLegacy(pako);
 
 var max = 10000000000000; // biggest 10^n integer that can still fit 2^53 when multiplied by 256
 class Int10 {
+    buf;
     constructor(value) {
         this.buf = [+value || 0];
     }
@@ -124,8 +126,9 @@ function stringCut(str, len) {
     return str;
 }
 class Stream {
+    enc;
+    pos;
     constructor(enc, pos = 0) {
-        this.hexDigits = "0123456789ABCDEF";
         if (enc instanceof Stream) {
             this.enc = enc.enc;
             this.pos = enc.pos;
@@ -143,6 +146,7 @@ class Stream {
         return (typeof this.enc == "string") ? this.enc.charCodeAt(pos) : this.enc[pos];
     }
     ;
+    hexDigits = "0123456789ABCDEF";
     hexByte(b) {
         return this.hexDigits.charAt((b >> 4) & 0xF) + this.hexDigits.charAt(b & 0xF);
     }
@@ -317,6 +321,11 @@ class Stream {
     ;
 }
 class ASN1 {
+    stream;
+    header;
+    length;
+    tag;
+    sub;
     constructor(stream, header, length, tag, sub) {
         if (!(tag instanceof ASN1Tag))
             throw 'Invalid tag value.';
@@ -545,6 +554,9 @@ class ASN1 {
     ;
 }
 class ASN1Tag {
+    tagClass;
+    tagConstructed;
+    tagNumber;
     constructor(stream) {
         var buf = stream.get();
         this.tagClass = buf >> 6;
@@ -587,6 +599,27 @@ const webCryptoSubtle = webCrypto && (webCrypto.subtle || webCrypto['webkitSubtl
  * @class  JwtSplit
  */
 class JwtSplit {
+    /**
+     * Header (first) part of JWT Token
+     *
+     * @name  header
+     * @type {string}
+     */
+    header;
+    /**
+     * Payload (second) part of JWT Token
+     *
+     * @name  payload
+     * @type {string}
+     */
+    payload;
+    /**
+     * Signature (third) part of JWT Token
+     *
+     * @name  signature
+     * @type {string}
+     */
+    signature;
     constructor(str, callee = 'JwtSplit') {
         if (typeof str !== 'string') {
             throw new Error(generateErrorMessage(str, callee, 'JWT string'));
@@ -610,28 +643,28 @@ class JwtSplit {
  * @class  JwtDecode
  */
 class JwtDecode {
+    /**
+     * Header (first) part of JWT Token
+     *
+     * @name  header
+     * @type {JwtPart}
+     */
+    header = {};
+    /**
+     * Payload (second) part of JWT Token
+     *
+     * @name  payload
+     * @type {JwtPart}
+     */
+    payload = {};
+    /**
+     * Signature (third) part of JWT Token
+     *
+     * @name  signature
+     * @type {string}
+     */
+    signature = '';
     constructor(str, callee = 'JwtDecode') {
-        /**
-         * Header (first) part of JWT Token
-         *
-         * @name  header
-         * @type {JwtPart}
-         */
-        this.header = {};
-        /**
-         * Payload (second) part of JWT Token
-         *
-         * @name  payload
-         * @type {JwtPart}
-         */
-        this.payload = {};
-        /**
-         * Signature (third) part of JWT Token
-         *
-         * @name  signature
-         * @type {string}
-         */
-        this.signature = '';
         if (typeof str !== 'string') {
             throw new Error(generateErrorMessage(str, callee, 'JWT string'));
         }
@@ -673,7 +706,7 @@ function s2J(str) {
         return JSON.parse(str);
     }
     catch (e) {
-        throw new Error(e.message);
+        throw e;
     }
 }
 /**
@@ -688,7 +721,7 @@ function J2s(obj) {
         return JSON.stringify(obj);
     }
     catch (e) {
-        throw new Error(e.message);
+        throw e;
     }
 }
 /**
@@ -710,7 +743,7 @@ function b2s(str) {
             throw new Error(ILLEGAL_ARGUMENT);
     }
     catch (e) {
-        throw new Error(e);
+        throw e;
     }
 }
 /**
@@ -798,7 +831,7 @@ const splitJwt = jwtSplit;
  */
 function s2b(str) {
     try {
-        if (typeof window === 'object' && typeof window.atob === 'function') {
+        if (typeof window === 'object' && typeof window.btoa === 'function') {
             return window.btoa(str);
         }
         else if (typeof Buffer !== 'undefined') {
@@ -808,7 +841,7 @@ function s2b(str) {
             throw new Error(ILLEGAL_ARGUMENT);
     }
     catch (e) {
-        throw new Error(e);
+        throw e;
     }
 }
 /**
@@ -842,12 +875,10 @@ function unzip(str) {
     if (typeof str !== 'string') {
         throw new Error(ILLEGAL_ARGUMENT);
     }
-    if (!!pako && pako.inflate) {
-        return pako.inflate(str, {
-            raw: false,
-            from: 'string',
-            to: 'string'
-        });
+    if (!!pako__default["default"] && pako__default["default"].inflate) {
+        return AB2s(pako__default["default"].inflate(s2AB(str), {
+            raw: false
+        }));
     }
     else {
         throw new Error(PAKO_NOT_FOUND);
@@ -874,12 +905,10 @@ function zip(str) {
     if (typeof str !== 'string') {
         throw new Error(ILLEGAL_ARGUMENT);
     }
-    if (!!pako && pako.deflate) {
-        return pako.deflate(str, {
-            raw: false,
-            from: 'string',
-            to: 'string'
-        });
+    if (!!pako__default["default"] && pako__default["default"].deflate) {
+        return AB2s(pako__default["default"].deflate(str, {
+            raw: false
+        }));
     }
     else {
         throw new Error(PAKO_NOT_FOUND);
@@ -890,12 +919,13 @@ function zip(str) {
  *
  * @param {string} str - data string to convert
  *
- * @returns {ArrayBuffer | Uint8Array} charCode ArrayBuffer
+ * @returns {ArrayBuffer} charCode ArrayBuffer
  */
 function s2AB(str) {
-    const buff = new Uint8Array(str.length);
+    const buff = new ArrayBuffer(str.length);
+    const view = new Uint8Array(buff);
     for (let i = 0; i < str.length; i++)
-        buff[i] = str.charCodeAt(i);
+        view[i] = str.charCodeAt(i);
     return buff;
 }
 /**
@@ -906,7 +936,7 @@ function s2AB(str) {
  * @returns {string} data string
  */
 function AB2s(buff) {
-    if (buff instanceof ArrayBuffer)
+    if (!(buff instanceof Uint8Array))
         buff = new Uint8Array(buff);
     return String.fromCharCode.apply(String, Array.from(buff));
 }
@@ -926,7 +956,7 @@ async function createHmac(name, secret) {
         });
     }
     else {
-        const crypto = await new Promise(function (resolve) { resolve(_interopNamespace(require('crypto'))); });
+        const crypto = await Promise.resolve().then(function () { return /*#__PURE__*/_interopNamespace(require('crypto')); });
         return !!crypto && crypto.createHmac ? Promise.resolve(crypto.createHmac(name.replace('SHA-', 'sha'), secret)) : Promise.reject(webCrypto);
     }
 }
@@ -941,7 +971,12 @@ function algHSsign(bits) {
      */
     return async function sign(thing, secret) {
         const hmac = await createHmac('SHA-' + bits, secret);
-        return Promise.resolve(webCryptoSubtle ? s2bu(AB2s(hmac && await hmac.update(thing))) : b2bu(hmac && hmac.update(thing).digest('base64')));
+        if (webCryptoSubtle) {
+            if (!hmac)
+                return Promise.reject(ILLEGAL_ARGUMENT);
+            return Promise.resolve(s2bu(AB2s(await hmac.update(thing))));
+        }
+        return Promise.resolve(b2bu(hmac.update(thing).digest('base64')));
     };
 }
 /**
@@ -1106,10 +1141,10 @@ export function pem2asn1(buff: ArrayBuffer | Uint8Array): any {
 }
 */
 class Asn1Tag {
+    tagClass = 0;
+    tagConstructed = false;
+    tagNumber = 0;
     constructor(stream) {
-        this.tagClass = 0;
-        this.tagConstructed = false;
-        this.tagNumber = 0;
         const buf = stream.read();
         this.tagClass = buf >> 6;
         this.tagConstructed = ((buf & 0x20) !== 0);
@@ -1233,7 +1268,7 @@ async function createSign(name) {
         };
     }
     else {
-        const crypto = await new Promise(function (resolve) { resolve(_interopNamespace(require('crypto'))); });
+        const crypto = await Promise.resolve().then(function () { return /*#__PURE__*/_interopNamespace(require('crypto')); });
         if (!!crypto && crypto.createSign) {
             return crypto.createSign(name.replace('SHA-', 'RSA-SHA'));
         }
@@ -1290,7 +1325,7 @@ async function createVerify(name) {
         };
     }
     else {
-        const crypto = await new Promise(function (resolve) { resolve(_interopNamespace(require('crypto'))); });
+        const crypto = await Promise.resolve().then(function () { return /*#__PURE__*/_interopNamespace(require('crypto')); });
         if (!!crypto && crypto.createVerify) {
             return crypto.createVerify(name.replace('SHA-', 'RSA-SHA'));
         }
@@ -1385,7 +1420,7 @@ const resignJwt = jwtResign;
  * @hidden
  */
 async function cryptoType() {
-    const crypto = await new Promise(function (resolve) { resolve(_interopNamespace(require('crypto'))); });
+    const crypto = webCrypto || await Promise.resolve().then(function () { return /*#__PURE__*/_interopNamespace(require('crypto')); });
     return crypto ? crypto['type'] || 'crypto-node' : 'undefined';
 }
 
