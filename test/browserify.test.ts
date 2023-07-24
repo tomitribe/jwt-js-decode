@@ -1,3 +1,5 @@
+let originalCrypto;
+let cryptoType, jwtDecode, jwtSign, jwtSplit, jwtVerify, resignJwt;
 beforeAll(() => {
     jest.mock('create-hash', () => {
         return jest.requireActual("create-hash/browser.js");
@@ -15,6 +17,12 @@ beforeAll(() => {
             type: 'crypto-browserify'
         };
     });
+    originalCrypto = global.crypto;
+    Object.defineProperty(global, "crypto", {
+        value: false,
+        writable: true,
+    });
+    ({cryptoType, jwtDecode, jwtSign, jwtSplit, jwtVerify, resignJwt} = require('../src'));
 });
 
 afterAll(() => {
@@ -22,9 +30,12 @@ afterAll(() => {
     jest.unmock('create-hash');
     jest.unmock('create-hmac');
     jest.unmock('crypto');
+    Object.defineProperty(global, "crypto", {
+        value: originalCrypto,
+        writable: true,
+    });
 });
 
-import { cryptoType, jwtDecode, jwtSign, jwtSplit, jwtVerify, resignJwt } from "../src";
 import {
     jwtPrivKey_RS, jwtPubKey_RS, jwtSecondPrivKey_RS, jwtSecondPubKey_RS, jwtSecret_HS, jwtStrGzip_HS256,
     jwtStrGzip_HS512,

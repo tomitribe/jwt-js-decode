@@ -1,28 +1,36 @@
 import pako from 'pako';
 
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
+/******************************************************************************
+Copyright (c) Microsoft Corporation.
 
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-MERCHANTABLITY OR NON-INFRINGEMENT.
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
 
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
+/* global Reflect, Promise, SuppressedError, Symbol */
+
 
 function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 }
+
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
 
 var max = 10000000000000; // biggest 10^n integer that can still fit 2^53 when multiplied by 256
 class Int10 {
@@ -90,6 +98,7 @@ const UNSUPPORTED_ALGORITHM = 'Unsupported algorithm name specified! Supported a
 const ILLEGAL_ARGUMENT = 'Illegal argument specified!';
 const CRYPTO_NOT_FOUND = 'Could not find \'crypto\'.';
 const PAKO_NOT_FOUND = 'Could not find \'pako\'.';
+const UNSUPPORTED_ZIP_TYPE = 'Unsupported zip type.';
 function generateErrorMessage(value, callee, argumentName = 'argument', defaultType = 'string') {
     let message = `Invalid argument passed to ${callee}.`;
     if (typeof value !== defaultType) {
@@ -587,9 +596,33 @@ const webCryptoSubtle = webCrypto && (webCrypto.subtle || webCrypto['webkitSubtl
  */
 class JwtSplit {
     constructor(str, callee = 'JwtSplit') {
+        /**
+         * Header (first) part of JWT Token
+         *
+         * @name  header
+         * @type {string}
+         */
+        this.header = '';
+        /**
+         * Payload (second) part of JWT Token
+         *
+         * @name  payload
+         * @type {string}
+         */
+        this.payload = '';
+        /**
+         * Signature (third) part of JWT Token
+         *
+         * @name  signature
+         * @type {string}
+         */
+        this.signature = '';
         if (typeof str !== 'string') {
             throw new Error(generateErrorMessage(str, callee, 'JWT string'));
         }
+        this.fromString(str, callee);
+    }
+    fromString(str, callee = 'JwtSplit.fromString') {
         const jwtArr = str.split('.');
         if (jwtArr.length !== 3) {
             throw new Error(generateErrorMessage(str, callee, 'JWT string'));
@@ -634,15 +667,21 @@ class JwtDecode {
         if (typeof str !== 'string') {
             throw new Error(generateErrorMessage(str, callee, 'JWT string'));
         }
+        this.fromString(str, callee);
+    }
+    isGzip() {
+        return isGzip(this.header);
+    }
+    fromString(str, callee = 'JwtDecode.fromString') {
         const jwtObj = jwtSplit(str, callee);
         if (jwtObj) {
             this.header = jwtObj.header ? s2J(bu2s(jwtObj.header)) : {};
-            this.payload = jwtObj.payload ? (isGzip(this.header) ? s2J(zbu2s(jwtObj.payload)) : s2J(bu2s(jwtObj.payload))) : {};
+            this.payload = jwtObj.payload ? (this.isGzip() ? s2J(zbu2s(jwtObj.payload)) : s2J(bu2s(jwtObj.payload))) : {};
             this.signature = jwtObj.signature || '';
         }
     }
     toString() {
-        return s2bu(J2s(this.header)) + '.' + (isGzip(this.header) ? s2zbu(J2s(this.payload)) : s2bu(J2s(this.payload))) + '.' + this.signature;
+        return s2bu(J2s(this.header)) + '.' + (this.isGzip() ? s2zbu(J2s(this.payload)) : s2bu(J2s(this.payload))) + '.' + this.signature;
     }
 }
 /**
@@ -821,17 +860,18 @@ function s2bu(str) {
     return b2bu(s2b(str));
 }
 /**
- * Gzip and encode data string to base64url string
+ * Zip and encode data string to base64url string
  *
  * @param {string} str - data string to encode
+ * @param {string} type - type of zip type: "zlib", "gzip". default: "zlib"
  *
  * @returns {string} base64url string
  */
-function s2zbu(str) {
-    return s2bu(zip(str));
+function s2zbu(str, type = 'zlib') {
+    return s2bu(zip(str, type));
 }
 /**
- * Converts from gzip data string to string
+ * Converts from zip data string to string
  *
  * @param {string} str - data string to convert
  *
@@ -841,10 +881,21 @@ function unzip(str) {
     if (typeof str !== 'string') {
         throw new Error(ILLEGAL_ARGUMENT);
     }
-    if (!!pako && pako.inflate) {
-        return AB2s(pako.inflate(s2AB(str), {
-            raw: false
-        }));
+    if (!!pako && (pako.inflate || pako.ungzip)) {
+        const buffer = s2AB(str);
+        let inflated;
+        try {
+            inflated = pako.inflate(buffer, { raw: false });
+        }
+        catch (_a) {
+            try {
+                inflated = pako.ungzip(buffer, { raw: false });
+            }
+            catch (_b) {
+                throw new Error(UNSUPPORTED_ZIP_TYPE);
+            }
+        }
+        return AB2s(inflated);
     }
     else {
         throw new Error(PAKO_NOT_FOUND);
@@ -861,20 +912,32 @@ function zbu2s(str) {
     return unzip(bu2s(str));
 }
 /**
- * Converts string to gzip data string
+ * Converts string to zip data string
  *
  * @param {string} str - data string to convert
+ * @param {string} type - type of zip type: "zlib", "gzip". default: "zlib"
  *
- * @returns {string} gzip data string
+ * @returns {string} zip data string
  */
-function zip(str) {
+function zip(str, type = 'zlib') {
     if (typeof str !== 'string') {
         throw new Error(ILLEGAL_ARGUMENT);
     }
-    if (!!pako && pako.deflate) {
-        return AB2s(pako.deflate(str, {
-            raw: false
-        }));
+    if (!!pako && (pako.deflate || pako.gzip)) {
+        let deflated;
+        if (type === 'gzip') {
+            deflated = pako.gzip(str, {
+                raw: false
+            });
+        }
+        else if (type === 'zlib') {
+            deflated = pako.deflate(str, {
+                raw: false
+            });
+        }
+        else
+            throw new Error(UNSUPPORTED_ZIP_TYPE);
+        return AB2s(deflated);
     }
     else {
         throw new Error(PAKO_NOT_FOUND);

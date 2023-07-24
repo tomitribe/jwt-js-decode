@@ -4,10 +4,6 @@
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.jwtJsDecode = {}, global.pako));
 })(this, (function (exports, pako) { 'use strict';
 
-    function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-    var pako__default = /*#__PURE__*/_interopDefaultLegacy(pako);
-
     var max = 10000000000000; // biggest 10^n integer that can still fit 2^53 when multiplied by 256
     class Int10 {
         buf;
@@ -75,6 +71,7 @@
     const ILLEGAL_ARGUMENT = 'Illegal argument specified!';
     const CRYPTO_NOT_FOUND = 'Could not find \'crypto\'.';
     const PAKO_NOT_FOUND = 'Could not find \'pako\'.';
+    const UNSUPPORTED_ZIP_TYPE = 'Unsupported zip type.';
     function generateErrorMessage(value, callee, argumentName = 'argument', defaultType = 'string') {
         let message = `Invalid argument passed to ${callee}.`;
         if (typeof value !== defaultType) {
@@ -587,25 +584,28 @@
          * @name  header
          * @type {string}
          */
-        header;
+        header = '';
         /**
          * Payload (second) part of JWT Token
          *
          * @name  payload
          * @type {string}
          */
-        payload;
+        payload = '';
         /**
          * Signature (third) part of JWT Token
          *
          * @name  signature
          * @type {string}
          */
-        signature;
+        signature = '';
         constructor(str, callee = 'JwtSplit') {
             if (typeof str !== 'string') {
                 throw new Error(generateErrorMessage(str, callee, 'JWT string'));
             }
+            this.fromString(str, callee);
+        }
+        fromString(str, callee = 'JwtSplit.fromString') {
             const jwtArr = str.split('.');
             if (jwtArr.length !== 3) {
                 throw new Error(generateErrorMessage(str, callee, 'JWT string'));
@@ -650,15 +650,21 @@
             if (typeof str !== 'string') {
                 throw new Error(generateErrorMessage(str, callee, 'JWT string'));
             }
+            this.fromString(str, callee);
+        }
+        isGzip() {
+            return isGzip(this.header);
+        }
+        fromString(str, callee = 'JwtDecode.fromString') {
             const jwtObj = jwtSplit(str, callee);
             if (jwtObj) {
                 this.header = jwtObj.header ? s2J(bu2s(jwtObj.header)) : {};
-                this.payload = jwtObj.payload ? (isGzip(this.header) ? s2J(zbu2s(jwtObj.payload)) : s2J(bu2s(jwtObj.payload))) : {};
+                this.payload = jwtObj.payload ? (this.isGzip() ? s2J(zbu2s(jwtObj.payload)) : s2J(bu2s(jwtObj.payload))) : {};
                 this.signature = jwtObj.signature || '';
             }
         }
         toString() {
-            return s2bu(J2s(this.header)) + '.' + (isGzip(this.header) ? s2zbu(J2s(this.payload)) : s2bu(J2s(this.payload))) + '.' + this.signature;
+            return s2bu(J2s(this.header)) + '.' + (this.isGzip() ? s2zbu(J2s(this.payload)) : s2bu(J2s(this.payload))) + '.' + this.signature;
         }
     }
     /**
@@ -837,17 +843,18 @@
         return b2bu(s2b(str));
     }
     /**
-     * Gzip and encode data string to base64url string
+     * Zip and encode data string to base64url string
      *
      * @param {string} str - data string to encode
+     * @param {string} type - type of zip type: "zlib", "gzip". default: "zlib"
      *
      * @returns {string} base64url string
      */
-    function s2zbu(str) {
-        return s2bu(zip(str));
+    function s2zbu(str, type = 'zlib') {
+        return s2bu(zip(str, type));
     }
     /**
-     * Converts from gzip data string to string
+     * Converts from zip data string to string
      *
      * @param {string} str - data string to convert
      *
@@ -857,10 +864,21 @@
         if (typeof str !== 'string') {
             throw new Error(ILLEGAL_ARGUMENT);
         }
-        if (!!pako__default["default"] && pako__default["default"].inflate) {
-            return AB2s(pako__default["default"].inflate(s2AB(str), {
-                raw: false
-            }));
+        if (!!pako && (pako.inflate || pako.ungzip)) {
+            const buffer = s2AB(str);
+            let inflated;
+            try {
+                inflated = pako.inflate(buffer, { raw: false });
+            }
+            catch {
+                try {
+                    inflated = pako.ungzip(buffer, { raw: false });
+                }
+                catch {
+                    throw new Error(UNSUPPORTED_ZIP_TYPE);
+                }
+            }
+            return AB2s(inflated);
         }
         else {
             throw new Error(PAKO_NOT_FOUND);
@@ -877,20 +895,32 @@
         return unzip(bu2s(str));
     }
     /**
-     * Converts string to gzip data string
+     * Converts string to zip data string
      *
      * @param {string} str - data string to convert
+     * @param {string} type - type of zip type: "zlib", "gzip". default: "zlib"
      *
-     * @returns {string} gzip data string
+     * @returns {string} zip data string
      */
-    function zip(str) {
+    function zip(str, type = 'zlib') {
         if (typeof str !== 'string') {
             throw new Error(ILLEGAL_ARGUMENT);
         }
-        if (!!pako__default["default"] && pako__default["default"].deflate) {
-            return AB2s(pako__default["default"].deflate(str, {
-                raw: false
-            }));
+        if (!!pako && (pako.deflate || pako.gzip)) {
+            let deflated;
+            if (type === 'gzip') {
+                deflated = pako.gzip(str, {
+                    raw: false
+                });
+            }
+            else if (type === 'zlib') {
+                deflated = pako.deflate(str, {
+                    raw: false
+                });
+            }
+            else
+                throw new Error(UNSUPPORTED_ZIP_TYPE);
+            return AB2s(deflated);
         }
         else {
             throw new Error(PAKO_NOT_FOUND);
@@ -1450,8 +1480,6 @@
     exports.webCryptoSubtle = webCryptoSubtle;
     exports.zbu2s = zbu2s;
     exports.zip = zip;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
 
 }));
 //# sourceMappingURL=jwt-js-decode.umd.js.map

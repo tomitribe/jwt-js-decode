@@ -2,6 +2,7 @@ export declare const UNSUPPORTED_ALGORITHM = "Unsupported algorithm name specifi
 export declare const ILLEGAL_ARGUMENT = "Illegal argument specified!";
 export declare const CRYPTO_NOT_FOUND = "Could not find 'crypto'.";
 export declare const PAKO_NOT_FOUND = "Could not find 'pako'.";
+export declare const UNSUPPORTED_ZIP_TYPE = "Unsupported zip type.";
 export declare function generateErrorMessage(value: any, callee: any, argumentName?: string, defaultType?: string): string;
 export declare function num2hex(memo: string, i: number): string;
 export declare function cleanZeros(b: any): any;

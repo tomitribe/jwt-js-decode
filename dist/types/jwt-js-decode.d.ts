@@ -29,6 +29,7 @@ export declare class JwtSplit {
      */
     signature: string;
     constructor(str: string, callee?: string);
+    fromString(str: string, callee?: string): void;
     toString(): string;
 }
 /** JwtPart interface basically object type definition used as a placeholder */
@@ -63,6 +64,8 @@ export declare class JwtDecode {
      */
     signature: string;
     constructor(str: string, callee?: string);
+    isGzip(): boolean;
+    fromString(str: any, callee?: string): void;
     toString(): string;
 }
 /**
@@ -164,15 +167,16 @@ export declare function s2b(str: string): string;
  */
 export declare function s2bu(str: string): string;
 /**
- * Gzip and encode data string to base64url string
+ * Zip and encode data string to base64url string
  *
  * @param {string} str - data string to encode
+ * @param {string} type - type of zip type: "zlib", "gzip". default: "zlib"
  *
  * @returns {string} base64url string
  */
-export declare function s2zbu(str: string): string;
+export declare function s2zbu(str: string, type?: string): string;
 /**
- * Converts from gzip data string to string
+ * Converts from zip data string to string
  *
  * @param {string} str - data string to convert
  *
@@ -188,13 +192,14 @@ export declare function unzip(str: string): string;
  */
 export declare function zbu2s(str: string): string;
 /**
- * Converts string to gzip data string
+ * Converts string to zip data string
  *
  * @param {string} str - data string to convert
+ * @param {string} type - type of zip type: "zlib", "gzip". default: "zlib"
  *
- * @returns {string} gzip data string
+ * @returns {string} zip data string
  */
-export declare function zip(str: string): string;
+export declare function zip(str: string, type?: string): string;
 /**
  * Converts string to ArrayBuffer
  *
