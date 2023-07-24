@@ -118,7 +118,7 @@ Jwt-js-decode Documentation
 
 #### Defined in
 
-[jwt-js-decode.ts:995](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L995)
+[jwt-js-decode.ts:995](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L995)
 
 ___
 
@@ -128,7 +128,7 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:30](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L30)
+[jwt-js-decode.ts:30](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L30)
 
 ___
 
@@ -138,7 +138,7 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:31](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L31)
+[jwt-js-decode.ts:31](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L31)
 
 ## Functions
 
@@ -162,7 +162,7 @@ data string
 
 #### Defined in
 
-[jwt-js-decode.ts:432](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L432)
+[jwt-js-decode.ts:432](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L432)
 
 ___
 
@@ -186,7 +186,7 @@ resulting string
 
 #### Defined in
 
-[jwt-js-decode.ts:185](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L185)
+[jwt-js-decode.ts:185](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L185)
 
 ___
 
@@ -221,7 +221,7 @@ Algorithm HMAC sign generator
 
 #### Defined in
 
-[jwt-js-decode.ts:472](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L472)
+[jwt-js-decode.ts:472](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L472)
 
 ___
 
@@ -257,7 +257,7 @@ Algorithm HMAC verify generator
 
 #### Defined in
 
-[jwt-js-decode.ts:491](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L491)
+[jwt-js-decode.ts:491](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L491)
 
 ___
 
@@ -290,7 +290,7 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:820](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L820)
+[jwt-js-decode.ts:820](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L820)
 
 ___
 
@@ -324,7 +324,7 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:888](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L888)
+[jwt-js-decode.ts:888](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L888)
 
 ___
 
@@ -348,7 +348,7 @@ Universal algorithm signer
 
 #### Defined in
 
-[jwt-js-decode.ts:933](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L933)
+[jwt-js-decode.ts:933](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L933)
 
 ___
 
@@ -373,7 +373,7 @@ Universal algorithm verifier
 
 #### Defined in
 
-[jwt-js-decode.ts:904](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L904)
+[jwt-js-decode.ts:904](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L904)
 
 ___
 
@@ -395,7 +395,7 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:710](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L710)
+[jwt-js-decode.ts:710](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L710)
 
 ___
 
@@ -419,7 +419,7 @@ base64url string
 
 #### Defined in
 
-[jwt-js-decode.ts:219](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L219)
+[jwt-js-decode.ts:219](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L219)
 
 ___
 
@@ -443,7 +443,7 @@ decoded data string
 
 #### Defined in
 
-[jwt-js-decode.ts:200](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L200)
+[jwt-js-decode.ts:200](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L200)
 
 ___
 
@@ -467,7 +467,7 @@ base64 string
 
 #### Defined in
 
-[jwt-js-decode.ts:238](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L238)
+[jwt-js-decode.ts:238](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L238)
 
 ___
 
@@ -491,7 +491,7 @@ decoded data string
 
 #### Defined in
 
-[jwt-js-decode.ts:258](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L258)
+[jwt-js-decode.ts:258](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L258)
 
 ___
 
@@ -514,7 +514,7 @@ Async function inspired by createHmac in crypto (used WebCrypto Api supported by
 
 #### Defined in
 
-[jwt-js-decode.ts:442](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L442)
+[jwt-js-decode.ts:442](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L442)
 
 ___
 
@@ -534,7 +534,7 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:764](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L764)
+[jwt-js-decode.ts:764](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L764)
 
 ___
 
@@ -554,7 +554,7 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:831](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L831)
+[jwt-js-decode.ts:831](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L831)
 
 ___
 
@@ -578,7 +578,7 @@ does it have gzip in zip property
 
 #### Defined in
 
-[jwt-js-decode.ts:269](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L269)
+[jwt-js-decode.ts:269](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L269)
 
 ___
 
@@ -603,7 +603,7 @@ object with decoded header and body, and signature untouched
 
 #### Defined in
 
-[jwt-js-decode.ts:280](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L280)
+[jwt-js-decode.ts:280](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L280)
 
 ___
 
@@ -625,7 +625,7 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:976](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L976)
+[jwt-js-decode.ts:976](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L976)
 
 ___
 
@@ -646,7 +646,7 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:967](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L967)
+[jwt-js-decode.ts:967](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L967)
 
 ___
 
@@ -671,7 +671,7 @@ jwt split object of three strings
 
 #### Defined in
 
-[jwt-js-decode.ts:291](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L291)
+[jwt-js-decode.ts:291](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L291)
 
 ___
 
@@ -692,7 +692,7 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:958](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L958)
+[jwt-js-decode.ts:958](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L958)
 
 ___
 
@@ -712,7 +712,7 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:672](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L672)
+[jwt-js-decode.ts:672](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L672)
 
 ___
 
@@ -734,7 +734,7 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:746](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L746)
+[jwt-js-decode.ts:746](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L746)
 
 ___
 
@@ -756,7 +756,7 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:976](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L976)
+[jwt-js-decode.ts:976](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L976)
 
 ___
 
@@ -780,7 +780,7 @@ charCode ArrayBuffer
 
 #### Defined in
 
-[jwt-js-decode.ts:418](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L418)
+[jwt-js-decode.ts:418](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L418)
 
 ___
 
@@ -804,7 +804,7 @@ resulting object
 
 #### Defined in
 
-[jwt-js-decode.ts:170](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L170)
+[jwt-js-decode.ts:170](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L170)
 
 ___
 
@@ -828,7 +828,7 @@ base64 string
 
 #### Defined in
 
-[jwt-js-decode.ts:304](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L304)
+[jwt-js-decode.ts:304](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L304)
 
 ___
 
@@ -852,7 +852,7 @@ base64url string
 
 #### Defined in
 
-[jwt-js-decode.ts:323](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L323)
+[jwt-js-decode.ts:323](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L323)
 
 ___
 
@@ -872,7 +872,7 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:506](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L506)
+[jwt-js-decode.ts:506](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L506)
 
 ___
 
@@ -897,7 +897,7 @@ base64url string
 
 #### Defined in
 
-[jwt-js-decode.ts:335](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L335)
+[jwt-js-decode.ts:335](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L335)
 
 ___
 
@@ -918,7 +918,7 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:967](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L967)
+[jwt-js-decode.ts:967](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L967)
 
 ___
 
@@ -943,7 +943,7 @@ jwt split object of three strings
 
 #### Defined in
 
-[jwt-js-decode.ts:291](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L291)
+[jwt-js-decode.ts:291](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L291)
 
 ___
 
@@ -967,7 +967,7 @@ resulting Promise
 
 #### Defined in
 
-[jwt-js-decode.ts:155](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L155)
+[jwt-js-decode.ts:155](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L155)
 
 ___
 
@@ -991,7 +991,7 @@ decoded data string
 
 #### Defined in
 
-[jwt-js-decode.ts:346](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L346)
+[jwt-js-decode.ts:346](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L346)
 
 ___
 
@@ -1012,7 +1012,7 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:958](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L958)
+[jwt-js-decode.ts:958](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L958)
 
 ___
 
@@ -1036,7 +1036,7 @@ decoded data string
 
 #### Defined in
 
-[jwt-js-decode.ts:377](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L377)
+[jwt-js-decode.ts:377](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L377)
 
 ___
 
@@ -1061,4 +1061,4 @@ zip data string
 
 #### Defined in
 
-[jwt-js-decode.ts:389](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L389)
+[jwt-js-decode.ts:389](https://github.com/tomitribe/jwt-js-decode/blob/000f334/src/jwt-js-decode.ts#L389)
