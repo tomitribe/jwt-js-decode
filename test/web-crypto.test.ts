@@ -2,16 +2,15 @@ let originalCrypto;
 let jwtJsDecode;
 
 beforeAll(() => {
-    const crypto = {
-        subtle: jest.requireActual('crypto').webcrypto.subtle,
-        type: 'web-crypto'
-      };
     jest.mock('crypto', function () {
         return null;
     });
     originalCrypto = global.crypto
     Object.defineProperty(global, "crypto", {
-        value: crypto,
+        value: {
+            subtle: jest.requireActual('crypto').webcrypto?.subtle,
+            type: 'web-crypto'
+        },
         writable: true,
     });
     jwtJsDecode = require('../src');
