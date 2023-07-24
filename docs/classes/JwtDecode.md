@@ -18,6 +18,8 @@ Class for creating a JwtDecode object with three parts of JWT Token, header and 
 
 ### Methods
 
+- [fromString](JwtDecode.md#fromstring)
+- [isGzip](JwtDecode.md#isgzip)
 - [toString](JwtDecode.md#tostring)
 
 ## Constructors
@@ -35,7 +37,7 @@ Class for creating a JwtDecode object with three parts of JWT Token, header and 
 
 #### Defined in
 
-[jwt-js-decode.ts:118](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L118)
+[jwt-js-decode.ts:123](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L123)
 
 ## Properties
 
@@ -51,7 +53,7 @@ header
 
 #### Defined in
 
-[jwt-js-decode.ts:100](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L100)
+[jwt-js-decode.ts:105](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L105)
 
 ___
 
@@ -67,7 +69,7 @@ payload
 
 #### Defined in
 
-[jwt-js-decode.ts:108](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L108)
+[jwt-js-decode.ts:113](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L113)
 
 ___
 
@@ -83,9 +85,44 @@ signature
 
 #### Defined in
 
-[jwt-js-decode.ts:116](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L116)
+[jwt-js-decode.ts:121](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L121)
 
 ## Methods
+
+### fromString
+
+▸ **fromString**(`str`, `callee?`): `void`
+
+#### Parameters
+
+| Name | Type | Default value |
+| :------ | :------ | :------ |
+| `str` | `any` | `undefined` |
+| `callee` | `string` | `'JwtDecode.fromString'` |
+
+#### Returns
+
+`void`
+
+#### Defined in
+
+[jwt-js-decode.ts:134](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L134)
+
+___
+
+### isGzip
+
+▸ **isGzip**(): `boolean`
+
+#### Returns
+
+`boolean`
+
+#### Defined in
+
+[jwt-js-decode.ts:130](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L130)
+
+___
 
 ### toString
 
@@ -97,4 +134,4 @@ signature
 
 #### Defined in
 
-[jwt-js-decode.ts:130](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L130)
+[jwt-js-decode.ts:143](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L143)

@@ -18,6 +18,7 @@ Class for creating a JwtSplit object with three parts of JWT Token as strings
 
 ### Methods
 
+- [fromString](JwtSplit.md#fromstring)
 - [toString](JwtSplit.md#tostring)
 
 ## Constructors
@@ -35,13 +36,13 @@ Class for creating a JwtSplit object with three parts of JWT Token as strings
 
 #### Defined in
 
-[jwt-js-decode.ts:62](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L62)
+[jwt-js-decode.ts:63](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L63)
 
 ## Properties
 
 ### header
 
-• **header**: `string`
+• **header**: `string` = `''`
 
 Header (first) part of JWT Token
 
@@ -51,13 +52,13 @@ header
 
 #### Defined in
 
-[jwt-js-decode.ts:44](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L44)
+[jwt-js-decode.ts:45](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L45)
 
 ___
 
 ### payload
 
-• **payload**: `string`
+• **payload**: `string` = `''`
 
 Payload (second) part of JWT Token
 
@@ -67,13 +68,13 @@ payload
 
 #### Defined in
 
-[jwt-js-decode.ts:52](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L52)
+[jwt-js-decode.ts:53](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L53)
 
 ___
 
 ### signature
 
-• **signature**: `string`
+• **signature**: `string` = `''`
 
 Signature (third) part of JWT Token
 
@@ -83,9 +84,30 @@ signature
 
 #### Defined in
 
-[jwt-js-decode.ts:60](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L60)
+[jwt-js-decode.ts:61](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L61)
 
 ## Methods
+
+### fromString
+
+▸ **fromString**(`str`, `callee?`): `void`
+
+#### Parameters
+
+| Name | Type | Default value |
+| :------ | :------ | :------ |
+| `str` | `string` | `undefined` |
+| `callee` | `string` | `'JwtSplit.fromString'` |
+
+#### Returns
+
+`void`
+
+#### Defined in
+
+[jwt-js-decode.ts:70](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L70)
+
+___
 
 ### toString
 
@@ -97,4 +119,4 @@ signature
 
 #### Defined in
 
-[jwt-js-decode.ts:78](https://github.com/tomitribe/jwt-js-decode/blob/91ca043/src/jwt-js-decode.ts#L78)
+[jwt-js-decode.ts:83](https://github.com/tomitribe/jwt-js-decode/blob/51a94e1/src/jwt-js-decode.ts#L83)
