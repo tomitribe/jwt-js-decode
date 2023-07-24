@@ -14,7 +14,8 @@ import {
     ILLEGAL_ARGUMENT,
     num2hex,
     PAKO_NOT_FOUND,
-    UNSUPPORTED_ALGORITHM
+    UNSUPPORTED_ALGORITHM,
+    UNSUPPORTED_ZIP_TYPE
 } from "./util";
 /*
 //crypto-browserify:
@@ -41,7 +42,7 @@ export class JwtSplit {
      * @name  header
      * @type {string}
      */
-    header: string;
+    public header: string = '';
 
     /**
      * Payload (second) part of JWT Token
@@ -49,7 +50,7 @@ export class JwtSplit {
      * @name  payload
      * @type {string}
      */
-    payload: string;
+    public payload: string = '';
 
     /**
      * Signature (third) part of JWT Token
@@ -57,13 +58,17 @@ export class JwtSplit {
      * @name  signature
      * @type {string}
      */
-    signature: string;
+    public signature: string = '';
 
     constructor(str: string, callee = 'JwtSplit') {
         if (typeof str !== 'string') {
             throw new Error(generateErrorMessage(str, callee, 'JWT string'));
         }
+        this.fromString(str, callee);
+    }
 
+    public fromString(str: string, callee = 'JwtSplit.fromString') {
+        
         const jwtArr = str.split('.');
         if (jwtArr.length !== 3) {
             throw new Error(generateErrorMessage(str, callee, 'JWT string'));
@@ -119,16 +124,24 @@ export class JwtDecode {
         if (typeof str !== 'string') {
             throw new Error(generateErrorMessage(str, callee, 'JWT string'));
         }
+        this.fromString(str, callee);
+    }
+
+    public isGzip(): boolean {
+        return isGzip(this.header);
+    }
+
+    public fromString(str, callee = 'JwtDecode.fromString'): void {
         const jwtObj: JwtSplit = jwtSplit(str, callee);
         if (jwtObj) {
             this.header = jwtObj.header ? s2J(bu2s(jwtObj.header)) : {};
-            this.payload = jwtObj.payload ? (isGzip(this.header) ? s2J(zbu2s(jwtObj.payload)) : s2J(bu2s(jwtObj.payload))) : {};
+            this.payload = jwtObj.payload ? (this.isGzip() ? s2J(zbu2s(jwtObj.payload)) : s2J(bu2s(jwtObj.payload))) : {};
             this.signature = jwtObj.signature || '';
         }
     }
 
     public toString(): string {
-        return s2bu(J2s(this.header)) + '.' + (isGzip(this.header) ? s2zbu(J2s(this.payload)) : s2bu(J2s(this.payload))) + '.' + this.signature
+        return s2bu(J2s(this.header)) + '.' + (this.isGzip() ? s2zbu(J2s(this.payload)) : s2bu(J2s(this.payload))) + '.' + this.signature
     }
 }
 
@@ -312,18 +325,19 @@ export function s2bu(str: string): string {
 }
 
 /**
- * Gzip and encode data string to base64url string
+ * Zip and encode data string to base64url string
  *
  * @param {string} str - data string to encode
+ * @param {string} type - type of zip type: "zlib", "gzip". default: "zlib"
  *
  * @returns {string} base64url string
  */
-export function s2zbu(str: string): string {
-    return s2bu(zip(str));
+export function s2zbu(str: string, type = 'zlib'): string {
+    return s2bu(zip(str, type));
 }
 
 /**
- * Converts from gzip data string to string
+ * Converts from zip data string to string
  *
  * @param {string} str - data string to convert
  *
@@ -334,10 +348,20 @@ export function unzip(str: string): string {
         throw new Error(ILLEGAL_ARGUMENT);
     }
 
-    if (!!pako && pako.inflate) {
-        return AB2s(pako.inflate(s2AB(str), {
-            raw: false
-        }));
+    if (!!pako && (pako.inflate || pako.ungzip)) {
+        const buffer = s2AB(str);
+        let inflated;
+        try {
+            inflated = pako.inflate(buffer, { raw: false });
+        } catch { 
+            try {
+                inflated = pako.ungzip(buffer, { raw: false });
+            } catch { 
+                throw new Error(UNSUPPORTED_ZIP_TYPE);
+            };
+        };
+        
+        return AB2s(inflated);
     } else {
         throw new Error(PAKO_NOT_FOUND);
     }
@@ -355,21 +379,30 @@ export function zbu2s(str: string): string {
 }
 
 /**
- * Converts string to gzip data string
+ * Converts string to zip data string
  *
  * @param {string} str - data string to convert
+ * @param {string} type - type of zip type: "zlib", "gzip". default: "zlib"
  *
- * @returns {string} gzip data string
+ * @returns {string} zip data string
  */
-export function zip(str: string): string {
+export function zip(str: string, type = 'zlib'): string {
     if (typeof str !== 'string') {
         throw new Error(ILLEGAL_ARGUMENT);
     }
 
-    if (!!pako && pako.deflate) {
-        return AB2s(pako.deflate(str, {
-            raw: false
-        }));
+    if (!!pako && (pako.deflate || pako.gzip)) {
+        let deflated;
+        if (type === 'gzip') {
+            deflated = pako.gzip(str, {
+                raw: false
+            })
+        } else if (type === 'zlib') {
+            deflated = pako.deflate(str, {
+                raw: false
+            })
+        } else throw new Error(UNSUPPORTED_ZIP_TYPE);
+        return AB2s(deflated);
     } else {
         throw new Error(PAKO_NOT_FOUND);
     }
@@ -397,7 +430,7 @@ export function s2AB(str: string): ArrayBuffer {
  * @returns {string} data string
  */
 export function AB2s(buff: ArrayBuffer | Uint8Array): string {
-    if(!(buff instanceof Uint8Array)) buff = new Uint8Array(buff);
+    if (!(buff instanceof Uint8Array)) buff = new Uint8Array(buff);
     return String.fromCharCode.apply(String, Array.from(buff as any));
 }
 
@@ -444,7 +477,7 @@ export function algHSsign(bits: number) {
     return async function sign(thing: string, secret: string): Promise<string> {
         const hmac = await createHmac('SHA-' + bits, secret);
         if (webCryptoSubtle) {
-            if(!hmac) return Promise.reject(ILLEGAL_ARGUMENT);
+            if (!hmac) return Promise.reject(ILLEGAL_ARGUMENT);
             return Promise.resolve(s2bu(AB2s(await hmac.update(thing))));
         }
         return Promise.resolve(b2bu(hmac.update(thing).digest('base64')));
@@ -494,7 +527,7 @@ export function s2pem(secret: string): PEM {
             '-END PUBLIC KEY-',
             '-END RSA PUBLIC KEY-'
         ], body = lines.map(line => line.trim()).filter(line =>
-        line.length && ignore(line)).join('');
+            line.length && ignore(line)).join('');
     if (body.length) {
         return { body: s2AB(b2s(bu2b(body))), type: <'private' | 'public'>type };
     } else {

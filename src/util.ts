@@ -2,6 +2,7 @@ export const UNSUPPORTED_ALGORITHM = 'Unsupported algorithm name specified! Supp
 export const ILLEGAL_ARGUMENT = 'Illegal argument specified!';
 export const CRYPTO_NOT_FOUND = 'Could not find \'crypto\'.';
 export const PAKO_NOT_FOUND = 'Could not find \'pako\'.';
+export const UNSUPPORTED_ZIP_TYPE = 'Unsupported zip type.';
 
 export function generateErrorMessage(value, callee, argumentName = 'argument', defaultType = 'string') {
     let message = `Invalid argument passed to ${callee}.`;
