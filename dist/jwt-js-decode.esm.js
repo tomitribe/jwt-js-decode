@@ -717,11 +717,11 @@ function J2s(obj) {
  */
 function b2s(str) {
     try {
-        if (typeof window === 'object' && typeof window.atob === 'function') {
-            return window.atob(str);
+        if (typeof Buffer !== 'undefined') {
+            return decode(Buffer.from(str, 'base64'));
         }
-        else if (typeof Buffer !== 'undefined') {
-            return Buffer.from(str, 'base64').toString('binary');
+        else if (typeof atob !== 'undefined') {
+            return decode(atob(str));
         }
         else
             throw new Error(ILLEGAL_ARGUMENT);
@@ -815,11 +815,11 @@ const splitJwt = jwtSplit;
  */
 function s2b(str) {
     try {
-        if (typeof window === 'object' && typeof window.btoa === 'function') {
-            return window.btoa(str);
+        if (typeof Buffer !== 'undefined') {
+            return Buffer.from(encode(str)).toString('base64');
         }
-        else if (typeof Buffer !== 'undefined') {
-            return Buffer.from(str, "binary").toString('base64');
+        else if (typeof btoa !== 'undefined') {
+            return btoa(AB2s(encode(str)));
         }
         else
             throw new Error(ILLEGAL_ARGUMENT);
@@ -888,7 +888,7 @@ function unzip(str) {
  * @returns {string} decoded data string
  */
 function zbu2s(str) {
-    return unzip(bu2s(str));
+    return decode(unzip(bu2s(str)));
 }
 /**
  * Converts string to zip data string
@@ -1431,6 +1431,62 @@ async function cryptoType() {
     const crypto = webCrypto || await import('crypto');
     return crypto ? crypto['type'] || 'crypto-node' : 'undefined';
 }
+function notLatin1String(str) {
+    return Array.prototype.some.apply(str, [str => str.charCodeAt(0) > 255]);
+}
+function encode(input) {
+    if (notLatin1String(input)) {
+        const encoder = getTextEncoder();
+        if (!!encoder) {
+            return encoder.encode(input);
+        }
+    }
+    return s2AB(input);
+}
+function decode(input) {
+    if (typeof input === 'string') {
+        try {
+            const decoder = getTextDecoder("utf8", { fatal: true });
+            if (!!decoder) {
+                return decoder.decode(s2AB(input));
+            }
+        }
+        catch { }
+        return input;
+    }
+    try {
+        const decoder = getTextDecoder("utf8", { fatal: true });
+        if (!!decoder) {
+            return decoder.decode(input);
+        }
+    }
+    catch { }
+    return input.toString('binary');
+}
+function getTextEncoder() {
+    if (typeof TextEncoder !== 'undefined') {
+        return new TextEncoder();
+    }
+    if (typeof require !== 'undefined') {
+        const encoder = require("util");
+        if (typeof encoder?.TextEncoder !== 'undefined') {
+            return new encoder.TextEncoder();
+        }
+    }
+    return false;
+}
+function getTextDecoder(...args) {
+    if (typeof TextDecoder !== 'undefined') {
+        return new TextDecoder(...args);
+    }
+    if (typeof require !== 'undefined') {
+        const decoder = require("util");
+        if (typeof decoder?.TextDecoder !== 'undefined') {
+            return new decoder.TextDecoder(...args);
+        }
+    }
+    return false;
+}
 
-export { AB2s, Asn1Tag, J2s, JwtDecode, JwtSplit, algHSsign, algHSverify, algRSsign, algRSverify, algSign, algVerify, asn12jwk, b2bu, b2s, bu2b, bu2s, createHmac, createSign, createVerify, cryptoType, isGzip, jwtDecode, jwtResign, jwtSign, jwtSplit, jwtVerify, pem2asn1, pem2jwk, resignJwt, s2AB, s2J, s2b, s2bu, s2pem, s2zbu, signJwt, splitJwt, tryPromise, unzip, verifyJwt, webCrypto, webCryptoSubtle, zbu2s, zip };
+export { AB2s, Asn1Tag, J2s, JwtDecode, JwtSplit, algHSsign, algHSverify, algRSsign, algRSverify, algSign, algVerify, asn12jwk, b2bu, b2s, bu2b, bu2s, createHmac, createSign, createVerify, cryptoType, decode, encode, getTextDecoder, getTextEncoder, isGzip, jwtDecode, jwtResign, jwtSign, jwtSplit, jwtVerify, notLatin1String, pem2asn1, pem2jwk, resignJwt, s2AB, s2J, s2b, s2bu, s2pem, s2zbu, signJwt, splitJwt, tryPromise, unzip, verifyJwt, webCrypto, webCryptoSubtle, zbu2s, zip };
 //# sourceMappingURL=jwt-js-decode.esm.js.map

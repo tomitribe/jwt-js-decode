@@ -36,7 +36,7 @@ Class for creating a JwtSplit object with three parts of JWT Token as strings
 
 #### Defined in
 
-[jwt-js-decode.ts:63](https://github.com/tomitribe/jwt-js-decode/blob/8a87f33/src/jwt-js-decode.ts#L63)
+[jwt-js-decode.ts:63](https://github.com/tomitribe/jwt-js-decode/blob/2678336/src/jwt-js-decode.ts#L63)
 
 ## Properties
 
@@ -52,7 +52,7 @@ header
 
 #### Defined in
 
-[jwt-js-decode.ts:45](https://github.com/tomitribe/jwt-js-decode/blob/8a87f33/src/jwt-js-decode.ts#L45)
+[jwt-js-decode.ts:45](https://github.com/tomitribe/jwt-js-decode/blob/2678336/src/jwt-js-decode.ts#L45)
 
 ___
 
@@ -68,7 +68,7 @@ payload
 
 #### Defined in
 
-[jwt-js-decode.ts:53](https://github.com/tomitribe/jwt-js-decode/blob/8a87f33/src/jwt-js-decode.ts#L53)
+[jwt-js-decode.ts:53](https://github.com/tomitribe/jwt-js-decode/blob/2678336/src/jwt-js-decode.ts#L53)
 
 ___
 
@@ -84,7 +84,7 @@ signature
 
 #### Defined in
 
-[jwt-js-decode.ts:61](https://github.com/tomitribe/jwt-js-decode/blob/8a87f33/src/jwt-js-decode.ts#L61)
+[jwt-js-decode.ts:61](https://github.com/tomitribe/jwt-js-decode/blob/2678336/src/jwt-js-decode.ts#L61)
 
 ## Methods
 
@@ -105,7 +105,7 @@ signature
 
 #### Defined in
 
-[jwt-js-decode.ts:70](https://github.com/tomitribe/jwt-js-decode/blob/8a87f33/src/jwt-js-decode.ts#L70)
+[jwt-js-decode.ts:70](https://github.com/tomitribe/jwt-js-decode/blob/2678336/src/jwt-js-decode.ts#L70)
 
 ___
 
@@ -119,4 +119,4 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:83](https://github.com/tomitribe/jwt-js-decode/blob/8a87f33/src/jwt-js-decode.ts#L83)
+[jwt-js-decode.ts:83](https://github.com/tomitribe/jwt-js-decode/blob/2678336/src/jwt-js-decode.ts#L83)

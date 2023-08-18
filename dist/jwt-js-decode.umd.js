@@ -721,11 +721,11 @@
      */
     function b2s(str) {
         try {
-            if (typeof window === 'object' && typeof window.atob === 'function') {
-                return window.atob(str);
+            if (typeof Buffer !== 'undefined') {
+                return decode(Buffer.from(str, 'base64'));
             }
-            else if (typeof Buffer !== 'undefined') {
-                return Buffer.from(str, 'base64').toString('binary');
+            else if (typeof atob !== 'undefined') {
+                return decode(atob(str));
             }
             else
                 throw new Error(ILLEGAL_ARGUMENT);
@@ -819,11 +819,11 @@
      */
     function s2b(str) {
         try {
-            if (typeof window === 'object' && typeof window.btoa === 'function') {
-                return window.btoa(str);
+            if (typeof Buffer !== 'undefined') {
+                return Buffer.from(encode(str)).toString('base64');
             }
-            else if (typeof Buffer !== 'undefined') {
-                return Buffer.from(str, "binary").toString('base64');
+            else if (typeof btoa !== 'undefined') {
+                return btoa(AB2s(encode(str)));
             }
             else
                 throw new Error(ILLEGAL_ARGUMENT);
@@ -892,7 +892,7 @@
      * @returns {string} decoded data string
      */
     function zbu2s(str) {
-        return unzip(bu2s(str));
+        return decode(unzip(bu2s(str)));
     }
     /**
      * Converts string to zip data string
@@ -1435,6 +1435,62 @@
         const crypto = webCrypto || await import('crypto');
         return crypto ? crypto['type'] || 'crypto-node' : 'undefined';
     }
+    function notLatin1String(str) {
+        return Array.prototype.some.apply(str, [str => str.charCodeAt(0) > 255]);
+    }
+    function encode(input) {
+        if (notLatin1String(input)) {
+            const encoder = getTextEncoder();
+            if (!!encoder) {
+                return encoder.encode(input);
+            }
+        }
+        return s2AB(input);
+    }
+    function decode(input) {
+        if (typeof input === 'string') {
+            try {
+                const decoder = getTextDecoder("utf8", { fatal: true });
+                if (!!decoder) {
+                    return decoder.decode(s2AB(input));
+                }
+            }
+            catch { }
+            return input;
+        }
+        try {
+            const decoder = getTextDecoder("utf8", { fatal: true });
+            if (!!decoder) {
+                return decoder.decode(input);
+            }
+        }
+        catch { }
+        return input.toString('binary');
+    }
+    function getTextEncoder() {
+        if (typeof TextEncoder !== 'undefined') {
+            return new TextEncoder();
+        }
+        if (typeof require !== 'undefined') {
+            const encoder = require("util");
+            if (typeof encoder?.TextEncoder !== 'undefined') {
+                return new encoder.TextEncoder();
+            }
+        }
+        return false;
+    }
+    function getTextDecoder(...args) {
+        if (typeof TextDecoder !== 'undefined') {
+            return new TextDecoder(...args);
+        }
+        if (typeof require !== 'undefined') {
+            const decoder = require("util");
+            if (typeof decoder?.TextDecoder !== 'undefined') {
+                return new decoder.TextDecoder(...args);
+            }
+        }
+        return false;
+    }
 
     exports.AB2s = AB2s;
     exports.Asn1Tag = Asn1Tag;
@@ -1456,12 +1512,17 @@
     exports.createSign = createSign;
     exports.createVerify = createVerify;
     exports.cryptoType = cryptoType;
+    exports.decode = decode;
+    exports.encode = encode;
+    exports.getTextDecoder = getTextDecoder;
+    exports.getTextEncoder = getTextEncoder;
     exports.isGzip = isGzip;
     exports.jwtDecode = jwtDecode;
     exports.jwtResign = jwtResign;
     exports.jwtSign = jwtSign;
     exports.jwtSplit = jwtSplit;
     exports.jwtVerify = jwtVerify;
+    exports.notLatin1String = notLatin1String;
     exports.pem2asn1 = pem2asn1;
     exports.pem2jwk = pem2jwk;
     exports.resignJwt = resignJwt;

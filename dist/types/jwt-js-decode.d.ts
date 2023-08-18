@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { AB2hex, cleanZeros, hex2AB, num2hex } from "./util";
 export declare const webCrypto: false | Crypto;
 export declare const webCryptoSubtle: false | SubtleCrypto;
@@ -271,6 +272,11 @@ export declare const resignJwt: typeof jwtResign;
  * @hidden
  */
 export declare function cryptoType(): Promise<string>;
+export declare function notLatin1String(str: any): boolean;
+export declare function encode(input: string): ArrayBuffer;
+export declare function decode(input: string | Buffer): string;
+export declare function getTextEncoder(): TextEncoder | false;
+export declare function getTextDecoder(...args: any[]): TextDecoder | false;
 declare const _default: {
     ILLEGAL_ARGUMENT: string;
     UNSUPPORTED_ALGORITHM: string;
@@ -316,5 +322,10 @@ declare const _default: {
     unzip: typeof unzip;
     zbu2s: typeof zbu2s;
     zip: typeof zip;
+    notLatin1String: typeof notLatin1String;
+    encode: typeof encode;
+    decode: typeof decode;
+    getTextEncoder: typeof getTextEncoder;
+    getTextDecoder: typeof getTextDecoder;
 };
 export default _default;
