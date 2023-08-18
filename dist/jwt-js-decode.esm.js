@@ -861,7 +861,7 @@ function unzip(str) {
         throw new Error(ILLEGAL_ARGUMENT);
     }
     if (!!pako && (pako.inflate || pako.ungzip)) {
-        const buffer = s2AB(str);
+        const buffer = s2U8A(str);
         let inflated;
         try {
             inflated = pako.inflate(buffer, { raw: false });
@@ -937,6 +937,20 @@ function s2AB(str) {
     return buff;
 }
 /**
+ * Converts string to Uint8Array
+ *
+ * @param {string} str - data string to convert
+ *
+ * @returns {Uint8Array} charCode Uint8Array
+ */
+function s2U8A(str) {
+    const buff = new ArrayBuffer(str.length);
+    const view = new Uint8Array(buff);
+    for (let i = 0; i < str.length; i++)
+        view[i] = str.charCodeAt(i);
+    return view;
+}
+/**
  * Converts ArrayBuffer to string
  *
  * @param {ArrayBuffer | Uint8Array} buff - charCode ArrayBuffer to convert
@@ -954,11 +968,11 @@ function AB2s(buff) {
  */
 async function createHmac(name, secret) {
     if (webCryptoSubtle) {
-        const keyData = s2AB(secret);
+        const keyData = s2U8A(secret);
         return await webCryptoSubtle.importKey('raw', keyData, { name: 'HMAC', hash: { name: name } }, true, ['sign']).then(key => {
             return {
                 update: async function (thing) {
-                    return await webCryptoSubtle.sign('HMAC', key, s2AB(thing));
+                    return await webCryptoSubtle.sign('HMAC', key, s2U8A(thing));
                 }
             };
         });
@@ -1022,7 +1036,7 @@ function s2pem(secret) {
         '-END RSA PUBLIC KEY-'
     ], body = lines.map(line => line.trim()).filter(line => line.length && ignore(line)).join('');
     if (body.length) {
-        return { body: s2AB(b2s(bu2b(body))), type: type };
+        return { body: s2U8A(b2s(bu2b(body))), type: type };
     }
     else {
         throw new Error(ILLEGAL_ARGUMENT);
@@ -1250,7 +1264,7 @@ async function createSign(name) {
                             alg: name.replace('SHA-', 'RS')
                         }).then(async (keyData) => {
                             return await webCryptoSubtle.importKey('jwk', keyData, { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, true, ['sign']).then(async (key) => {
-                                return await webCryptoSubtle.sign({ name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, key, s2AB(thing)).then(AB2s).then(s2b);
+                                return await webCryptoSubtle.sign({ name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, key, s2U8A(thing)).then(AB2s).then(s2b);
                             });
                         });
                         /* Issue1: does not work with all versions of PEM keys...
@@ -1265,7 +1279,7 @@ async function createSign(name) {
                                 return await webCryptoSubtle.sign(
                                     'RSASSA-PKCS1-v1_5',
                                     key,
-                                    s2AB(thing)
+                                    s2U8A(thing)
                                 ).then(AB2s).then(s2b)
                             })
                         })
@@ -1307,7 +1321,7 @@ async function createVerify(name) {
                             alg: name.replace('SHA-', 'RS')
                         }).then(async ({ kty, n, e }) => {
                             return await webCryptoSubtle.importKey('jwk', { kty, n, e }, { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, false, ['verify']).then(async (key) => {
-                                return await webCryptoSubtle.verify('RSASSA-PKCS1-v1_5', key, s2AB(bu2s(signature)), s2AB(thing));
+                                return await webCryptoSubtle.verify('RSASSA-PKCS1-v1_5', key, s2U8A(bu2s(signature)), s2U8A(thing));
                             });
                         });
                         /* Issue1: does not work with all versions of PEM keys...
@@ -1322,8 +1336,8 @@ async function createVerify(name) {
                                 return await webCryptoSubtle.verify(
                                     'RSASSA-PKCS1-v1_5',
                                     key,
-                                    s2AB(bu2s(signature)),
-                                    s2AB(thing)
+                                    s2U8A(bu2s(signature)),
+                                    s2U8A(thing)
                                 )
                             })
                         })*/
@@ -1441,14 +1455,14 @@ function encode(input) {
             return encoder.encode(input);
         }
     }
-    return s2AB(input);
+    return s2U8A(input);
 }
 function decode(input) {
     if (typeof input === 'string') {
         try {
             const decoder = getTextDecoder("utf8", { fatal: true });
             if (!!decoder) {
-                return decoder.decode(s2AB(input));
+                return decoder.decode(s2U8A(input));
             }
         }
         catch { }
@@ -1488,5 +1502,5 @@ function getTextDecoder(...args) {
     return false;
 }
 
-export { AB2s, Asn1Tag, J2s, JwtDecode, JwtSplit, algHSsign, algHSverify, algRSsign, algRSverify, algSign, algVerify, asn12jwk, b2bu, b2s, bu2b, bu2s, createHmac, createSign, createVerify, cryptoType, decode, encode, getTextDecoder, getTextEncoder, isGzip, jwtDecode, jwtResign, jwtSign, jwtSplit, jwtVerify, notLatin1String, pem2asn1, pem2jwk, resignJwt, s2AB, s2J, s2b, s2bu, s2pem, s2zbu, signJwt, splitJwt, tryPromise, unzip, verifyJwt, webCrypto, webCryptoSubtle, zbu2s, zip };
+export { AB2s, Asn1Tag, J2s, JwtDecode, JwtSplit, algHSsign, algHSverify, algRSsign, algRSverify, algSign, algVerify, asn12jwk, b2bu, b2s, bu2b, bu2s, createHmac, createSign, createVerify, cryptoType, decode, encode, getTextDecoder, getTextEncoder, isGzip, jwtDecode, jwtResign, jwtSign, jwtSplit, jwtVerify, notLatin1String, pem2asn1, pem2jwk, resignJwt, s2AB, s2J, s2U8A, s2b, s2bu, s2pem, s2zbu, signJwt, splitJwt, tryPromise, unzip, verifyJwt, webCrypto, webCryptoSubtle, zbu2s, zip };
 //# sourceMappingURL=jwt-js-decode.esm.js.map

@@ -210,6 +210,14 @@ export declare function zip(str: string, type?: string): string;
  */
 export declare function s2AB(str: string): ArrayBuffer;
 /**
+ * Converts string to Uint8Array
+ *
+ * @param {string} str - data string to convert
+ *
+ * @returns {Uint8Array} charCode Uint8Array
+ */
+export declare function s2U8A(str: string): ArrayBuffer;
+/**
  * Converts ArrayBuffer to string
  *
  * @param {ArrayBuffer | Uint8Array} buff - charCode ArrayBuffer to convert
@@ -314,6 +322,7 @@ declare const _default: {
     pem2jwk: typeof pem2jwk;
     s2AB: typeof s2AB;
     s2J: typeof s2J;
+    s2U8A: typeof s2U8A;
     s2b: typeof s2b;
     s2bu: typeof s2bu;
     s2pem: typeof s2pem;
