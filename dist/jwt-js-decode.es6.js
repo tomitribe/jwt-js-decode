@@ -840,7 +840,7 @@ function s2b(str) {
             return window.btoa(str);
         }
         else if (typeof Buffer !== 'undefined') {
-            return Buffer.from(str).toString('base64');
+            return Buffer.from(str, "binary").toString('base64');
         }
         else
             throw new Error(ILLEGAL_ARGUMENT);
