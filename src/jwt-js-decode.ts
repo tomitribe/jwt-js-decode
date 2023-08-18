@@ -306,7 +306,7 @@ export function s2b(str: string): string {
         if (typeof window === 'object' && typeof window.btoa === 'function') {
             return window.btoa(str);
         } else if (typeof Buffer !== 'undefined') {
-            return Buffer.from(str).toString('base64');
+            return Buffer.from(str, "binary").toString('base64');
         } else throw new Error(ILLEGAL_ARGUMENT);
     } catch (e) {
         throw e;
