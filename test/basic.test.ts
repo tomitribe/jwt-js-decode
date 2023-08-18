@@ -7,12 +7,12 @@ beforeAll(() => {
     });
     originalBtoa = global.btoa;
     Object.defineProperty(global, "btoa", {
-        value: null,
+        value: undefined,
         writable: true,
     });
     originalAtob = global.btoa;
     Object.defineProperty(global, "atob", {
-        value: null,
+        value: undefined,
         writable: true,
     });
     jwtJsDecode = require('../src');
@@ -298,14 +298,20 @@ describe("jwtVerify tests (Node.js version) RS", function () {
 
 describe("Encoding tests (Node.js version)", function () {
     it("it has no atob and btoa", function () {
-        expect(global.atob).toEqual(null);
-        expect(global.btoa).toEqual(null);
+        expect(global.atob).toEqual(undefined);
+        expect(global.btoa).toEqual(undefined);
     });
-    it("should encode unicode characters correctly", function () {
+    it("should encode latin1 characters correctly", function () {
         expect(jwtJsDecode.s2b('\xcb\xf9')).toBe('y/k=');
     });
-    it("should decode unicode characters correctly", function () {
+    it("should decode latin1 characters correctly", function () {
         expect(jwtJsDecode.b2s('y/k=')).toBe('\xcb\xf9');
+    });
+    it("should encode utf8 characters correctly", function () {
+        expect(jwtJsDecode.s2b('ủ ✓ à “test” b')).toBe('4bunIOKckyDDoCDigJx0ZXN04oCdIGI=');
+    });
+    it("should decode utf8 characters correctly", function () {
+        expect(jwtJsDecode.b2s('4bunIOKckyDDoCDigJx0ZXN04oCdIGI=')).toBe('ủ ✓ à “test” b');
     });
 });
 

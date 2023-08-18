@@ -197,12 +197,12 @@ export function J2s(obj: any): string {
  *
  * @returns {string} decoded data string
  */
-export function b2s(str: string): string {
+export function b2s(str: string, type: BufferEncoding = 'binary'): string {
     try {
-        if (typeof window === 'object' && typeof window.atob === 'function') {
-            return window.atob(str);
-        } else if (typeof Buffer !== 'undefined') {
-            return Buffer.from(str, 'base64').toString('binary')
+        if (typeof Buffer !== 'undefined') {
+            return decode(Buffer.from(str, 'base64'));
+        } else if (typeof atob !== 'undefined') {
+            return decode(atob(str));
         } else throw new Error(ILLEGAL_ARGUMENT);
     } catch (e) {
         throw e;
@@ -303,10 +303,10 @@ export const splitJwt = jwtSplit;
  */
 export function s2b(str: string): string {
     try {
-        if (typeof window === 'object' && typeof window.btoa === 'function') {
-            return window.btoa(str);
-        } else if (typeof Buffer !== 'undefined') {
-            return Buffer.from(str, "binary").toString('base64');
+        if (typeof Buffer !== 'undefined') {
+            return Buffer.from(encode(str)).toString('base64');
+        } else if (typeof btoa !== 'undefined') {
+            return btoa(AB2s(encode(str)));
         } else throw new Error(ILLEGAL_ARGUMENT);
     } catch (e) {
         throw e;
@@ -375,7 +375,7 @@ export function unzip(str: string): string {
  * @returns {string} decoded data string
  */
 export function zbu2s(str: string): string {
-    return unzip(bu2s(str));
+    return decode(unzip(bu2s(str)));
 }
 
 /**
@@ -992,6 +992,65 @@ export async function cryptoType(): Promise<string> {
     return crypto ? crypto['type'] || 'crypto-node' : 'undefined';
 }
 
+export function notLatin1String(str): boolean {
+    return Array.prototype.some.apply(str, [str => str.charCodeAt(0) > 255]);
+}
+
+export function encode(input: string) {
+    if (notLatin1String(input)) {
+        const encoder = getTextEncoder();
+        if (!!encoder) {
+            return encoder.encode(input);
+        }
+    }
+    return s2AB(input);
+}
+
+export function decode(input: string | Buffer) {
+    if(typeof input === 'string') {
+        try{
+            const decoder = getTextDecoder("utf8", { fatal: true });
+            if (!!decoder) {
+                return decoder.decode(s2AB(input));
+            }
+        }catch{}
+        return input;
+    }
+    try{
+        const decoder = getTextDecoder("utf8", { fatal: true });
+        if (!!decoder) {
+            return decoder.decode(input);
+        }
+    }catch{}
+    return input.toString('binary');
+}
+
+export function getTextEncoder(): TextEncoder | false {
+    if (typeof TextEncoder !== 'undefined') {
+        return new TextEncoder();
+    }
+    if (typeof require !== 'undefined') {
+        const encoder = require("util");
+        if (typeof encoder?.TextEncoder !== 'undefined') {
+            return new encoder.TextEncoder();
+        }
+    }
+    return false;
+}
+
+export function getTextDecoder(...args): TextDecoder | false {
+    if (typeof TextDecoder !== 'undefined') {
+        return new TextDecoder(...args);
+    }
+    if (typeof require !== 'undefined') {
+        const decoder = require("util");
+        if (typeof decoder?.TextDecoder !== 'undefined') {
+            return new decoder.TextDecoder(...args);
+        }
+    }
+    return false;
+}
+
 export default {
     ILLEGAL_ARGUMENT,
     UNSUPPORTED_ALGORITHM,
@@ -1037,4 +1096,9 @@ export default {
     unzip,
     zbu2s,
     zip,
+    notLatin1String,
+    encode,
+    decode,
+    getTextEncoder,
+    getTextDecoder
 };

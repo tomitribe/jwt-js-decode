@@ -4,7 +4,7 @@ let jwtJsDecode;
 
 beforeAll(() => {
     jest.mock('crypto', function () {
-        return null;
+        return undefined;
     });
     originalCrypto = global.crypto
     Object.defineProperty(global, "crypto", {
@@ -16,7 +16,16 @@ beforeAll(() => {
     });
     originalBuffer = global.Buffer
     Object.defineProperty(global, "Buffer", {
-        value: null,
+        value: undefined,
+        writable: true,
+    });
+    const util = require('util');
+    Object.defineProperty(global, "TextEncoder", {
+        value: util.TextEncoder,
+        writable: true,
+    });
+    Object.defineProperty(global, "TextDecoder", {
+        value: util.TextDecoder,
         writable: true,
     });
     jwtJsDecode = require('../src');
@@ -215,13 +224,19 @@ describe("jwtVerify tests (WebCrypto API version) RS", function () {
 
 describe("Encoding tests (Web version)", function () {
     it("it has no Buffer", async function () {
-        expect(global.Buffer).toEqual(null);
+        expect(global.Buffer).toEqual(undefined);
     });
-    it("should encode unicode characters correctly", function () {
-        expect(jwtJsDecode.s2b('\xcb\xf9')).toBe('y/k=');
+    it("should encode latin1 characters correctly", function () {
+        expect(jwtJsDecode.s2b('Ëù')).toBe('y/k=');
     });
-    it("should decode unicode characters correctly", function () {
-        expect(jwtJsDecode.b2s('y/k=')).toBe('\xcb\xf9');
+    it("should decode latin1 characters correctly", function () {
+        expect(jwtJsDecode.b2s('y/k=')).toBe('Ëù');
+    });
+    it("should encode utf8 characters correctly", function () {
+        expect(jwtJsDecode.s2b('ủ ✓ à “test” b')).toBe('4bunIOKckyDDoCDigJx0ZXN04oCdIGI=');
+    });
+    it("should decode utf8 characters correctly", function () {
+        expect(jwtJsDecode.b2s('4bunIOKckyDDoCDigJx0ZXN04oCdIGI=')).toBe('ủ ✓ à “test” b');
     });
 });
 /**/
