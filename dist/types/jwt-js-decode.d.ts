@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { AB2hex, cleanZeros, hex2AB, num2hex } from "./util";
 export declare const webCrypto: false | Crypto;
 export declare const webCryptoSubtle: false | SubtleCrypto;
@@ -209,6 +210,14 @@ export declare function zip(str: string, type?: string): string;
  */
 export declare function s2AB(str: string): ArrayBuffer;
 /**
+ * Converts string to Uint8Array
+ *
+ * @param {string} str - data string to convert
+ *
+ * @returns {Uint8Array} charCode Uint8Array
+ */
+export declare function s2U8A(str: string): ArrayBuffer;
+/**
  * Converts ArrayBuffer to string
  *
  * @param {ArrayBuffer | Uint8Array} buff - charCode ArrayBuffer to convert
@@ -271,6 +280,11 @@ export declare const resignJwt: typeof jwtResign;
  * @hidden
  */
 export declare function cryptoType(): Promise<string>;
+export declare function notLatin1String(str: any): boolean;
+export declare function encode(input: string): ArrayBuffer;
+export declare function decode(input: string | Buffer): string;
+export declare function getTextEncoder(): TextEncoder | false;
+export declare function getTextDecoder(...args: any[]): TextDecoder | false;
 declare const _default: {
     ILLEGAL_ARGUMENT: string;
     UNSUPPORTED_ALGORITHM: string;
@@ -308,6 +322,7 @@ declare const _default: {
     pem2jwk: typeof pem2jwk;
     s2AB: typeof s2AB;
     s2J: typeof s2J;
+    s2U8A: typeof s2U8A;
     s2b: typeof s2b;
     s2bu: typeof s2bu;
     s2pem: typeof s2pem;
@@ -316,5 +331,10 @@ declare const _default: {
     unzip: typeof unzip;
     zbu2s: typeof zbu2s;
     zip: typeof zip;
+    notLatin1String: typeof notLatin1String;
+    encode: typeof encode;
+    decode: typeof decode;
+    getTextEncoder: typeof getTextEncoder;
+    getTextDecoder: typeof getTextDecoder;
 };
 export default _default;

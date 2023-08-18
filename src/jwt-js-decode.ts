@@ -199,10 +199,10 @@ export function J2s(obj: any): string {
  */
 export function b2s(str: string): string {
     try {
-        if (typeof window === 'object' && typeof window.atob === 'function') {
-            return window.atob(str);
-        } else if (typeof Buffer !== 'undefined') {
-            return Buffer.from(str, 'base64').toString('binary')
+        if (typeof Buffer !== 'undefined') {
+            return decode(Buffer.from(str, 'base64'));
+        } else if (typeof atob !== 'undefined') {
+            return decode(atob(str));
         } else throw new Error(ILLEGAL_ARGUMENT);
     } catch (e) {
         throw e;
@@ -303,10 +303,10 @@ export const splitJwt = jwtSplit;
  */
 export function s2b(str: string): string {
     try {
-        if (typeof window === 'object' && typeof window.btoa === 'function') {
-            return window.btoa(str);
-        } else if (typeof Buffer !== 'undefined') {
-            return Buffer.from(str).toString('base64');
+        if (typeof Buffer !== 'undefined') {
+            return Buffer.from(encode(str)).toString('base64');
+        } else if (typeof btoa !== 'undefined') {
+            return btoa(AB2s(encode(str)));
         } else throw new Error(ILLEGAL_ARGUMENT);
     } catch (e) {
         throw e;
@@ -349,7 +349,7 @@ export function unzip(str: string): string {
     }
 
     if (!!pako && (pako.inflate || pako.ungzip)) {
-        const buffer = s2AB(str);
+        const buffer = s2U8A(str);
         let inflated;
         try {
             inflated = pako.inflate(buffer, { raw: false });
@@ -375,7 +375,7 @@ export function unzip(str: string): string {
  * @returns {string} decoded data string
  */
 export function zbu2s(str: string): string {
-    return unzip(bu2s(str));
+    return decode(unzip(bu2s(str)));
 }
 
 /**
@@ -423,6 +423,20 @@ export function s2AB(str: string): ArrayBuffer {
 }
 
 /**
+ * Converts string to Uint8Array
+ *
+ * @param {string} str - data string to convert
+ *
+ * @returns {Uint8Array} charCode Uint8Array
+ */
+export function s2U8A(str: string): ArrayBuffer {
+    const buff = new ArrayBuffer(str.length);
+    const view = new Uint8Array(buff);
+    for (let i = 0; i < str.length; i++) view[i] = str.charCodeAt(i);
+    return view;
+}
+
+/**
  * Converts ArrayBuffer to string
  *
  * @param {ArrayBuffer | Uint8Array} buff - charCode ArrayBuffer to convert
@@ -441,7 +455,7 @@ export function AB2s(buff: ArrayBuffer | Uint8Array): string {
 
 export async function createHmac(name: string, secret: string): Promise<any> {
     if (webCryptoSubtle) {
-        const keyData = s2AB(secret);
+        const keyData = s2U8A(secret);
         return await webCryptoSubtle.importKey(
             'raw',
             keyData,
@@ -454,7 +468,7 @@ export async function createHmac(name: string, secret: string): Promise<any> {
                     return await webCryptoSubtle.sign(
                         'HMAC',
                         key,
-                        s2AB(thing)
+                        s2U8A(thing)
                     )
                 }
             }
@@ -529,7 +543,7 @@ export function s2pem(secret: string): PEM {
         ], body = lines.map(line => line.trim()).filter(line =>
             line.length && ignore(line)).join('');
     if (body.length) {
-        return { body: s2AB(b2s(bu2b(body))), type: <'private' | 'public'>type };
+        return { body: s2U8A(b2s(bu2b(body))), type: <'private' | 'public'>type };
     } else {
         throw new Error(ILLEGAL_ARGUMENT);
     }
@@ -781,7 +795,7 @@ export async function createSign(name: string): Promise<any> {
                                 return await webCryptoSubtle.sign(
                                     { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } },
                                     key,
-                                    s2AB(thing)
+                                    s2U8A(thing)
                                 ).then(AB2s).then(s2b)
                             })
                         });
@@ -798,7 +812,7 @@ export async function createSign(name: string): Promise<any> {
                                 return await webCryptoSubtle.sign(
                                     'RSASSA-PKCS1-v1_5',
                                     key,
-                                    s2AB(thing)
+                                    s2U8A(thing)
                                 ).then(AB2s).then(s2b)
                             })
                         })
@@ -848,8 +862,8 @@ export async function createVerify(name: string): Promise<any> {
                                 return await webCryptoSubtle.verify(
                                     'RSASSA-PKCS1-v1_5',
                                     key,
-                                    s2AB(bu2s(signature)),
-                                    s2AB(thing)
+                                    s2U8A(bu2s(signature)),
+                                    s2U8A(thing)
                                 )
                             })
                         });
@@ -865,8 +879,8 @@ export async function createVerify(name: string): Promise<any> {
                                 return await webCryptoSubtle.verify(
                                     'RSASSA-PKCS1-v1_5',
                                     key,
-                                    s2AB(bu2s(signature)),
-                                    s2AB(thing)
+                                    s2U8A(bu2s(signature)),
+                                    s2U8A(thing)
                                 )
                             })
                         })*/
@@ -992,6 +1006,65 @@ export async function cryptoType(): Promise<string> {
     return crypto ? crypto['type'] || 'crypto-node' : 'undefined';
 }
 
+export function notLatin1String(str): boolean {
+    return Array.prototype.some.apply(str, [str => str.charCodeAt(0) > 255]);
+}
+
+export function encode(input: string) {
+    if (notLatin1String(input)) {
+        const encoder = getTextEncoder();
+        if (!!encoder) {
+            return encoder.encode(input);
+        }
+    }
+    return s2U8A(input);
+}
+
+export function decode(input: string | Buffer) {
+    if(typeof input === 'string') {
+        try{
+            const decoder = getTextDecoder("utf8", { fatal: true });
+            if (!!decoder) {
+                return decoder.decode(s2U8A(input));
+            }
+        }catch{}
+        return input;
+    }
+    try{
+        const decoder = getTextDecoder("utf8", { fatal: true });
+        if (!!decoder) {
+            return decoder.decode(input);
+        }
+    }catch{}
+    return input.toString('binary');
+}
+
+export function getTextEncoder(): TextEncoder | false {
+    if (typeof TextEncoder !== 'undefined') {
+        return new TextEncoder();
+    }
+    if (typeof require !== 'undefined') {
+        const encoder = require("util");
+        if (typeof encoder?.TextEncoder !== 'undefined') {
+            return new encoder.TextEncoder();
+        }
+    }
+    return false;
+}
+
+export function getTextDecoder(...args): TextDecoder | false {
+    if (typeof TextDecoder !== 'undefined') {
+        return new TextDecoder(...args);
+    }
+    if (typeof require !== 'undefined') {
+        const decoder = require("util");
+        if (typeof decoder?.TextDecoder !== 'undefined') {
+            return new decoder.TextDecoder(...args);
+        }
+    }
+    return false;
+}
+
 export default {
     ILLEGAL_ARGUMENT,
     UNSUPPORTED_ALGORITHM,
@@ -1029,6 +1102,7 @@ export default {
     pem2jwk,
     s2AB,
     s2J,
+    s2U8A,
     s2b,
     s2bu,
     s2pem,
@@ -1037,4 +1111,9 @@ export default {
     unzip,
     zbu2s,
     zip,
+    notLatin1String,
+    encode,
+    decode,
+    getTextEncoder,
+    getTextDecoder
 };
