@@ -197,7 +197,7 @@ export function J2s(obj: any): string {
  *
  * @returns {string} decoded data string
  */
-export function b2s(str: string, type: BufferEncoding = 'binary'): string {
+export function b2s(str: string): string {
     try {
         if (typeof Buffer !== 'undefined') {
             return decode(Buffer.from(str, 'base64'));
