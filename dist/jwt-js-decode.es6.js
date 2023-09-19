@@ -739,10 +739,10 @@ function J2s(obj) {
 function b2s(str) {
     try {
         if (typeof Buffer !== 'undefined') {
-            return decode(Buffer.from(str, 'base64'));
+            return textDecode(Buffer.from(str, 'base64'));
         }
         else if (typeof atob !== 'undefined') {
-            return decode(atob(str));
+            return textDecode(atob(str));
         }
         else
             throw new Error(ILLEGAL_ARGUMENT);
@@ -816,6 +816,8 @@ function isGzip(header) {
 function jwtDecode(str, callee = 'jwtDecode') {
     return new JwtDecode(str, callee);
 }
+const decodeJwt = jwtDecode;
+const decode = jwtDecode;
 /**
  * Split jwtToken into object {header, payload, signature}
  *
@@ -827,6 +829,7 @@ function jwtSplit(str, callee = 'jwtSplit') {
     return new JwtSplit(str, callee);
 }
 const splitJwt = jwtSplit;
+const split = jwtSplit;
 /**
  * Converts base64 string to string
  *
@@ -837,10 +840,10 @@ const splitJwt = jwtSplit;
 function s2b(str) {
     try {
         if (typeof Buffer !== 'undefined') {
-            return Buffer.from(encode(str)).toString('base64');
+            return Buffer.from(textEncode(str)).toString('base64');
         }
         else if (typeof btoa !== 'undefined') {
-            return btoa(AB2s(encode(str)));
+            return btoa(AB2s(textEncode(str)));
         }
         else
             throw new Error(ILLEGAL_ARGUMENT);
@@ -909,7 +912,7 @@ function unzip(str) {
  * @returns {string} decoded data string
  */
 function zbu2s(str) {
-    return decode(unzip(bu2s(str)));
+    return textDecode(unzip(bu2s(str)));
 }
 /**
  * Converts string to zip data string
@@ -1470,11 +1473,13 @@ function jwtVerify(jwtStr, secret) {
     });
 }
 const verifyJwt = jwtVerify;
+const verify = jwtVerify;
 function jwtSign(jwtStr, secret) {
     const jwt = jwtSplit(jwtStr, 'jwtSign'), header = s2J(bu2s(jwt.header)), thing = jwt.header + '.' + jwt.payload;
     return tryPromise(() => __awaiter(this, void 0, void 0, function* () { return yield algSign(header.alg, thing, secret); }));
 }
 const signJwt = jwtSign;
+const sign = jwtSign;
 function jwtResign(jwtStr, secret, alg) {
     return __awaiter(this, void 0, void 0, function* () {
         const jwt = jwtDecode(jwtStr, 'jwtResign');
@@ -1485,6 +1490,7 @@ function jwtResign(jwtStr, secret, alg) {
     });
 }
 const resignJwt = jwtResign;
+const resign = jwtResign;
 /**
  * Used for testing only
  *
@@ -1499,7 +1505,7 @@ function cryptoType() {
 function notLatin1String(str) {
     return Array.prototype.some.apply(str, [str => str.charCodeAt(0) > 255]);
 }
-function encode(input) {
+function textEncode(input) {
     if (notLatin1String(input)) {
         const encoder = getTextEncoder();
         if (!!encoder) {
@@ -1508,7 +1514,7 @@ function encode(input) {
     }
     return s2U8A(input);
 }
-function decode(input) {
+function textDecode(input) {
     if (typeof input === 'string') {
         try {
             const decoder = getTextDecoder("utf8", { fatal: true });
@@ -1553,5 +1559,5 @@ function getTextDecoder(...args) {
     return false;
 }
 
-export { AB2s, Asn1Tag, J2s, JwtDecode, JwtSplit, algHSsign, algHSverify, algRSsign, algRSverify, algSign, algVerify, asn12jwk, b2bu, b2s, bu2b, bu2s, createHmac, createSign, createVerify, cryptoType, decode, encode, getTextDecoder, getTextEncoder, isGzip, jwtDecode, jwtResign, jwtSign, jwtSplit, jwtVerify, notLatin1String, pem2asn1, pem2jwk, resignJwt, s2AB, s2J, s2U8A, s2b, s2bu, s2pem, s2zbu, signJwt, splitJwt, tryPromise, unzip, verifyJwt, webCrypto, webCryptoSubtle, zbu2s, zip };
+export { AB2s, Asn1Tag, J2s, JwtDecode, JwtSplit, algHSsign, algHSverify, algRSsign, algRSverify, algSign, algVerify, asn12jwk, b2bu, b2s, bu2b, bu2s, createHmac, createSign, createVerify, cryptoType, decode, decodeJwt, getTextDecoder, getTextEncoder, isGzip, jwtDecode, jwtResign, jwtSign, jwtSplit, jwtVerify, notLatin1String, pem2asn1, pem2jwk, resign, resignJwt, s2AB, s2J, s2U8A, s2b, s2bu, s2pem, s2zbu, sign, signJwt, split, splitJwt, textDecode, textEncode, tryPromise, unzip, verify, verifyJwt, webCrypto, webCryptoSubtle, zbu2s, zip };
 //# sourceMappingURL=jwt-js-decode.es6.js.map
