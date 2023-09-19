@@ -142,6 +142,8 @@ export declare function isGzip(header: JwtPart): boolean;
  * @returns {JwtDecode} object with decoded header and body, and signature untouched
  */
 export declare function jwtDecode(str: string, callee?: string): JwtDecode;
+export declare const decodeJwt: typeof jwtDecode;
+export declare const decode: typeof jwtDecode;
 /**
  * Split jwtToken into object {header, payload, signature}
  *
@@ -151,6 +153,7 @@ export declare function jwtDecode(str: string, callee?: string): JwtDecode;
  */
 export declare function jwtSplit(str: string, callee?: string): JwtSplit;
 export declare const splitJwt: typeof jwtSplit;
+export declare const split: typeof jwtSplit;
 /**
  * Converts base64 string to string
  *
@@ -270,10 +273,13 @@ export declare function algVerify(algorithm: string, thing: string, signature: s
 export declare function algSign(algorithm: string, thing: string, secret: string): Promise<string>;
 export declare function jwtVerify(jwtStr: string, secret: string): Promise<boolean>;
 export declare const verifyJwt: typeof jwtVerify;
+export declare const verify: typeof jwtVerify;
 export declare function jwtSign(jwtStr: string, secret: string): Promise<string>;
 export declare const signJwt: typeof jwtSign;
+export declare const sign: typeof jwtSign;
 export declare function jwtResign(jwtStr: string, secret: string, alg?: string): Promise<string>;
 export declare const resignJwt: typeof jwtResign;
+export declare const resign: typeof jwtResign;
 /**
  * Used for testing only
  *
@@ -281,13 +287,19 @@ export declare const resignJwt: typeof jwtResign;
  */
 export declare function cryptoType(): Promise<string>;
 export declare function notLatin1String(str: any): boolean;
-export declare function encode(input: string): ArrayBuffer;
-export declare function decode(input: string | Buffer): string;
+export declare function textEncode(input: string): ArrayBuffer;
+export declare function textDecode(input: string | Buffer): string;
 export declare function getTextEncoder(): TextEncoder | false;
 export declare function getTextDecoder(...args: any[]): TextDecoder | false;
 declare const _default: {
     ILLEGAL_ARGUMENT: string;
     UNSUPPORTED_ALGORITHM: string;
+    decode: typeof jwtDecode;
+    resign: typeof jwtResign;
+    sign: typeof jwtSign;
+    split: typeof jwtSplit;
+    verify: typeof jwtVerify;
+    decodeJwt: typeof jwtDecode;
     resignJwt: typeof jwtResign;
     signJwt: typeof jwtSign;
     splitJwt: typeof jwtSplit;
@@ -332,8 +344,8 @@ declare const _default: {
     zbu2s: typeof zbu2s;
     zip: typeof zip;
     notLatin1String: typeof notLatin1String;
-    encode: typeof encode;
-    decode: typeof decode;
+    textEncode: typeof textEncode;
+    textDecode: typeof textDecode;
     getTextEncoder: typeof getTextEncoder;
     getTextDecoder: typeof getTextDecoder;
 };

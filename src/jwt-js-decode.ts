@@ -200,9 +200,9 @@ export function J2s(obj: any): string {
 export function b2s(str: string): string {
     try {
         if (typeof Buffer !== 'undefined') {
-            return decode(Buffer.from(str, 'base64'));
+            return textDecode(Buffer.from(str, 'base64'));
         } else if (typeof atob !== 'undefined') {
-            return decode(atob(str));
+            return textDecode(atob(str));
         } else throw new Error(ILLEGAL_ARGUMENT);
     } catch (e) {
         throw e;
@@ -281,6 +281,9 @@ export function jwtDecode(str: string, callee = 'jwtDecode'): JwtDecode {
     return new JwtDecode(str, callee);
 }
 
+export const decodeJwt = jwtDecode;
+export const decode = jwtDecode;
+
 /**
  * Split jwtToken into object {header, payload, signature}
  *
@@ -293,6 +296,7 @@ export function jwtSplit(str: string, callee = 'jwtSplit'): JwtSplit {
 }
 
 export const splitJwt = jwtSplit;
+export const split = jwtSplit;
 
 /**
  * Converts base64 string to string
@@ -304,9 +308,9 @@ export const splitJwt = jwtSplit;
 export function s2b(str: string): string {
     try {
         if (typeof Buffer !== 'undefined') {
-            return Buffer.from(encode(str)).toString('base64');
+            return Buffer.from(textEncode(str)).toString('base64');
         } else if (typeof btoa !== 'undefined') {
-            return btoa(AB2s(encode(str)));
+            return btoa(AB2s(textEncode(str)));
         } else throw new Error(ILLEGAL_ARGUMENT);
     } catch (e) {
         throw e;
@@ -375,7 +379,7 @@ export function unzip(str: string): string {
  * @returns {string} decoded data string
  */
 export function zbu2s(str: string): string {
-    return decode(unzip(bu2s(str)));
+    return textDecode(unzip(bu2s(str)));
 }
 
 /**
@@ -977,6 +981,7 @@ export async function jwtVerify(jwtStr: string, secret: string): Promise<boolean
 }
 
 export const verifyJwt = jwtVerify;
+export const verify = jwtVerify;
 
 export function jwtSign(jwtStr: string, secret: string): Promise<string> {
     const jwt = jwtSplit(jwtStr, 'jwtSign'),
@@ -986,6 +991,7 @@ export function jwtSign(jwtStr: string, secret: string): Promise<string> {
 }
 
 export const signJwt = jwtSign;
+export const sign = jwtSign;
 
 export async function jwtResign(jwtStr: string, secret: string, alg?: string): Promise<string> {
     const jwt = jwtDecode(jwtStr, 'jwtResign');
@@ -995,6 +1001,7 @@ export async function jwtResign(jwtStr: string, secret: string, alg?: string): P
 }
 
 export const resignJwt = jwtResign;
+export const resign = jwtResign;
 
 /**
  * Used for testing only
@@ -1010,7 +1017,7 @@ export function notLatin1String(str): boolean {
     return Array.prototype.some.apply(str, [str => str.charCodeAt(0) > 255]);
 }
 
-export function encode(input: string) {
+export function textEncode(input: string) {
     if (notLatin1String(input)) {
         const encoder = getTextEncoder();
         if (!!encoder) {
@@ -1020,7 +1027,7 @@ export function encode(input: string) {
     return s2U8A(input);
 }
 
-export function decode(input: string | Buffer) {
+export function textDecode(input: string | Buffer) {
     if(typeof input === 'string') {
         try{
             const decoder = getTextDecoder("utf8", { fatal: true });
@@ -1068,6 +1075,12 @@ export function getTextDecoder(...args): TextDecoder | false {
 export default {
     ILLEGAL_ARGUMENT,
     UNSUPPORTED_ALGORITHM,
+    decode,
+    resign,
+    sign,
+    split,
+    verify,
+    decodeJwt,
     resignJwt,
     signJwt,
     splitJwt,
@@ -1112,8 +1125,8 @@ export default {
     zbu2s,
     zip,
     notLatin1String,
-    encode,
-    decode,
+    textEncode,
+    textDecode,
     getTextEncoder,
     getTextDecoder
 };

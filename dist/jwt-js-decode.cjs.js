@@ -720,10 +720,10 @@ function J2s(obj) {
 function b2s(str) {
     try {
         if (typeof Buffer !== 'undefined') {
-            return decode(Buffer.from(str, 'base64'));
+            return textDecode(Buffer.from(str, 'base64'));
         }
         else if (typeof atob !== 'undefined') {
-            return decode(atob(str));
+            return textDecode(atob(str));
         }
         else
             throw new Error(ILLEGAL_ARGUMENT);
@@ -797,6 +797,8 @@ function isGzip(header) {
 function jwtDecode(str, callee = 'jwtDecode') {
     return new JwtDecode(str, callee);
 }
+const decodeJwt = jwtDecode;
+const decode = jwtDecode;
 /**
  * Split jwtToken into object {header, payload, signature}
  *
@@ -808,6 +810,7 @@ function jwtSplit(str, callee = 'jwtSplit') {
     return new JwtSplit(str, callee);
 }
 const splitJwt = jwtSplit;
+const split = jwtSplit;
 /**
  * Converts base64 string to string
  *
@@ -818,10 +821,10 @@ const splitJwt = jwtSplit;
 function s2b(str) {
     try {
         if (typeof Buffer !== 'undefined') {
-            return Buffer.from(encode(str)).toString('base64');
+            return Buffer.from(textEncode(str)).toString('base64');
         }
         else if (typeof btoa !== 'undefined') {
-            return btoa(AB2s(encode(str)));
+            return btoa(AB2s(textEncode(str)));
         }
         else
             throw new Error(ILLEGAL_ARGUMENT);
@@ -890,7 +893,7 @@ function unzip(str) {
  * @returns {string} decoded data string
  */
 function zbu2s(str) {
-    return decode(unzip(bu2s(str)));
+    return textDecode(unzip(bu2s(str)));
 }
 /**
  * Converts string to zip data string
@@ -1425,11 +1428,13 @@ async function jwtVerify(jwtStr, secret) {
     return tryPromise(() => algVerify(header.alg, thing, jwt.signature, secret));
 }
 const verifyJwt = jwtVerify;
+const verify = jwtVerify;
 function jwtSign(jwtStr, secret) {
     const jwt = jwtSplit(jwtStr, 'jwtSign'), header = s2J(bu2s(jwt.header)), thing = jwt.header + '.' + jwt.payload;
     return tryPromise(async () => await algSign(header.alg, thing, secret));
 }
 const signJwt = jwtSign;
+const sign = jwtSign;
 async function jwtResign(jwtStr, secret, alg) {
     const jwt = jwtDecode(jwtStr, 'jwtResign');
     if (!!alg)
@@ -1438,6 +1443,7 @@ async function jwtResign(jwtStr, secret, alg) {
     return jwt.toString();
 }
 const resignJwt = jwtResign;
+const resign = jwtResign;
 /**
  * Used for testing only
  *
@@ -1450,7 +1456,7 @@ async function cryptoType() {
 function notLatin1String(str) {
     return Array.prototype.some.apply(str, [str => str.charCodeAt(0) > 255]);
 }
-function encode(input) {
+function textEncode(input) {
     if (notLatin1String(input)) {
         const encoder = getTextEncoder();
         if (!!encoder) {
@@ -1459,7 +1465,7 @@ function encode(input) {
     }
     return s2U8A(input);
 }
-function decode(input) {
+function textDecode(input) {
     if (typeof input === 'string') {
         try {
             const decoder = getTextDecoder("utf8", { fatal: true });
@@ -1525,7 +1531,7 @@ exports.createSign = createSign;
 exports.createVerify = createVerify;
 exports.cryptoType = cryptoType;
 exports.decode = decode;
-exports.encode = encode;
+exports.decodeJwt = decodeJwt;
 exports.getTextDecoder = getTextDecoder;
 exports.getTextEncoder = getTextEncoder;
 exports.isGzip = isGzip;
@@ -1537,6 +1543,7 @@ exports.jwtVerify = jwtVerify;
 exports.notLatin1String = notLatin1String;
 exports.pem2asn1 = pem2asn1;
 exports.pem2jwk = pem2jwk;
+exports.resign = resign;
 exports.resignJwt = resignJwt;
 exports.s2AB = s2AB;
 exports.s2J = s2J;
@@ -1545,10 +1552,15 @@ exports.s2b = s2b;
 exports.s2bu = s2bu;
 exports.s2pem = s2pem;
 exports.s2zbu = s2zbu;
+exports.sign = sign;
 exports.signJwt = signJwt;
+exports.split = split;
 exports.splitJwt = splitJwt;
+exports.textDecode = textDecode;
+exports.textEncode = textEncode;
 exports.tryPromise = tryPromise;
 exports.unzip = unzip;
+exports.verify = verify;
 exports.verifyJwt = verifyJwt;
 exports.webCrypto = webCrypto;
 exports.webCryptoSubtle = webCryptoSubtle;

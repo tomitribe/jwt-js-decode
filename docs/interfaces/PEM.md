@@ -17,7 +17,7 @@
 
 #### Defined in
 
-[jwt-js-decode.ts:516](https://github.com/tomitribe/jwt-js-decode/blob/07584e8/src/jwt-js-decode.ts#L516)
+[jwt-js-decode.ts:520](https://github.com/tomitribe/jwt-js-decode/blob/ba2e9b8/src/jwt-js-decode.ts#L520)
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 #### Defined in
 
-[jwt-js-decode.ts:517](https://github.com/tomitribe/jwt-js-decode/blob/07584e8/src/jwt-js-decode.ts#L517)
+[jwt-js-decode.ts:521](https://github.com/tomitribe/jwt-js-decode/blob/ba2e9b8/src/jwt-js-decode.ts#L521)
