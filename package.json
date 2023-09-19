@@ -1,6 +1,6 @@
 {
   "name": "jwt-js-decode",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "Decode, sign/resign or verify JSON Web Tokens (JWT). Works in majority of modern browsers, Node.js and other JavaScript runtimes.",
   "keywords": [
     "jwt",
