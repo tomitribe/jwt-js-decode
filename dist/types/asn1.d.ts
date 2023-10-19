@@ -29,7 +29,7 @@ export declare class ASN1 {
     posStart(): any;
     posContent(): any;
     posEnd(): any;
-    toHexString(root?: any): any;
+    toHexString(): any;
     getHex(): any;
     getAB(clean?: boolean): any;
     static decodeLength(stream: any): any;

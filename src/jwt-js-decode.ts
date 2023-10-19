@@ -1,10 +1,10 @@
-import pako from "pako";
+import pako from 'pako';
 /* Issue3: Works, but ASN1 adds 14kb of code to this lib
 import ASN1 from "asn1js";
 */
 // Simplified/improved version of
 // "asn1js": "git+https://github.com/lapo-luchini/asn1js.git",
-import { ASN1 } from "./asn1";
+import { ASN1 } from './asn1';
 import {
     AB2hex,
     cleanZeros,
@@ -15,8 +15,8 @@ import {
     num2hex,
     PAKO_NOT_FOUND,
     UNSUPPORTED_ALGORITHM,
-    UNSUPPORTED_ZIP_TYPE
-} from "./util";
+    UNSUPPORTED_ZIP_TYPE,
+} from './util';
 /*
 //crypto-browserify:
 import { createHmac, createSign, createVerify } from "crypto-browserify";
@@ -27,7 +27,7 @@ import { createSign, createVerify } from "browserify-sign";
 //node.js
 import { createHmac, createSign, createVerify } from "crypto";
 */
-export const webCrypto = typeof window === "object" && (window.crypto || window['msCrypto']);
+export const webCrypto = typeof window === 'object' && (window.crypto || window['msCrypto']);
 export const webCryptoSubtle = webCrypto && (webCrypto.subtle || webCrypto['webkitSubtle'] || webCrypto['Subtle']);
 
 /**
@@ -68,7 +68,6 @@ export class JwtSplit {
     }
 
     public fromString(str: string, callee = 'JwtSplit.fromString') {
-        
         const jwtArr = str.split('.');
         if (jwtArr.length !== 3) {
             throw new Error(generateErrorMessage(str, callee, 'JWT string'));
@@ -81,13 +80,13 @@ export class JwtSplit {
     }
 
     public toString(): string {
-        return this.header + '.' + this.payload + '.' + this.signature
+        return this.header + '.' + this.payload + '.' + this.signature;
     }
 }
 
 /** JwtPart interface basically object type definition used as a placeholder */
 interface JwtPart {
-    [key: string]: any
+    [key: string]: any;
 }
 
 /**
@@ -135,13 +134,23 @@ export class JwtDecode {
         const jwtObj: JwtSplit = jwtSplit(str, callee);
         if (jwtObj) {
             this.header = jwtObj.header ? s2J(bu2s(jwtObj.header)) : {};
-            this.payload = jwtObj.payload ? (this.isGzip() ? s2J(zbu2s(jwtObj.payload)) : s2J(bu2s(jwtObj.payload))) : {};
+            this.payload = jwtObj.payload
+                ? this.isGzip()
+                    ? s2J(zbu2s(jwtObj.payload))
+                    : s2J(bu2s(jwtObj.payload))
+                : {};
             this.signature = jwtObj.signature || '';
         }
     }
 
     public toString(): string {
-        return s2bu(J2s(this.header)) + '.' + (this.isGzip() ? s2zbu(J2s(this.payload)) : s2bu(J2s(this.payload))) + '.' + this.signature
+        return (
+            s2bu(J2s(this.header)) +
+            '.' +
+            (this.isGzip() ? s2zbu(J2s(this.payload)) : s2bu(J2s(this.payload))) +
+            '.' +
+            this.signature
+        );
     }
 }
 
@@ -168,11 +177,7 @@ export function tryPromise(fn) {
  * @returns {object} resulting object
  */
 export function s2J(str: string): any {
-    try {
-        return JSON.parse(str);
-    } catch (e) {
-        throw e;
-    }
+    return JSON.parse(str);
 }
 
 /**
@@ -183,11 +188,7 @@ export function s2J(str: string): any {
  * @returns {string} resulting string
  */
 export function J2s(obj: any): string {
-    try {
-        return JSON.stringify(obj);
-    } catch (e) {
-        throw e;
-    }
+    return JSON.stringify(obj);
 }
 
 /**
@@ -198,15 +199,11 @@ export function J2s(obj: any): string {
  * @returns {string} decoded data string
  */
 export function b2s(str: string): string {
-    try {
-        if (typeof Buffer !== 'undefined') {
-            return textDecode(Buffer.from(str, 'base64'));
-        } else if (typeof atob !== 'undefined') {
-            return textDecode(atob(str));
-        } else throw new Error(ILLEGAL_ARGUMENT);
-    } catch (e) {
-        throw e;
-    }
+    if (typeof Buffer !== 'undefined') {
+        return textDecode(Buffer.from(str, 'base64'));
+    } else if (typeof atob !== 'undefined') {
+        return textDecode(atob(str));
+    } else throw new Error(ILLEGAL_ARGUMENT);
 }
 
 /**
@@ -217,14 +214,11 @@ export function b2s(str: string): string {
  * @returns {string} base64url string
  */
 export function b2bu(str: string): string {
-    if ((typeof str !== 'string') || (str.length % 4 !== 0)) {
+    if (typeof str !== 'string' || str.length % 4 !== 0) {
         throw new Error(ILLEGAL_ARGUMENT);
     }
 
-    return str
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=/g, '');
+    return str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 }
 
 /**
@@ -236,16 +230,14 @@ export function b2bu(str: string): string {
  * @returns {string} base64 string
  */
 export function bu2b(str: string): string {
-    if ((typeof str !== 'string') || (str.length % 4 === 1)) {
+    if (typeof str !== 'string' || str.length % 4 === 1) {
         throw new Error(ILLEGAL_ARGUMENT);
     }
 
-    for (; (str.length % 4 !== 0);) {
+    for (; str.length % 4 !== 0; ) {
         str += '=';
     }
-    return str
-        .replace(/\-/g, '+')
-        .replace(/_/g, '/');
+    return str.replace(/-/g, '+').replace(/_/g, '/');
 }
 
 /**
@@ -267,7 +259,7 @@ export function bu2s(str: string): string {
  * @returns {boolean} does it have gzip in zip property
  */
 export function isGzip(header: JwtPart): boolean {
-    return typeof header === 'object' && typeof header.zip === 'string' && header.zip.toUpperCase() === 'GZIP'
+    return typeof header === 'object' && typeof header.zip === 'string' && header.zip.toUpperCase() === 'GZIP';
 }
 
 /**
@@ -306,15 +298,11 @@ export const split = jwtSplit;
  * @returns {string} base64 string
  */
 export function s2b(str: string): string {
-    try {
-        if (typeof Buffer !== 'undefined') {
-            return Buffer.from(textEncode(str)).toString('base64');
-        } else if (typeof btoa !== 'undefined') {
-            return btoa(AB2s(textEncode(str)));
-        } else throw new Error(ILLEGAL_ARGUMENT);
-    } catch (e) {
-        throw e;
-    }
+    if (typeof Buffer !== 'undefined') {
+        return Buffer.from(textEncode(str)).toString('base64');
+    } else if (typeof btoa !== 'undefined') {
+        return btoa(AB2s(textEncode(str)));
+    } else throw new Error(ILLEGAL_ARGUMENT);
 }
 
 /**
@@ -357,14 +345,14 @@ export function unzip(str: string): string {
         let inflated;
         try {
             inflated = pako.inflate(buffer, { raw: false });
-        } catch { 
+        } catch {
             try {
                 inflated = pako.ungzip(buffer, { raw: false });
-            } catch { 
+            } catch {
                 throw new Error(UNSUPPORTED_ZIP_TYPE);
-            };
-        };
-        
+            }
+        }
+
         return AB2s(inflated);
     } else {
         throw new Error(PAKO_NOT_FOUND);
@@ -399,12 +387,12 @@ export function zip(str: string, type = 'zlib'): string {
         let deflated;
         if (type === 'gzip') {
             deflated = pako.gzip(str, {
-                raw: false
-            })
+                raw: false,
+            });
         } else if (type === 'zlib') {
             deflated = pako.deflate(str, {
-                raw: false
-            })
+                raw: false,
+            });
         } else throw new Error(UNSUPPORTED_ZIP_TYPE);
         return AB2s(deflated);
     } else {
@@ -449,7 +437,7 @@ export function s2U8A(str: string): ArrayBuffer {
  */
 export function AB2s(buff: ArrayBuffer | Uint8Array): string {
     if (!(buff instanceof Uint8Array)) buff = new Uint8Array(buff);
-    return String.fromCharCode.apply(String, Array.from(buff as any));
+    return String.fromCharCode(...Array.from(buff as Uint8Array));
 }
 
 /**
@@ -460,26 +448,20 @@ export function AB2s(buff: ArrayBuffer | Uint8Array): string {
 export async function createHmac(name: string, secret: string): Promise<any> {
     if (webCryptoSubtle) {
         const keyData = s2U8A(secret);
-        return await webCryptoSubtle.importKey(
-            'raw',
-            keyData,
-            { name: 'HMAC', hash: { name: name } },
-            true,
-            ['sign']
-        ).then(key => {
-            return {
-                update: async function (thing): Promise<ArrayBuffer> {
-                    return await webCryptoSubtle.sign(
-                        'HMAC',
-                        key,
-                        s2U8A(thing)
-                    )
-                }
-            }
-        })
+        return await webCryptoSubtle
+            .importKey('raw', keyData, { name: 'HMAC', hash: { name: name } }, true, ['sign'])
+            .then((key) => {
+                return {
+                    update: async function (thing): Promise<ArrayBuffer> {
+                        return await webCryptoSubtle.sign('HMAC', key, s2U8A(thing));
+                    },
+                };
+            });
     } else {
-        const crypto = await import("crypto");
-        return !!crypto && crypto.createHmac ? Promise.resolve(crypto.createHmac(name.replace('SHA-', 'sha'), secret)) : Promise.reject(webCrypto);
+        const crypto = await import('crypto');
+        return !!crypto && crypto.createHmac
+            ? Promise.resolve(crypto.createHmac(name.replace('SHA-', 'sha'), secret))
+            : Promise.reject(webCrypto);
     }
 }
 
@@ -499,7 +481,7 @@ export function algHSsign(bits: number) {
             return Promise.resolve(s2bu(AB2s(await hmac.update(thing))));
         }
         return Promise.resolve(b2bu(hmac.update(thing).digest('base64')));
-    }
+    };
 }
 
 /**
@@ -512,13 +494,13 @@ export function algHSverify(bits: number) {
      *
      */
     return async function verify(thing: string, signature: string, secret: string): Promise<boolean> {
-        return await algHSsign(bits)(thing, secret) === signature;
-    }
+        return (await algHSsign(bits)(thing, secret)) === signature;
+    };
 }
 
 export interface PEM {
-    body: ArrayBuffer | Uint8Array,
-    type: 'private' | 'public'
+    body: ArrayBuffer | Uint8Array;
+    type: 'private' | 'public';
 }
 
 export function s2pem(secret: string): PEM {
@@ -528,24 +510,20 @@ export function s2pem(secret: string): PEM {
     let type = 'public';
 
     function ignore(line: string): boolean {
-        if (ignoreLinesPriv.some(ign => line.toUpperCase().indexOf(ign) > -1)) {
+        if (ignoreLinesPriv.some((ign) => line.toUpperCase().indexOf(ign) > -1)) {
             type = 'private';
             return false;
         }
-        return !ignoreLinesPub.some(ign => line.toUpperCase().indexOf(ign) > -1);
+        return !ignoreLinesPub.some((ign) => line.toUpperCase().indexOf(ign) > -1);
     }
 
     const lines = secret.split('\n'),
-        ignoreLinesPriv = [
-            '-BEGIN RSA PRIVATE KEY-',
-            '-END RSA PRIVATE KEY-'],
-        ignoreLinesPub = [
-            '-BEGIN RSA PUBLIC KEY-',
-            '-BEGIN PUBLIC KEY-',
-            '-END PUBLIC KEY-',
-            '-END RSA PUBLIC KEY-'
-        ], body = lines.map(line => line.trim()).filter(line =>
-            line.length && ignore(line)).join('');
+        ignoreLinesPriv = ['-BEGIN RSA PRIVATE KEY-', '-END RSA PRIVATE KEY-'],
+        ignoreLinesPub = ['-BEGIN RSA PUBLIC KEY-', '-BEGIN PUBLIC KEY-', '-END PUBLIC KEY-', '-END RSA PUBLIC KEY-'],
+        body = lines
+            .map((line) => line.trim())
+            .filter((line) => line.length && ignore(line))
+            .join('');
     if (body.length) {
         return { body: s2U8A(b2s(bu2b(body))), type: <'private' | 'public'>type };
     } else {
@@ -682,8 +660,8 @@ export class Asn1Tag {
     constructor(stream) {
         const buf = stream.read();
         this.tagClass = buf >> 6;
-        this.tagConstructed = ((buf & 0x20) !== 0);
-        this.tagNumber = buf & 0x1F;
+        this.tagConstructed = (buf & 0x20) !== 0;
+        this.tagNumber = buf & 0x1f;
     }
 }
 
@@ -691,7 +669,8 @@ export function pem2asn1(buff: ArrayBuffer | Uint8Array): any {
     if (!buff) throw new Error(ILLEGAL_ARGUMENT);
 
     if (buff instanceof ArrayBuffer) buff = new Uint8Array(buff);
-    let asn1 = ASN1.decode(buff), res = {};
+    let asn1 = ASN1.decode(buff);
+    const res = {};
 
     if (asn1.sub.length === 3) {
         asn1 = asn1.sub[2].sub[0];
@@ -714,9 +693,7 @@ export function pem2asn1(buff: ArrayBuffer | Uint8Array): any {
         res['publicExponent'] = parseInt(asn1.sub[1].getHex(), 16); // int
     }
 
-    res['bits'] = (res['modulus'].length - 1) * 8 + Math.ceil(
-        Math.log(res['modulus'][0] + 1) / Math.log(2)
-    );
+    res['bits'] = (res['modulus'].length - 1) * 8 + Math.ceil(Math.log(res['modulus'][0] + 1) / Math.log(2));
 
     if (!res['bits']) {
         throw new Error(ILLEGAL_ARGUMENT);
@@ -729,21 +706,22 @@ export function asn12jwk(asn1: any, type?: string, extra?: any): any {
     const pemTypes = ['public', 'private'];
     if (!asn1) throw new Error(ILLEGAL_ARGUMENT);
 
-    type = ((typeof type === 'string') && type.toLowerCase())
-        || pemTypes[!!asn1.privateExponent ? 1 : 0];
+    type = (typeof type === 'string' && type.toLowerCase()) || pemTypes[!!asn1.privateExponent ? 1 : 0];
 
     if (type === 'private' && !asn1.privateExponent) {
         throw new Error(ILLEGAL_ARGUMENT);
     }
     let v = asn1.publicExponent;
     const expSize = Math.ceil(Math.log(v) / Math.log(256));
-    const exp = new Uint8Array(expSize).map(function (el) {
-        el = v % 256;
-        v = Math.floor(v / 256);
-        return el
-    }).reverse();
+    const exp = new Uint8Array(expSize)
+        .map(function (el) {
+            el = v % 256;
+            v = Math.floor(v / 256);
+            return el;
+        })
+        .reverse();
 
-    let jwk = Object.assign({ kty: 'RSA' }, extra, {
+    const jwk = Object.assign({ kty: 'RSA' }, extra, {
         n: s2bu(AB2s(asn1.modulus)),
         e: s2bu(AB2s(exp)),
     });
@@ -755,17 +733,17 @@ export function asn12jwk(asn1: any, type?: string, extra?: any): any {
             q: s2bu(AB2s(asn1.prime2)),
             dp: s2bu(AB2s(asn1.exponent1)),
             dq: s2bu(AB2s(asn1.exponent2)),
-            qi: s2bu(AB2s(asn1.coefficient))
+            qi: s2bu(AB2s(asn1.coefficient)),
         });
     }
     return jwk;
 }
 
-export function pem2jwk(secret: string, type?: "public" | "private", extra?): Promise<any> {
+export function pem2jwk(secret: string, type?: 'public' | 'private', extra?): Promise<any> {
     return tryPromise(() => {
         const pem = s2pem(secret);
-        return asn12jwk(pem2asn1(pem.body), type, extra)
-    })
+        return asn12jwk(pem2asn1(pem.body), type, extra);
+    });
 }
 
 /* Issue1: does not work with all versions of PEM keys...
@@ -784,24 +762,21 @@ export async function createSign(name: string): Promise<any> {
         return {
             update: function (thing: string): any {
                 return {
-                    sign: async function (secret: string, encoding: string): Promise<any> {
+                    sign: async function (secret: string): Promise<any> {
                         return await pem2jwk(secret, 'private', {
                             key_ops: ['sign'],
-                            alg: name.replace('SHA-', 'RS')
-                        }).then(async keyData => {
-                            return await webCryptoSubtle.importKey(
-                                'jwk',
-                                keyData,
-                                { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } },
-                                true,
-                                ['sign']
-                            ).then(async key => {
-                                return await webCryptoSubtle.sign(
-                                    { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } },
-                                    key,
-                                    s2U8A(thing)
-                                ).then(AB2s).then(s2b)
-                            })
+                            alg: name.replace('SHA-', 'RS'),
+                        }).then(async (keyData) => {
+                            return await webCryptoSubtle
+                                .importKey('jwk', keyData, { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, true, [
+                                    'sign',
+                                ])
+                                .then(async (key) => {
+                                    return await webCryptoSubtle
+                                        .sign({ name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, key, s2U8A(thing))
+                                        .then(AB2s)
+                                        .then(s2b);
+                                });
                         });
 
                         /* Issue1: does not work with all versions of PEM keys...
@@ -821,14 +796,14 @@ export async function createSign(name: string): Promise<any> {
                             })
                         })
                         */
-                    }
-                }
-            }
-        }
+                    },
+                };
+            },
+        };
     } else {
-        const crypto = await import("crypto");
+        const crypto = await import('crypto');
         if (!!crypto && crypto.createSign) {
-            return crypto.createSign(name.replace('SHA-', 'RSA-SHA'))
+            return crypto.createSign(name.replace('SHA-', 'RSA-SHA'));
         } else {
             throw new Error(CRYPTO_NOT_FOUND);
         }
@@ -843,7 +818,7 @@ export function algRSsign(bits: number) {
         } catch (e) {
             return Promise.reject(e);
         }
-    }
+    };
 }
 
 export async function createVerify(name: string): Promise<any> {
@@ -851,25 +826,27 @@ export async function createVerify(name: string): Promise<any> {
         return {
             update: function (thing: string): any {
                 return {
-                    verify: async function (secret: string, signature: string, encoding: string): Promise<boolean> {
+                    verify: async function (secret: string, signature: string): Promise<boolean> {
                         return await pem2jwk(secret, 'public', {
                             key_ops: ['verify'],
-                            alg: name.replace('SHA-', 'RS')
+                            alg: name.replace('SHA-', 'RS'),
                         }).then(async ({ kty, n, e }) => {
-                            return await webCryptoSubtle.importKey(
-                                'jwk',
-                                { kty, n, e },
-                                { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } },
-                                false,
-                                ['verify']
-                            ).then(async key => {
-                                return await webCryptoSubtle.verify(
-                                    'RSASSA-PKCS1-v1_5',
-                                    key,
-                                    s2U8A(bu2s(signature)),
-                                    s2U8A(thing)
+                            return await webCryptoSubtle
+                                .importKey(
+                                    'jwk',
+                                    { kty, n, e },
+                                    { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } },
+                                    false,
+                                    ['verify'],
                                 )
-                            })
+                                .then(async (key) => {
+                                    return await webCryptoSubtle.verify(
+                                        'RSASSA-PKCS1-v1_5',
+                                        key,
+                                        s2U8A(bu2s(signature)),
+                                        s2U8A(thing),
+                                    );
+                                });
                         });
                         /* Issue1: does not work with all versions of PEM keys...
                         return await parsePem(secret, 'public').then(async pem => {
@@ -888,15 +865,14 @@ export async function createVerify(name: string): Promise<any> {
                                 )
                             })
                         })*/
-
-                    }
-                }
-            }
-        }
+                    },
+                };
+            },
+        };
     } else {
-        const crypto = await import("crypto");
+        const crypto = await import('crypto');
         if (!!crypto && crypto.createVerify) {
-            return crypto.createVerify(name.replace('SHA-', 'RSA-SHA'))
+            return crypto.createVerify(name.replace('SHA-', 'RSA-SHA'));
         } else {
             throw new Error(CRYPTO_NOT_FOUND);
         }
@@ -912,7 +888,7 @@ export function algRSverify(bits: number) {
         } catch (e) {
             return Promise.reject(e);
         }
-    }
+    };
 }
 
 /**
@@ -929,8 +905,9 @@ export async function algVerify(algorithm: string, thing: string, signature: str
         return signature === '';
     }
 
-    const type = algo.slice(0, 2), bits = parseInt(algo.slice(2));
-    if (isNaN(bits) || ([256, 384, 512].indexOf(bits) < 0)) {
+    const type = algo.slice(0, 2),
+        bits = parseInt(algo.slice(2));
+    if (isNaN(bits) || [256, 384, 512].indexOf(bits) < 0) {
         throw new Error(UNSUPPORTED_ALGORITHM);
     }
 
@@ -958,8 +935,9 @@ export async function algSign(algorithm: string, thing: string, secret: string):
         return '';
     }
 
-    const type = algo.slice(0, 2), bits = parseInt(algo.slice(2));
-    if (isNaN(bits) || ([256, 384, 512].indexOf(bits) < 0)) {
+    const type = algo.slice(0, 2),
+        bits = parseInt(algo.slice(2));
+    if (isNaN(bits) || [256, 384, 512].indexOf(bits) < 0) {
         throw new Error(UNSUPPORTED_ALGORITHM);
     }
 
@@ -1009,12 +987,12 @@ export const resign = jwtResign;
  * @hidden
  */
 export async function cryptoType(): Promise<string> {
-    const crypto = webCrypto || await import("crypto");
+    const crypto = webCrypto || (await import('crypto'));
     return crypto ? crypto['type'] || 'crypto-node' : 'undefined';
 }
 
 export function notLatin1String(str): boolean {
-    return Array.prototype.some.apply(str, [str => str.charCodeAt(0) > 255]);
+    return Array.prototype.some.apply(str, [(str) => str.charCodeAt(0) > 255]);
 }
 
 export function textEncode(input: string) {
@@ -1028,21 +1006,25 @@ export function textEncode(input: string) {
 }
 
 export function textDecode(input: string | Buffer) {
-    if(typeof input === 'string') {
-        try{
-            const decoder = getTextDecoder("utf8", { fatal: true });
+    if (typeof input === 'string') {
+        try {
+            const decoder = getTextDecoder('utf8', { fatal: true });
             if (!!decoder) {
                 return decoder.decode(s2U8A(input));
             }
-        }catch{}
+        } catch {
+            /* empty */
+        }
         return input;
     }
-    try{
-        const decoder = getTextDecoder("utf8", { fatal: true });
+    try {
+        const decoder = getTextDecoder('utf8', { fatal: true });
         if (!!decoder) {
             return decoder.decode(input);
         }
-    }catch{}
+    } catch {
+        /* empty */
+    }
     return input.toString('binary');
 }
 
@@ -1051,7 +1033,7 @@ export function getTextEncoder(): TextEncoder | false {
         return new TextEncoder();
     }
     if (typeof require !== 'undefined') {
-        const encoder = require("util");
+        const encoder = require('util');
         if (typeof encoder?.TextEncoder !== 'undefined') {
             return new encoder.TextEncoder();
         }
@@ -1064,7 +1046,7 @@ export function getTextDecoder(...args): TextDecoder | false {
         return new TextDecoder(...args);
     }
     if (typeof require !== 'undefined') {
-        const decoder = require("util");
+        const decoder = require('util');
         if (typeof decoder?.TextDecoder !== 'undefined') {
             return new decoder.TextDecoder(...args);
         }
@@ -1128,5 +1110,5 @@ export default {
     textEncode,
     textDecode,
     getTextEncoder,
-    getTextDecoder
+    getTextDecoder,
 };
