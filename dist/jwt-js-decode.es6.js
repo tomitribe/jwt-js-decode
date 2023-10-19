@@ -32,14 +32,15 @@ typeof SuppressedError === "function" ? SuppressedError : function (error, suppr
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 };
 
-var max = 10000000000000; // biggest 10^n integer that can still fit 2^53 when multiplied by 256
+const max = 10000000000000; // biggest 10^n integer that can still fit 2^53 when multiplied by 256
 class Int10 {
     constructor(value) {
         this.buf = [+value || 0];
     }
     mulAdd(m, c) {
         // assert(m <= 256)
-        var b = this.buf, l = b.length, i, t;
+        const b = this.buf, l = b.length;
+        let i, t;
         for (i = 0; i < l; ++i) {
             t = b[i] * m + c;
             if (t < max)
@@ -53,10 +54,10 @@ class Int10 {
         if (c > 0)
             b[i] = c;
     }
-    ;
     sub(c) {
         // assert(m <= 256)
-        var b = this.buf, l = b.length, i, t;
+        const b = this.buf, l = b.length;
+        let i, t;
         for (i = 0; i < l; ++i) {
             t = b[i] - c;
             if (t < 0) {
@@ -70,34 +71,32 @@ class Int10 {
         while (b[b.length - 1] === 0)
             b.pop();
     }
-    ;
     toString(base) {
         if ((base || 10) != 10)
             throw 'only base 10 is supported';
-        var b = this.buf, s = b[b.length - 1].toString();
-        for (var i = b.length - 2; i >= 0; --i)
+        const b = this.buf;
+        let s = b[b.length - 1].toString();
+        for (let i = b.length - 2; i >= 0; --i)
             s += (max + b[i]).toString().substring(1);
         return s;
     }
-    ;
     valueOf() {
-        var b = this.buf, v = 0;
-        for (var i = b.length - 1; i >= 0; --i)
+        const b = this.buf;
+        let v = 0;
+        for (let i = b.length - 1; i >= 0; --i)
             v = v * max + b[i];
         return v;
     }
-    ;
     simplify() {
-        var b = this.buf;
-        return (b.length == 1) ? b[0] : this;
+        const b = this.buf;
+        return b.length == 1 ? b[0] : this;
     }
-    ;
 }
 
 const UNSUPPORTED_ALGORITHM = 'Unsupported algorithm name specified! Supported algorithms: "HS256", "HS384", "HS512", "RS256", "RS384", "RS512" and "none".';
 const ILLEGAL_ARGUMENT = 'Illegal argument specified!';
-const CRYPTO_NOT_FOUND = 'Could not find \'crypto\'.';
-const PAKO_NOT_FOUND = 'Could not find \'pako\'.';
+const CRYPTO_NOT_FOUND = "Could not find 'crypto'.";
+const PAKO_NOT_FOUND = "Could not find 'pako'.";
 const UNSUPPORTED_ZIP_TYPE = 'Unsupported zip type.';
 function generateErrorMessage(value, callee, argumentName = 'argument', defaultType = 'string') {
     let message = `Invalid argument passed to ${callee}.`;
@@ -119,13 +118,13 @@ function cleanZeros(b) {
 function hex2AB(hex) {
     if (!hex)
         throw new Error(ILLEGAL_ARGUMENT);
-    const match = hex.match(/[0-9A-F]{2}/ig);
+    const match = hex.match(/[0-9A-F]{2}/gi);
     if (!match)
         throw new Error(ILLEGAL_ARGUMENT);
-    return new Uint8Array(match.map(i => parseInt(i, 16)));
+    return new Uint8Array(match.map((i) => parseInt(i, 16)));
 }
 
-const ellipsis = "\u2026", reTimeS = /^(\d\d)(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])([01]\d|2[0-3])(?:([0-5]\d)(?:([0-5]\d)(?:[.,](\d{1,3}))?)?)?(Z|[-+](?:[0]\d|1[0-2])([0-5]\d)?)?$/, reTimeL = /^(\d\d\d\d)(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])([01]\d|2[0-3])(?:([0-5]\d)(?:([0-5]\d)(?:[.,](\d{1,3}))?)?)?(Z|[-+](?:[0]\d|1[0-2])([0-5]\d)?)?$/;
+const ellipsis = '\u2026', reTimeS = /^(\d\d)(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])([01]\d|2[0-3])(?:([0-5]\d)(?:([0-5]\d)(?:[.,](\d{1,3}))?)?)?(Z|[-+](?:[0]\d|1[0-2])([0-5]\d)?)?$/, reTimeL = /^(\d\d\d\d)(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])([01]\d|2[0-3])(?:([0-5]\d)(?:([0-5]\d)(?:[.,](\d{1,3}))?)?)?(Z|[-+](?:[0]\d|1[0-2])([0-5]\d)?)?$/;
 function stringCut(str, len) {
     if (str.length > len)
         str = str.substring(0, len) + ellipsis;
@@ -133,7 +132,7 @@ function stringCut(str, len) {
 }
 class Stream {
     constructor(enc, pos = 0) {
-        this.hexDigits = "0123456789ABCDEF";
+        this.hexDigits = '0123456789ABCDEF';
         if (enc instanceof Stream) {
             this.enc = enc.enc;
             this.pos = enc.pos;
@@ -148,102 +147,96 @@ class Stream {
             pos = this.pos++;
         if (pos >= this.enc.length)
             throw 'Requesting byte offset ' + pos + ' on a stream of length ' + this.enc.length;
-        return (typeof this.enc == "string") ? this.enc.charCodeAt(pos) : this.enc[pos];
+        return typeof this.enc == 'string' ? this.enc.charCodeAt(pos) : this.enc[pos];
     }
-    ;
     hexByte(b) {
-        return this.hexDigits.charAt((b >> 4) & 0xF) + this.hexDigits.charAt(b & 0xF);
+        return this.hexDigits.charAt((b >> 4) & 0xf) + this.hexDigits.charAt(b & 0xf);
     }
-    ;
     hexDump(start, end, raw) {
-        var s = "";
-        for (var i = start; i < end; ++i) {
+        let s = '';
+        for (let i = start; i < end; ++i) {
             s += this.hexByte(this.get(i));
             if (raw !== true)
-                switch (i & 0xF) {
+                switch (i & 0xf) {
                     case 0x7:
-                        s += "  ";
+                        s += '  ';
                         break;
-                    case 0xF:
-                        s += "\n";
+                    case 0xf:
+                        s += '\n';
                         break;
                     default:
-                        s += " ";
+                        s += ' ';
                 }
         }
         return s;
     }
-    ;
     isASCII(start, end) {
-        for (var i = start; i < end; ++i) {
-            var c = this.get(i);
+        for (let i = start; i < end; ++i) {
+            const c = this.get(i);
             if (c < 32 || c > 176)
                 return false;
         }
         return true;
     }
-    ;
     parseStringISO(start, end) {
-        var s = "";
-        for (var i = start; i < end; ++i)
+        let s = '';
+        for (let i = start; i < end; ++i)
             s += String.fromCharCode(this.get(i));
         return s;
     }
-    ;
     parseStringUTF(start, end) {
-        var s = "";
-        for (var i = start; i < end;) {
-            var c = this.get(i++);
+        let s = '';
+        for (let i = start; i < end;) {
+            const c = this.get(i++);
             if (c < 128)
                 s += String.fromCharCode(c);
-            else if ((c > 191) && (c < 224))
-                s += String.fromCharCode(((c & 0x1F) << 6) | (this.get(i++) & 0x3F));
+            else if (c > 191 && c < 224)
+                s += String.fromCharCode(((c & 0x1f) << 6) | (this.get(i++) & 0x3f));
             else
-                s += String.fromCharCode(((c & 0x0F) << 12) | ((this.get(i++) & 0x3F) << 6) | (this.get(i++) & 0x3F));
+                s += String.fromCharCode(((c & 0x0f) << 12) | ((this.get(i++) & 0x3f) << 6) | (this.get(i++) & 0x3f));
         }
         return s;
     }
-    ;
     parseStringBMP(start, end) {
-        var str = "", hi, lo;
-        for (var i = start; i < end;) {
+        let str = '', hi, lo;
+        for (let i = start; i < end;) {
             hi = this.get(i++);
             lo = this.get(i++);
             str += String.fromCharCode((hi << 8) | lo);
         }
         return str;
     }
-    ;
     parseTime(start, end, shortYear) {
-        var s = this.parseStringISO(start, end), m = (shortYear ? reTimeS : reTimeL).exec(s);
+        let s = this.parseStringISO(start, end);
+        const m = (shortYear ? reTimeS : reTimeL).exec(s);
         if (!m)
-            return "Unrecognized time: " + s;
+            return 'Unrecognized time: ' + s;
         if (shortYear) {
-            var t = +m[1], y = (t < 70) ? 2000 : 1900;
-            m[1] = y + "";
+            const t = +m[1], y = t < 70 ? 2000 : 1900;
+            m[1] = y + '';
         }
-        s = m[1] + "-" + m[2] + "-" + m[3] + " " + m[4];
+        s = m[1] + '-' + m[2] + '-' + m[3] + ' ' + m[4];
         if (m[5]) {
-            s += ":" + m[5];
+            s += ':' + m[5];
             if (m[6]) {
-                s += ":" + m[6];
+                s += ':' + m[6];
                 if (m[7])
-                    s += "." + m[7];
+                    s += '.' + m[7];
             }
         }
         if (m[8]) {
-            s += " UTC";
+            s += ' UTC';
             if (m[8] != 'Z') {
                 s += m[8];
                 if (m[9])
-                    s += ":" + m[9];
+                    s += ':' + m[9];
             }
         }
         return s;
     }
-    ;
     parseInteger(start, end) {
-        var v = this.get(start), neg = (v > 127), pad = neg ? 255 : 0, len, s = '';
+        let v = this.get(start), len, s = '';
+        const neg = v > 127, pad = neg ? 255 : 0;
         while (v == pad && ++start < end)
             v = this.get(start);
         len = end - start;
@@ -256,7 +249,7 @@ class Stream {
                 t <<= 1;
                 --len;
             }
-            s = "(" + len + " bit)\n";
+            s = '(' + len + ' bit)\n';
         }
         if (neg)
             v = v - 256;
@@ -265,53 +258,52 @@ class Stream {
             n.mulAdd(256, this.get(i));
         return s + n.toString();
     }
-    ;
     parseBitString(start, end, maxLength) {
-        var unusedBit = this.get(start), lenBit = ((end - start - 1) << 3) - unusedBit, intro = "(" + lenBit + " bit)\n", s = "";
-        for (var i = start + 1; i < end; ++i) {
-            var b = this.get(i), skip = (i == end - 1) ? unusedBit : 0;
-            for (var j = 7; j >= skip; --j)
-                s += (b >> j) & 1 ? "1" : "0";
+        const unusedBit = this.get(start), lenBit = ((end - start - 1) << 3) - unusedBit, intro = '(' + lenBit + ' bit)\n';
+        let s = '';
+        for (let i = start + 1; i < end; ++i) {
+            const b = this.get(i), skip = i == end - 1 ? unusedBit : 0;
+            for (let j = 7; j >= skip; --j)
+                s += (b >> j) & 1 ? '1' : '0';
             if (s.length > maxLength)
                 return intro + stringCut(s, maxLength);
         }
         return intro + s;
     }
-    ;
     parseOctetString(start, end, maxLength) {
         if (this.isASCII(start, end))
             return stringCut(this.parseStringISO(start, end), maxLength);
-        var len = end - start, s = "(" + len + " byte)\n";
+        const len = end - start;
+        let s = '(' + len + ' byte)\n';
         maxLength /= 2;
         if (len > maxLength)
             end = start + maxLength;
-        for (var i = start; i < end; ++i)
+        for (let i = start; i < end; ++i)
             s += this.hexByte(this.get(i));
         if (len > maxLength)
             s += ellipsis;
         return s;
     }
-    ;
     parseOID(start, end, maxLength) {
-        var s = '', n = new Int10(), bits = 0;
-        for (var i = start; i < end; ++i) {
-            var v = this.get(i);
-            n.mulAdd(128, v & 0x7F);
+        let s = '', n = new Int10(), bits = 0;
+        for (let i = start; i < end; ++i) {
+            const v = this.get(i);
+            n.mulAdd(128, v & 0x7f);
             bits += 7;
             if (!(v & 0x80)) {
                 if (s === '') {
                     n = n.simplify();
                     if (n instanceof Int10) {
                         n.sub(80);
-                        s = "2." + n.toString();
+                        s = '2.' + n.toString();
                     }
                     else {
-                        var m = n < 80 ? n < 40 ? 0 : 1 : 2;
-                        s = m + "." + (n - m * 40);
+                        const m = n < 80 ? (n < 40 ? 0 : 1) : 2;
+                        s = m + '.' + (n - m * 40);
                     }
                 }
                 else
-                    s += "." + n.toString();
+                    s += '.' + n.toString();
                 if (s.length > maxLength)
                     return stringCut(s, maxLength);
                 n = new Int10();
@@ -319,10 +311,9 @@ class Stream {
             }
         }
         if (bits > 0)
-            s += ".incomplete";
+            s += '.incomplete';
         return s;
     }
-    ;
 }
 class ASN1 {
     constructor(stream, header, length, tag, sub) {
@@ -339,161 +330,162 @@ class ASN1 {
             case 0:
                 switch (this.tag.tagNumber) {
                     case 0x00:
-                        return "EOC";
+                        return 'EOC';
                     case 0x01:
-                        return "BOOLEAN";
+                        return 'BOOLEAN';
                     case 0x02:
-                        return "INTEGER";
+                        return 'INTEGER';
                     case 0x03:
-                        return "BIT_STRING";
+                        return 'BIT_STRING';
                     case 0x04:
-                        return "OCTET_STRING";
+                        return 'OCTET_STRING';
                     case 0x05:
-                        return "NULL";
+                        return 'NULL';
                     case 0x06:
-                        return "OBJECT_IDENTIFIER";
+                        return 'OBJECT_IDENTIFIER';
                     case 0x07:
-                        return "ObjectDescriptor";
+                        return 'ObjectDescriptor';
                     case 0x08:
-                        return "EXTERNAL";
+                        return 'EXTERNAL';
                     case 0x09:
-                        return "REAL";
-                    case 0x0A:
-                        return "ENUMERATED";
-                    case 0x0B:
-                        return "EMBEDDED_PDV";
-                    case 0x0C:
-                        return "UTF8String";
+                        return 'REAL';
+                    case 0x0a:
+                        return 'ENUMERATED';
+                    case 0x0b:
+                        return 'EMBEDDED_PDV';
+                    case 0x0c:
+                        return 'UTF8String';
                     case 0x10:
-                        return "SEQUENCE";
+                        return 'SEQUENCE';
                     case 0x11:
-                        return "SET";
+                        return 'SET';
                     case 0x12:
-                        return "NumericString";
+                        return 'NumericString';
                     case 0x13:
-                        return "PrintableString";
+                        return 'PrintableString';
                     case 0x14:
-                        return "TeletexString";
+                        return 'TeletexString';
                     case 0x15:
-                        return "VideotexString";
+                        return 'VideotexString';
                     case 0x16:
-                        return "IA5String";
+                        return 'IA5String';
                     case 0x17:
-                        return "UTCTime";
+                        return 'UTCTime';
                     case 0x18:
-                        return "GeneralizedTime";
+                        return 'GeneralizedTime';
                     case 0x19:
-                        return "GraphicString";
-                    case 0x1A:
-                        return "VisibleString";
-                    case 0x1B:
-                        return "GeneralString";
-                    case 0x1C:
-                        return "UniversalString";
-                    case 0x1E:
-                        return "BMPString";
+                        return 'GraphicString';
+                    case 0x1a:
+                        return 'VisibleString';
+                    case 0x1b:
+                        return 'GeneralString';
+                    case 0x1c:
+                        return 'UniversalString';
+                    case 0x1e:
+                        return 'BMPString';
                 }
-                return "Universal_" + this.tag.tagNumber.toString();
+                return 'Universal_' + this.tag.tagNumber.toString();
             case 1:
-                return "Application_" + this.tag.tagNumber.toString();
+                return 'Application_' + this.tag.tagNumber.toString();
             case 2:
-                return "[" + this.tag.tagNumber.toString() + "]";
+                return '[' + this.tag.tagNumber.toString() + ']';
             case 3:
-                return "Private_" + this.tag.tagNumber.toString();
+                return 'Private_' + this.tag.tagNumber.toString();
         }
     }
-    ;
     content(maxLength) {
         if (this.tag === undefined)
             return null;
         if (maxLength === undefined)
             maxLength = Infinity;
-        var content = this.posContent(), len = Math.abs(this.length);
+        const content = this.posContent(), len = Math.abs(this.length);
         if (!this.tag.isUniversal()) {
             if (this.sub !== null)
-                return "(" + this.sub.length + " elem)";
+                return '(' + this.sub.length + ' elem)';
             return this.stream.parseOctetString(content, content + len, maxLength);
         }
         switch (this.tag.tagNumber) {
             case 0x01:
-                return (this.stream.get(content) === 0) ? "false" : "true";
+                return this.stream.get(content) === 0 ? 'false' : 'true';
             case 0x02:
                 return this.stream.parseInteger(content, content + len);
             case 0x03:
-                return this.sub ? "(" + this.sub.length + " elem)" :
-                    this.stream.parseBitString(content, content + len, maxLength);
+                return this.sub
+                    ? '(' + this.sub.length + ' elem)'
+                    : this.stream.parseBitString(content, content + len, maxLength);
             case 0x04:
-                return this.sub ? "(" + this.sub.length + " elem)" :
-                    this.stream.parseOctetString(content, content + len, maxLength);
+                return this.sub
+                    ? '(' + this.sub.length + ' elem)'
+                    : this.stream.parseOctetString(content, content + len, maxLength);
             case 0x06:
                 return this.stream.parseOID(content, content + len, maxLength);
             case 0x10:
             case 0x11:
                 if (this.sub !== null)
-                    return "(" + this.sub.length + " elem)";
+                    return '(' + this.sub.length + ' elem)';
                 else
-                    return "(no elem)";
-            case 0x0C:
+                    return '(no elem)';
+            case 0x0c:
                 return stringCut(this.stream.parseStringUTF(content, content + len), maxLength);
             case 0x12:
             case 0x13:
             case 0x14:
             case 0x15:
             case 0x16:
-            case 0x1A:
+            case 0x1a:
                 return stringCut(this.stream.parseStringISO(content, content + len), maxLength);
-            case 0x1E:
+            case 0x1e:
                 return stringCut(this.stream.parseStringBMP(content, content + len), maxLength);
             case 0x17:
             case 0x18:
-                return this.stream.parseTime(content, content + len, (this.tag.tagNumber == 0x17));
+                return this.stream.parseTime(content, content + len, this.tag.tagNumber == 0x17);
         }
         return null;
     }
-    ;
     toString() {
-        return this.typeName() + "@" + this.stream.pos + "[header:" + this.header + ",length:" + this.length + ",sub:" + ((this.sub === null) ? 'null' : this.sub.length) + "]";
+        return (this.typeName() +
+            '@' +
+            this.stream.pos +
+            '[header:' +
+            this.header +
+            ',length:' +
+            this.length +
+            ',sub:' +
+            (this.sub === null ? 'null' : this.sub.length) +
+            ']');
     }
-    ;
     posStart() {
         return this.stream.pos;
     }
-    ;
     posContent() {
         return this.stream.pos + this.header;
     }
-    ;
     posEnd() {
         return this.stream.pos + this.header + Math.abs(this.length);
     }
-    ;
-    toHexString(root) {
+    toHexString() {
         return this.stream.hexDump(this.posStart(), this.posEnd(), true);
     }
-    ;
     getHex() {
         return this.stream.hexDump(this.posContent(), this.posEnd(), true);
     }
-    ;
     getAB(clean = true) {
         return clean ? cleanZeros(hex2AB(this.getHex())) : hex2AB(this.getHex());
     }
-    ;
     static decodeLength(stream) {
         let buf = stream.get();
-        const len = buf & 0x7F;
+        const len = buf & 0x7f;
         if (len == buf)
             return len;
         if (len > 6)
-            throw "Length over 48 bits not supported at position " + (stream.pos - 1);
+            throw 'Length over 48 bits not supported at position ' + (stream.pos - 1);
         if (len === 0)
             return null;
         buf = 0;
-        for (var i = 0; i < len; ++i)
-            buf = (buf * 256) + stream.get();
+        for (let i = 0; i < len; ++i)
+            buf = buf * 256 + stream.get();
         return buf;
     }
-    ;
     static decode(stream) {
         if (!(stream instanceof Stream))
             stream = new Stream(stream, 0);
@@ -505,11 +497,11 @@ class ASN1 {
         const getSub = function () {
             sub = [];
             if (len !== null) {
-                var end = start + len;
+                const end = start + len;
                 while (stream.pos < end)
                     sub[sub.length] = ASN1.decode(stream);
                 if (stream.pos != end)
-                    throw "Content size is not correct for container starting at offset " + start;
+                    throw 'Content size is not correct for container starting at offset ' + start;
             }
             else {
                 try {
@@ -522,20 +514,20 @@ class ASN1 {
                     len = start - stream.pos;
                 }
                 catch (e) {
-                    throw "Exception while decoding undefined length content: " + e;
+                    throw 'Exception while decoding undefined length content: ' + e;
                 }
             }
         };
         if (tag.tagConstructed) {
             getSub();
         }
-        else if (tag.isUniversal() && ((tag.tagNumber == 0x03) || (tag.tagNumber == 0x04))) {
+        else if (tag.isUniversal() && (tag.tagNumber == 0x03 || tag.tagNumber == 0x04)) {
             try {
                 if (tag.tagNumber == 0x03)
                     if (stream.get() != 0)
-                        throw "BIT STRINGs with unused bits cannot encapsulate.";
+                        throw 'BIT STRINGs with unused bits cannot encapsulate.';
                 getSub();
-                for (var i = 0; i < sub.length; ++i)
+                for (let i = 0; i < sub.length; ++i)
                     if (sub[i].tag.isEOC())
                         throw 'EOC is not supposed to be actual content.';
             }
@@ -550,19 +542,18 @@ class ASN1 {
         }
         return new ASN1(streamStart, header, len, tag, sub);
     }
-    ;
 }
 class ASN1Tag {
     constructor(stream) {
-        var buf = stream.get();
+        let buf = stream.get();
         this.tagClass = buf >> 6;
-        this.tagConstructed = ((buf & 0x20) !== 0);
-        this.tagNumber = buf & 0x1F;
-        if (this.tagNumber == 0x1F) {
-            var n = new Int10();
+        this.tagConstructed = (buf & 0x20) !== 0;
+        this.tagNumber = buf & 0x1f;
+        if (this.tagNumber == 0x1f) {
+            const n = new Int10();
             do {
                 buf = stream.get();
-                n.mulAdd(128, buf & 0x7F);
+                n.mulAdd(128, buf & 0x7f);
             } while (buf & 0x80);
             this.tagNumber = n.simplify();
         }
@@ -570,11 +561,9 @@ class ASN1Tag {
     isUniversal() {
         return this.tagClass === 0x00;
     }
-    ;
     isEOC() {
         return this.tagClass === 0x00 && this.tagNumber === 0x00;
     }
-    ;
 }
 
 /*
@@ -587,7 +576,7 @@ import { createSign, createVerify } from "browserify-sign";
 //node.js
 import { createHmac, createSign, createVerify } from "crypto";
 */
-const webCrypto = typeof window === "object" && (window.crypto || window['msCrypto']);
+const webCrypto = typeof window === 'object' && (window.crypto || window['msCrypto']);
 const webCryptoSubtle = webCrypto && (webCrypto.subtle || webCrypto['webkitSubtle'] || webCrypto['Subtle']);
 /**
  * Class for creating a JwtSplit object with three parts of JWT Token as strings
@@ -676,12 +665,20 @@ class JwtDecode {
         const jwtObj = jwtSplit(str, callee);
         if (jwtObj) {
             this.header = jwtObj.header ? s2J(bu2s(jwtObj.header)) : {};
-            this.payload = jwtObj.payload ? (this.isGzip() ? s2J(zbu2s(jwtObj.payload)) : s2J(bu2s(jwtObj.payload))) : {};
+            this.payload = jwtObj.payload
+                ? this.isGzip()
+                    ? s2J(zbu2s(jwtObj.payload))
+                    : s2J(bu2s(jwtObj.payload))
+                : {};
             this.signature = jwtObj.signature || '';
         }
     }
     toString() {
-        return s2bu(J2s(this.header)) + '.' + (this.isGzip() ? s2zbu(J2s(this.payload)) : s2bu(J2s(this.payload))) + '.' + this.signature;
+        return (s2bu(J2s(this.header)) +
+            '.' +
+            (this.isGzip() ? s2zbu(J2s(this.payload)) : s2bu(J2s(this.payload))) +
+            '.' +
+            this.signature);
     }
 }
 /**
@@ -707,12 +704,7 @@ function tryPromise(fn) {
  * @returns {object} resulting object
  */
 function s2J(str) {
-    try {
-        return JSON.parse(str);
-    }
-    catch (e) {
-        throw e;
-    }
+    return JSON.parse(str);
 }
 /**
  * Converts JSON object to string
@@ -722,12 +714,7 @@ function s2J(str) {
  * @returns {string} resulting string
  */
 function J2s(obj) {
-    try {
-        return JSON.stringify(obj);
-    }
-    catch (e) {
-        throw e;
-    }
+    return JSON.stringify(obj);
 }
 /**
  * Converts string to base64 string
@@ -737,19 +724,14 @@ function J2s(obj) {
  * @returns {string} decoded data string
  */
 function b2s(str) {
-    try {
-        if (typeof Buffer !== 'undefined') {
-            return textDecode(Buffer.from(str, 'base64'));
-        }
-        else if (typeof atob !== 'undefined') {
-            return textDecode(atob(str));
-        }
-        else
-            throw new Error(ILLEGAL_ARGUMENT);
+    if (typeof Buffer !== 'undefined') {
+        return textDecode(Buffer.from(str, 'base64'));
     }
-    catch (e) {
-        throw e;
+    else if (typeof atob !== 'undefined') {
+        return textDecode(atob(str));
     }
+    else
+        throw new Error(ILLEGAL_ARGUMENT);
 }
 /**
  * Converts base64 string to base64url string
@@ -759,13 +741,10 @@ function b2s(str) {
  * @returns {string} base64url string
  */
 function b2bu(str) {
-    if ((typeof str !== 'string') || (str.length % 4 !== 0)) {
+    if (typeof str !== 'string' || str.length % 4 !== 0) {
         throw new Error(ILLEGAL_ARGUMENT);
     }
-    return str
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=/g, '');
+    return str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 }
 /**
  *
@@ -776,15 +755,13 @@ function b2bu(str) {
  * @returns {string} base64 string
  */
 function bu2b(str) {
-    if ((typeof str !== 'string') || (str.length % 4 === 1)) {
+    if (typeof str !== 'string' || str.length % 4 === 1) {
         throw new Error(ILLEGAL_ARGUMENT);
     }
-    for (; (str.length % 4 !== 0);) {
+    for (; str.length % 4 !== 0;) {
         str += '=';
     }
-    return str
-        .replace(/\-/g, '+')
-        .replace(/_/g, '/');
+    return str.replace(/-/g, '+').replace(/_/g, '/');
 }
 /**
  * Converts base64url string to string
@@ -838,19 +815,14 @@ const split = jwtSplit;
  * @returns {string} base64 string
  */
 function s2b(str) {
-    try {
-        if (typeof Buffer !== 'undefined') {
-            return Buffer.from(textEncode(str)).toString('base64');
-        }
-        else if (typeof btoa !== 'undefined') {
-            return btoa(AB2s(textEncode(str)));
-        }
-        else
-            throw new Error(ILLEGAL_ARGUMENT);
+    if (typeof Buffer !== 'undefined') {
+        return Buffer.from(textEncode(str)).toString('base64');
     }
-    catch (e) {
-        throw e;
+    else if (typeof btoa !== 'undefined') {
+        return btoa(AB2s(textEncode(str)));
     }
+    else
+        throw new Error(ILLEGAL_ARGUMENT);
 }
 /**
  * Converts string to base64url string
@@ -930,12 +902,12 @@ function zip(str, type = 'zlib') {
         let deflated;
         if (type === 'gzip') {
             deflated = pako.gzip(str, {
-                raw: false
+                raw: false,
             });
         }
         else if (type === 'zlib') {
             deflated = pako.deflate(str, {
-                raw: false
+                raw: false,
             });
         }
         else
@@ -984,7 +956,7 @@ function s2U8A(str) {
 function AB2s(buff) {
     if (!(buff instanceof Uint8Array))
         buff = new Uint8Array(buff);
-    return String.fromCharCode.apply(String, Array.from(buff));
+    return String.fromCharCode(...Array.from(buff));
 }
 /**
  * Async function inspired by createHmac in crypto (used WebCrypto Api supported by most browsers)
@@ -994,19 +966,23 @@ function createHmac(name, secret) {
     return __awaiter(this, void 0, void 0, function* () {
         if (webCryptoSubtle) {
             const keyData = s2U8A(secret);
-            return yield webCryptoSubtle.importKey('raw', keyData, { name: 'HMAC', hash: { name: name } }, true, ['sign']).then(key => {
+            return yield webCryptoSubtle
+                .importKey('raw', keyData, { name: 'HMAC', hash: { name: name } }, true, ['sign'])
+                .then((key) => {
                 return {
                     update: function (thing) {
                         return __awaiter(this, void 0, void 0, function* () {
                             return yield webCryptoSubtle.sign('HMAC', key, s2U8A(thing));
                         });
-                    }
+                    },
                 };
             });
         }
         else {
             const crypto = yield import('crypto');
-            return !!crypto && crypto.createHmac ? Promise.resolve(crypto.createHmac(name.replace('SHA-', 'sha'), secret)) : Promise.reject(webCrypto);
+            return !!crypto && crypto.createHmac
+                ? Promise.resolve(crypto.createHmac(name.replace('SHA-', 'sha'), secret))
+                : Promise.reject(webCrypto);
         }
     });
 }
@@ -1052,21 +1028,16 @@ function s2pem(secret) {
     }
     let type = 'public';
     function ignore(line) {
-        if (ignoreLinesPriv.some(ign => line.toUpperCase().indexOf(ign) > -1)) {
+        if (ignoreLinesPriv.some((ign) => line.toUpperCase().indexOf(ign) > -1)) {
             type = 'private';
             return false;
         }
-        return !ignoreLinesPub.some(ign => line.toUpperCase().indexOf(ign) > -1);
+        return !ignoreLinesPub.some((ign) => line.toUpperCase().indexOf(ign) > -1);
     }
-    const lines = secret.split('\n'), ignoreLinesPriv = [
-        '-BEGIN RSA PRIVATE KEY-',
-        '-END RSA PRIVATE KEY-'
-    ], ignoreLinesPub = [
-        '-BEGIN RSA PUBLIC KEY-',
-        '-BEGIN PUBLIC KEY-',
-        '-END PUBLIC KEY-',
-        '-END RSA PUBLIC KEY-'
-    ], body = lines.map(line => line.trim()).filter(line => line.length && ignore(line)).join('');
+    const lines = secret.split('\n'), ignoreLinesPriv = ['-BEGIN RSA PRIVATE KEY-', '-END RSA PRIVATE KEY-'], ignoreLinesPub = ['-BEGIN RSA PUBLIC KEY-', '-BEGIN PUBLIC KEY-', '-END PUBLIC KEY-', '-END RSA PUBLIC KEY-'], body = lines
+        .map((line) => line.trim())
+        .filter((line) => line.length && ignore(line))
+        .join('');
     if (body.length) {
         return { body: s2U8A(b2s(bu2b(body))), type: type };
     }
@@ -1201,8 +1172,8 @@ class Asn1Tag {
         this.tagNumber = 0;
         const buf = stream.read();
         this.tagClass = buf >> 6;
-        this.tagConstructed = ((buf & 0x20) !== 0);
-        this.tagNumber = buf & 0x1F;
+        this.tagConstructed = (buf & 0x20) !== 0;
+        this.tagNumber = buf & 0x1f;
     }
 }
 function pem2asn1(buff) {
@@ -1210,7 +1181,8 @@ function pem2asn1(buff) {
         throw new Error(ILLEGAL_ARGUMENT);
     if (buff instanceof ArrayBuffer)
         buff = new Uint8Array(buff);
-    let asn1 = ASN1.decode(buff), res = {};
+    let asn1 = ASN1.decode(buff);
+    const res = {};
     if (asn1.sub.length === 3) {
         asn1 = asn1.sub[2].sub[0];
     }
@@ -1241,19 +1213,20 @@ function asn12jwk(asn1, type, extra) {
     const pemTypes = ['public', 'private'];
     if (!asn1)
         throw new Error(ILLEGAL_ARGUMENT);
-    type = ((typeof type === 'string') && type.toLowerCase())
-        || pemTypes[!!asn1.privateExponent ? 1 : 0];
+    type = (typeof type === 'string' && type.toLowerCase()) || pemTypes[!!asn1.privateExponent ? 1 : 0];
     if (type === 'private' && !asn1.privateExponent) {
         throw new Error(ILLEGAL_ARGUMENT);
     }
     let v = asn1.publicExponent;
     const expSize = Math.ceil(Math.log(v) / Math.log(256));
-    const exp = new Uint8Array(expSize).map(function (el) {
+    const exp = new Uint8Array(expSize)
+        .map(function (el) {
         el = v % 256;
         v = Math.floor(v / 256);
         return el;
-    }).reverse();
-    let jwk = Object.assign({ kty: 'RSA' }, extra, {
+    })
+        .reverse();
+    const jwk = Object.assign({ kty: 'RSA' }, extra, {
         n: s2bu(AB2s(asn1.modulus)),
         e: s2bu(AB2s(exp)),
     });
@@ -1264,7 +1237,7 @@ function asn12jwk(asn1, type, extra) {
             q: s2bu(AB2s(asn1.prime2)),
             dp: s2bu(AB2s(asn1.exponent1)),
             dq: s2bu(AB2s(asn1.exponent2)),
-            qi: s2bu(AB2s(asn1.coefficient))
+            qi: s2bu(AB2s(asn1.coefficient)),
         });
     }
     return jwk;
@@ -1291,14 +1264,21 @@ function createSign(name) {
             return {
                 update: function (thing) {
                     return {
-                        sign: function (secret, encoding) {
+                        sign: function (secret) {
                             return __awaiter(this, void 0, void 0, function* () {
                                 return yield pem2jwk(secret, 'private', {
                                     key_ops: ['sign'],
-                                    alg: name.replace('SHA-', 'RS')
+                                    alg: name.replace('SHA-', 'RS'),
                                 }).then((keyData) => __awaiter(this, void 0, void 0, function* () {
-                                    return yield webCryptoSubtle.importKey('jwk', keyData, { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, true, ['sign']).then((key) => __awaiter(this, void 0, void 0, function* () {
-                                        return yield webCryptoSubtle.sign({ name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, key, s2U8A(thing)).then(AB2s).then(s2b);
+                                    return yield webCryptoSubtle
+                                        .importKey('jwk', keyData, { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, true, [
+                                        'sign',
+                                    ])
+                                        .then((key) => __awaiter(this, void 0, void 0, function* () {
+                                        return yield webCryptoSubtle
+                                            .sign({ name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, key, s2U8A(thing))
+                                            .then(AB2s)
+                                            .then(s2b);
                                     }));
                                 }));
                                 /* Issue1: does not work with all versions of PEM keys...
@@ -1319,9 +1299,9 @@ function createSign(name) {
                                 })
                                 */
                             });
-                        }
+                        },
                     };
-                }
+                },
             };
         }
         else {
@@ -1354,13 +1334,15 @@ function createVerify(name) {
             return {
                 update: function (thing) {
                     return {
-                        verify: function (secret, signature, encoding) {
+                        verify: function (secret, signature) {
                             return __awaiter(this, void 0, void 0, function* () {
                                 return yield pem2jwk(secret, 'public', {
                                     key_ops: ['verify'],
-                                    alg: name.replace('SHA-', 'RS')
+                                    alg: name.replace('SHA-', 'RS'),
                                 }).then(({ kty, n, e }) => __awaiter(this, void 0, void 0, function* () {
-                                    return yield webCryptoSubtle.importKey('jwk', { kty, n, e }, { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, false, ['verify']).then((key) => __awaiter(this, void 0, void 0, function* () {
+                                    return yield webCryptoSubtle
+                                        .importKey('jwk', { kty, n, e }, { name: 'RSASSA-PKCS1-v1_5', hash: { name: name } }, false, ['verify'])
+                                        .then((key) => __awaiter(this, void 0, void 0, function* () {
                                         return yield webCryptoSubtle.verify('RSASSA-PKCS1-v1_5', key, s2U8A(bu2s(signature)), s2U8A(thing));
                                     }));
                                 }));
@@ -1382,9 +1364,9 @@ function createVerify(name) {
                                     })
                                 })*/
                             });
-                        }
+                        },
                     };
-                }
+                },
             };
         }
         else {
@@ -1426,7 +1408,7 @@ function algVerify(algorithm, thing, signature, secret) {
             return signature === '';
         }
         const type = algo.slice(0, 2), bits = parseInt(algo.slice(2));
-        if (isNaN(bits) || ([256, 384, 512].indexOf(bits) < 0)) {
+        if (isNaN(bits) || [256, 384, 512].indexOf(bits) < 0) {
             throw new Error(UNSUPPORTED_ALGORITHM);
         }
         switch (type) {
@@ -1453,7 +1435,7 @@ function algSign(algorithm, thing, secret) {
             return '';
         }
         const type = algo.slice(0, 2), bits = parseInt(algo.slice(2));
-        if (isNaN(bits) || ([256, 384, 512].indexOf(bits) < 0)) {
+        if (isNaN(bits) || [256, 384, 512].indexOf(bits) < 0) {
             throw new Error(UNSUPPORTED_ALGORITHM);
         }
         switch (type) {
@@ -1503,7 +1485,7 @@ function cryptoType() {
     });
 }
 function notLatin1String(str) {
-    return Array.prototype.some.apply(str, [str => str.charCodeAt(0) > 255]);
+    return Array.prototype.some.apply(str, [(str) => str.charCodeAt(0) > 255]);
 }
 function textEncode(input) {
     if (notLatin1String(input)) {
@@ -1517,21 +1499,25 @@ function textEncode(input) {
 function textDecode(input) {
     if (typeof input === 'string') {
         try {
-            const decoder = getTextDecoder("utf8", { fatal: true });
+            const decoder = getTextDecoder('utf8', { fatal: true });
             if (!!decoder) {
                 return decoder.decode(s2U8A(input));
             }
         }
-        catch (_a) { }
+        catch (_a) {
+            /* empty */
+        }
         return input;
     }
     try {
-        const decoder = getTextDecoder("utf8", { fatal: true });
+        const decoder = getTextDecoder('utf8', { fatal: true });
         if (!!decoder) {
             return decoder.decode(input);
         }
     }
-    catch (_b) { }
+    catch (_b) {
+        /* empty */
+    }
     return input.toString('binary');
 }
 function getTextEncoder() {
@@ -1539,7 +1525,7 @@ function getTextEncoder() {
         return new TextEncoder();
     }
     if (typeof require !== 'undefined') {
-        const encoder = require("util");
+        const encoder = require('util');
         if (typeof (encoder === null || encoder === void 0 ? void 0 : encoder.TextEncoder) !== 'undefined') {
             return new encoder.TextEncoder();
         }
@@ -1551,7 +1537,7 @@ function getTextDecoder(...args) {
         return new TextDecoder(...args);
     }
     if (typeof require !== 'undefined') {
-        const decoder = require("util");
+        const decoder = require('util');
         if (typeof (decoder === null || decoder === void 0 ? void 0 : decoder.TextDecoder) !== 'undefined') {
             return new decoder.TextDecoder(...args);
         }
