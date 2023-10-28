@@ -40,7 +40,7 @@ const jwtJsDecode = require('jwt-js-decode');
 or
 
 ```html
-<script src="//unpkg.com/jwt-js-decode@1.8.1/dist/jwt-js-decode.pkg.min.js"></script>
+<script src="//unpkg.com/jwt-js-decode@1.8.2/dist/jwt-js-decode.pkg.min.js"></script>
 ```
 
 Other links you can find on [`yarn`](https://yarnpkg.com/en/package/jwt-js-decode)
@@ -91,13 +91,13 @@ Resign JWT token with newSecret secret should be same type as `jwt.header.alg`
 
 ## Sandboxes
 
-Runkit (node.js sandbox 1.8.1)
+Runkit (node.js sandbox 1.8.2)
 [https://npm.runkit.com/jwt-js-decode](https://npm.runkit.com/jwt-js-decode)
 
-Plunkr (browser sandbox 1.8.1 + CodeMirror)
+Plunkr (browser sandbox 1.8.2 + CodeMirror)
 [https://plnkr.co/edit/WaawWXswkexfXaFfRDjQ](https://plnkr.co/edit/WaawWXswkexfXaFfRDjQ)
 
-Plunkr (browser sandbox 1.8.1)
+Plunkr (browser sandbox 1.8.2)
 [https://plnkr.co/edit/zCNpiTXBbPKNxNVnHhkU](https://plnkr.co/edit/zCNpiTXBbPKNxNVnHhkU)
 
 ## Development
